@@ -5,3 +5,5 @@ inherit_gem:
 AllCops:
   Exclude:
     - bin/*
+    - vendor/**/*
+    - db/schema.rb

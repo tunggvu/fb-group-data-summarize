@@ -37,3 +37,5 @@ user_tokens:
   refresh_token:
     secure_length: 64
   expired_period: 30.days
+
+members_id: ["", "", "", ""]

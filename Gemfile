@@ -36,6 +36,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "rspec-rails"
+  gem "rswag-specs", "~> 2.0.4"
   gem "shoulda-matchers"
 end
 
@@ -52,7 +53,8 @@ end
 gem "config"
 gem "grape"
 gem "grape-entity"
-gem "rswag", "~> 1.5.2"
+gem "rswag-api", "~> 2.0.4"
+gem "rswag-ui", "~> 2.0.4"
 gem "rubocop-github"
 gem "seed-fu"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]

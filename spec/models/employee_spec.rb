@@ -8,10 +8,12 @@ RSpec.describe Employee, type: :model do
     it { should have_many(:employee_roles) }
     it { should have_many(:skills) }
     it { should have_many(:roles) }
+    it { should belong_to(:organization) }
   end
 
   describe "#validates" do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:employee_code) }
+    it { should validate_presence_of(:email) }
   end
 end

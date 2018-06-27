@@ -15,12 +15,6 @@ ActiveRecord::Schema.define(version: 2018_06_26_061203) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "divisions", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "efforts", force: :cascade do |t|
     t.bigint "sprint_id", null: false
     t.bigint "employee_skill_id", null: false
@@ -50,20 +44,24 @@ ActiveRecord::Schema.define(version: 2018_06_26_061203) do
   end
 
   create_table "employees", force: :cascade do |t|
-    t.bigint "team_id", null: false
+    t.bigint "organization_id", null: false
     t.string "name", null: false
     t.string "employee_code", null: false
+    t.string "email", null: false
+    t.boolean "is_admin", default: false
+    t.datetime "birthday"
+    t.string "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["team_id"], name: "index_employees_on_team_id"
+    t.index ["organization_id"], name: "index_employees_on_organization_id"
   end
 
-  create_table "groups", force: :cascade do |t|
-    t.bigint "section_id", null: false
+  create_table "organizations", force: :cascade do |t|
     t.string "name", null: false
+    t.integer "parent_id"
+    t.integer "manager_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["section_id"], name: "index_groups_on_section_id"
   end
 
   create_table "phases", force: :cascade do |t|
@@ -103,14 +101,6 @@ ActiveRecord::Schema.define(version: 2018_06_26_061203) do
     t.index ["employee_id"], name: "index_roles_on_employee_id"
   end
 
-  create_table "sections", force: :cascade do |t|
-    t.bigint "division_id", null: false
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["division_id"], name: "index_sections_on_division_id"
-  end
-
   create_table "skills", force: :cascade do |t|
     t.string "name", null: false
     t.integer "level", limit: 2
@@ -130,28 +120,17 @@ ActiveRecord::Schema.define(version: 2018_06_26_061203) do
     t.index ["project_id"], name: "index_sprints_on_project_id"
   end
 
-  create_table "teams", force: :cascade do |t|
-    t.bigint "group_id", null: false
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id"], name: "index_teams_on_group_id"
-  end
-
   add_foreign_key "efforts", "employee_skills"
   add_foreign_key "efforts", "sprints"
   add_foreign_key "employee_roles", "employees"
   add_foreign_key "employee_roles", "roles"
   add_foreign_key "employee_skills", "employees"
   add_foreign_key "employee_skills", "skills"
-  add_foreign_key "employees", "teams"
-  add_foreign_key "groups", "sections"
+  add_foreign_key "employees", "organizations"
   add_foreign_key "phases", "projects"
   add_foreign_key "requirements", "phases"
   add_foreign_key "requirements", "skills"
   add_foreign_key "roles", "employees"
-  add_foreign_key "sections", "divisions"
   add_foreign_key "sprints", "phases"
   add_foreign_key "sprints", "projects"
-  add_foreign_key "teams", "groups"
 end

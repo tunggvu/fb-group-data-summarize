@@ -2,13 +2,15 @@
 
 require "rails_helper"
 
-RSpec.describe Team, type: :model do
+RSpec.describe Organization, type: :model do
   describe "#associations" do
-    it { should belong_to(:group) }
     it { should have_many(:employees) }
+    it { should have_many(:children) }
+    it { should belong_to(:parent) }
   end
 
   describe "#validates" do
     it { should validate_presence_of(:name) }
+    it { should validate_presence_of(:manager_id) }
   end
 end

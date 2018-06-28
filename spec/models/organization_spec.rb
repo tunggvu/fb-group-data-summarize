@@ -12,5 +12,6 @@ RSpec.describe Organization, type: :model do
   describe "#validates" do
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:manager_id) }
+    it { should validate_presence_of(:level) }
   end
 end

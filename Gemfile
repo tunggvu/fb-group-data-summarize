@@ -54,4 +54,5 @@ gem "grape"
 gem "grape-entity"
 gem "rswag", "~> 1.5.2"
 gem "rubocop-github"
+gem "seed-fu"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]

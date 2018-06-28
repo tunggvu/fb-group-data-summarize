@@ -63,4 +63,29 @@ RSpec.configure do |config|
       with.library :rails
     end
   end
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:all) do
+    DatabaseCleaner.clean
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+
+    if Bullet.enable?
+      Bullet.start_request
+    end
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+
+    if Bullet.enable?
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+    end
+  end
 end

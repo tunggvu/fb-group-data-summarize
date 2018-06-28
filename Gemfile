@@ -34,7 +34,10 @@ gem "whenever"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem "bullet"
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
+  gem "database_cleaner"
+  gem "faker"
   gem "rspec-rails"
   gem "rswag-specs", "~> 2.0.4"
   gem "shoulda-matchers"

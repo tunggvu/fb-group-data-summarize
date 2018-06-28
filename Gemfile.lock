@@ -214,17 +214,13 @@ GEM
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
-    rswag (1.5.2)
-      rswag-api (= 1.5.2)
-      rswag-specs (= 1.5.2)
-      rswag-ui (= 1.5.2)
-    rswag-api (1.5.2)
+    rswag-api (2.0.4)
       railties (>= 3.1, < 6.0)
-    rswag-specs (1.5.2)
+    rswag-specs (2.0.4)
       activesupport (>= 3.1, < 6.0)
       json-schema (~> 2.2)
       railties (>= 3.1, < 6.0)
-    rswag-ui (1.5.2)
+    rswag-ui (2.0.4)
       actionpack (>= 3.1, < 6.0)
       railties (>= 3.1, < 6.0)
     rubocop (0.57.2)
@@ -289,7 +285,9 @@ DEPENDENCIES
   puma (~> 3.11)
   rails (~> 5.2.0)
   rspec-rails
-  rswag (~> 1.5.2)
+  rswag-api (~> 2.0.4)
+  rswag-specs (~> 2.0.4)
+  rswag-ui (~> 2.0.4)
   rubocop-github
   seed-fu
   shoulda-matchers

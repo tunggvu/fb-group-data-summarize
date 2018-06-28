@@ -4,3 +4,11 @@
 
 Create Data:
 * rake db:seed_fu
+
+## Build Docker Image
+
+`docker-compose build emres-server` will create emresserver_emres-server and
+emresserver_postgres images.
+
+Run `docker-compose run -e SECRET_KEY_BASE="[rails secret key]" --service-ports
+emres-server`

@@ -53,6 +53,7 @@ end
 gem "config"
 gem "grape"
 gem "grape-entity"
+gem "i18n"
 gem "rswag-api", "~> 2.0.4"
 gem "rswag-ui", "~> 2.0.4"
 gem "rubocop-github"

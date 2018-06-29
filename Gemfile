@@ -50,10 +50,12 @@ end
 
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "api-pagination", "~> 4.8.1"
 gem "config"
 gem "grape"
 gem "grape-entity"
 gem "i18n"
+gem "kaminari", "~> 1.1.1"
 gem "rswag-api", "~> 2.0.4"
 gem "rswag-ui", "~> 2.0.4"
 gem "rubocop-github"

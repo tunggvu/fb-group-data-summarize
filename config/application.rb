@@ -36,5 +36,14 @@ module Emres
     config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**/*.{rb,yml}").to_s]
     config.autoload_paths << Rails.root.join("lib")
     config.eager_load_paths << Rails.root.join("lib")
+
+    ApiPagination.configure do |config|
+      config.paginator = :kaminari
+      config.total_header = "X-Total"
+      config.per_page_header = "X-Per-Page"
+      config.page_header = "X-Page"
+      config.page_param = :page
+      config.per_page_param = :per_page
+    end
   end
 end

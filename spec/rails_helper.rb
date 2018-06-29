@@ -64,6 +64,8 @@ RSpec.configure do |config|
     end
   end
 
+  config.include FactoryBot::Syntax::Methods
+
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
   end

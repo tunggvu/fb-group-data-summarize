@@ -1,163 +1,186 @@
 # frozen_string_literal: true
 require "swagger_helper"
 
-describe "Organization", type: :request do
-  let(:response_json) do
-    JSON.parse(response.body)
+describe "Organization API" do
+  let!(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
+  let!(:division2) { FactoryBot.create(:organization, :division, name: "Division 2") }
+  let!(:group) { FactoryBot.create(:organization, :group, parent_id: division2.id) }
+  let!(:group2) { FactoryBot.create(:organization, :group, parent_id: division2.id) }
+
+  path "/api/v1/organizations" do
+    get "organization tree" do
+      consumes "application/json"
+      response "200", "return application tree" do
+        examples "application/json" => [{
+            id: 1,
+            name: "Division 1",
+            parent_id: nil,
+            manager_id: 2,
+            created_at: "2018-06-28T04:11:50.856Z",
+            updated_at: "2018-06-28T04:11:50.856Z",
+            level: "division",
+            children: [{
+              id: 2,
+              name: "Section 1",
+              parent_id: 1,
+              manager_id: 3,
+              created_at: "2018-06-28T04:11:50.859Z",
+              updated_at: "2018-06-28T04:11:50.859Z",
+              level: "section",
+              children: [{
+                id: 3,
+                name: "Group 1",
+                parent_id: 2,
+                manager_id: 4,
+                created_at: "2018-06-28T04:11:50.862Z",
+                updated_at: "2018-06-28T04:11:50.862Z",
+                level: "clan",
+                children: [{
+                  id: 4,
+                  name: "Team 1",
+                  parent_id: 3,
+                  manager_id: 5,
+                  created_at: "2018-06-28T04:11:50.865Z",
+                  updated_at: "2018-06-28T04:11:50.865Z",
+                  level: "team",
+                  children: []
+                }]
+              }]
+            }]
+          },
+          {
+            id: 10,
+            name: "Division 2",
+            parent_id: nil,
+            manager_id: 12,
+            created_at: "2018-06-28T04:12:32.856Z",
+            updated_at: "2018-06-28T04:12:32.856Z",
+            level: "division",
+            children: []
+          }]
+
+        run_test! do |response|
+          expected = [{
+            id: division.id,
+            name: division.name,
+            parent_id: nil,
+            manager_id: division.manager_id,
+            created_at: division.created_at,
+            updated_at: division.updated_at,
+            level: division.level,
+            children: []
+          },
+          {
+            id: division2.id,
+            name: division2.name,
+            parent_id: nil,
+            manager_id: division2.manager_id,
+            created_at: division2.created_at,
+            updated_at: division2.updated_at,
+            level: division2.level,
+            children: [
+              {
+                id: group.id,
+                name: group.name,
+                parent_id: division2.id,
+                manager_id: group.manager_id,
+                created_at: group.created_at,
+                updated_at: group.updated_at,
+                level: group.level,
+                children: []
+              },
+              {
+                id: group2.id,
+                name: group2.name,
+                parent_id: division2.id,
+                manager_id: group2.manager_id,
+                created_at: group2.created_at,
+                updated_at: group2.updated_at,
+                level: group2.level,
+                children: []
+              }
+            ]
+          }]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
   end
 
-  let!(:division) { create(:organization,
-                           name: "Division 1",
-                           level: :division,
-                           manager_id: 1) }
-  let!(:division2) { create(:organization,
-                            name: "Division 2",
-                            level: :division,
-                            manager_id: 3) }
+  path "/api/v1/organizations/{id}" do
+    get "Information of an organization" do
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :integer, description: "Organization ID"
+      response "200", "returns the organization information" do
+        examples "application/json" => {
+            id: 3,
+            name: "Group 1",
+            parent_id: 2,
+            manager_id: 4,
+            created_at: "2018-06-28T04:11:50.862Z",
+            "updated_at": "2018-06-28T04:11:50.862Z",
+            level: "clan",
+            children: [{
+              id: 4,
+              name: "Team 1",
+              parent_id: 3,
+              manager_id: 5,
+              created_at: "2018-06-28T04:11:50.865Z",
+              updated_at: "2018-06-28T04:11:50.865Z",
+              level: "team",
+              children: []
+            }]
+          }
 
-  describe "GET /organizations" do
-    it "returns all organizations" do
-      get "/api/v1/organizations"
-
-      expect(response_json.count).to eq 2
-      response_json.first do |response|
-        expect(response["name"]).to eq "Division 1"
-        expect(response["level"]).to eq "division"
-        expect(response["manager_id"]).to eq 1
-      end
-      response_json.second do |response|
-        expect(response["name"]).to eq "Division 2"
-        expect(response["level"]).to eq "division"
-        expect(response["manager_id"]).to eq 2
-      end
-    end
-
-    context "With children organizations" do
-      let!(:section) { create(:organization,
-                              name: "Section 1",
-                              level: :section,
-                              parent_id: division2.id,
-                              manager_id: 2) }
-      let!(:group) { create(:organization,
-                            name: "Group 1",
-                            level: :clan,
-                            parent_id: section.id,
-                            manager_id: 4) }
-
-      it "returns 2 top organizations" do
-        get "/api/v1/organizations"
-        expect(response_json.count).to eq 2
-      end
-
-      context "The first organization" do
-        it "returns no children" do
-          get "/api/v1/organizations"
-          expect(response_json.count).to eq 2
-          response_json.first do |response|
-            expect(response["name"]).to eq "Division 1"
-            expect(response["level"]).to eq "division"
-            expect(response["manager_id"]).to eq 1
-            expect(response["children"]).to be_empty
-          end
+        let(:id) { division2.id }
+        run_test! do |response|
+          expected = {
+            id: division2.id,
+            name: division2.name,
+            parent_id: nil,
+            manager_id: division2.manager_id,
+            created_at: division2.created_at,
+            updated_at: division2.updated_at,
+            level: division2.level,
+            children: [
+              {
+                id: group.id,
+                name: group.name,
+                parent_id: division2.id,
+                manager_id: group.manager_id,
+                created_at: group.created_at,
+                updated_at: group.updated_at,
+                level: group.level,
+                children: []
+              },
+              {
+                id: group2.id,
+                name: group2.name,
+                parent_id: division2.id,
+                manager_id: group2.manager_id,
+                created_at: group2.created_at,
+                updated_at: group2.updated_at,
+                level: group2.level,
+                children: []
+              }
+            ]
+          }
+          expect(response.body).to eq expected.to_json
         end
       end
 
-      context "The second organization" do
-        it "returns with a child" do
-          get "/api/v1/organizations"
-          expect(response_json.count).to eq 2
-          response_json.second do |response|
-            expect(response["name"]).to eq "Division 2"
-            expect(response["level"]).to eq "division"
-            expect(response["manager_id"]).to eq 3
-            expect(response["children"].count).to eq 1
-          end
-          response_json.second["children"].first do |child|
-            expect(child["name"]).to eq "Section 1"
-            expect(child["level"]).to eq "section"
-            expect(child["parent_id"]).to eq division2.id
-            expect(child["manager_id"]).to eq 2
-          end
+      response "404", "returns an error code" do
+        examples "application/json" => {
+            "error_code": 603,
+            "errors": "Couldn't find Organization with 'id'=100"
+          }
+
+        let(:id) { Organization.last.id + 1 }
+        run_test! do |response|
+          expect(response.status).to eq 404
+          expect(JSON.parse(response.body)["error_code"]).to eq 603
+          expect(JSON.parse(response.body)["errors"]).to match(/Couldn't find Organization/)
         end
-
-        context "The child" do
-          it "returns with a sub-child" do
-            get "/api/v1/organizations"
-            expect(response_json.count).to eq 2
-            response_json.second["children"].first["children"].first do |child|
-              expect(child["name"]).to eq "Group 1"
-              expect(child["level"]).to eq "clan"
-              expect(child["parent_id"]).to eq section.id
-              expect(child["manager_id"]).to eq 4
-            end
-          end
-        end
-      end
-    end
-  end
-
-  describe "GET /organizations/:id" do
-    let!(:section) { create(:organization,
-                            name: "Section 1",
-                            level: :section,
-                            parent_id: division2.id,
-                            manager_id: 2) }
-    let!(:group) { create(:organization,
-                          name: "Group 1",
-                          level: :clan,
-                          parent_id: section.id,
-                          manager_id: 4) }
-
-    context "Organization found" do
-      context "With no children" do
-        it "returns an organization" do
-          get "/api/v1/organizations/#{Organization.division.first.id}"
-
-          expect(response_json.count).to eq 8
-          expect(response_json["id"]).to eq Organization.division.first.id
-          expect(response_json["name"]).to eq Organization.division.first.name
-          expect(response_json["level"]).to eq Organization.division.first.level
-          expect(response_json["parent_id"]).to eq Organization.division.first.parent_id
-          expect(response_json["manager_id"]).to eq Organization.division.first.manager_id
-          expect(response_json["children"]).to be_empty
-        end
-      end
-
-      context "With a child" do
-        it "returns an organization" do
-          get "/api/v1/organizations/#{Organization.division.second.id}"
-          expect(response_json.count).to eq 8
-          expect(response_json["id"]).to eq Organization.division.second.id
-          expect(response_json["name"]).to eq Organization.division.second.name
-          expect(response_json["level"]).to eq Organization.division.second.level
-          expect(response_json["parent_id"]).to eq Organization.division.second.parent_id
-          expect(response_json["manager_id"]).to eq Organization.division.second.manager_id
-          expect(response_json["children"]).not_to be_empty
-        end
-
-        context "The child" do
-          it "returns an organization" do
-            get "/api/v1/organizations/#{Organization.division.second.id}"
-            response_json["children"].first do |child|
-              expect(child["name"]).to eq "Group 1"
-              expect(child["level"]).to eq "clan"
-              expect(child["parent_id"]).to eq section.id
-              expect(child["manager_id"]).to eq 4
-            end
-          end
-        end
-      end
-    end
-
-    context "Organization not found" do
-      it "returns with error code and message" do
-        org_id = Organization.last.id
-        Organization.last.destroy
-        get "/api/v1/organizations/#{org_id}"
-
-        expect(response.status).to eq 404
-        expect(response_json["error_code"]).to eq 603
-        expect(response_json["errors"]).to match(/Couldn't find Organization/)
       end
     end
   end

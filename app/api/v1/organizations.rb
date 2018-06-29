@@ -8,9 +8,6 @@ class V1::Organizations < Grape::API
     end
 
     desc "Returns an organization information"
-    params do
-      requires :id, type: Integer, desc: "Organization id"
-    end
     route_param :id do
       get do
         Organization.find params[:id]

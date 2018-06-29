@@ -5,5 +5,111 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/organizations": {
+      "get": {
+        "summary": "organization tree",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "return application tree",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "name": "Division 1",
+                  "parent_id": null,
+                  "manager_id": 2,
+                  "created_at": "2018-06-28T04:11:50.856Z",
+                  "updated_at": "2018-06-28T04:11:50.856Z",
+                  "level": "division",
+                  "children": [
+                    {
+                      "id": 2,
+                      "name": "Section 1",
+                      "parent_id": 1,
+                      "manager_id": 3,
+                      "created_at": "2018-06-28T04:11:50.859Z",
+                      "updated_at": "2018-06-28T04:11:50.859Z",
+                      "level": "section",
+                      "children": [
+                        {
+                          "id": 3,
+                          "name": "Group 1",
+                          "parent_id": 2,
+                          "manager_id": 4,
+                          "created_at": "2018-06-28T04:11:50.862Z",
+                          "updated_at": "2018-06-28T04:11:50.862Z",
+                          "level": "clan",
+                          "children": [
+                            {
+                              "id": 4,
+                              "name": "Team 1",
+                              "parent_id": 3,
+                              "manager_id": 5,
+                              "created_at": "2018-06-28T04:11:50.865Z",
+                              "updated_at": "2018-06-28T04:11:50.865Z",
+                              "level": "team",
+                              "children": [
+
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": 10,
+                  "name": "Division 2",
+                  "parent_id": null,
+                  "manager_id": 12,
+                  "created_at": "2018-06-28T04:12:32.856Z",
+                  "updated_at": "2018-06-28T04:12:32.856Z",
+                  "level": "division",
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/:id": {
+      "get": {
+        "summary": "Information of an organization",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "description": "Organization ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the organization information",
+            "examples": "application/json"
+          },
+          "404": {
+            "description": "returns an error code",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Organization with 'id'=100"
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

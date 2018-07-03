@@ -1,15 +1,36 @@
-version: '3'
+version: '3.5'
 services:
   postgres:
     image: postgres:9.6
     volumes:
-      - ./tmp/emres-server:/var/lib/postgresql/data
+      - /data/emres-server:/var/lib/postgresql/data
+
   emres-server:
-    build: .
+    image: emres-server
     command: bundle exec rails server -p 3000 -b "0.0.0.0"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "900M"
+      restart_policy:
+        condition: on-failure
     ports:
       - "3000:3000"
     volumes:
       - .:/emres-server
+    networks:
+      - emres-network
     depends_on:
       - postgres
+    secrets:
+      - rails_secret
+    environment:
+      - SECRET_KEY_BASE=/run/secrets/rails_secret
+
+networks:
+  emres-network:
+
+secrets:
+  rails_secret:
+    external: true

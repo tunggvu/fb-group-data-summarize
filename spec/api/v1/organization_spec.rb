@@ -16,32 +16,24 @@ describe "Organization API" do
             name: "Division 1",
             parent_id: nil,
             manager_id: 2,
-            created_at: "2018-06-28T04:11:50.856Z",
-            updated_at: "2018-06-28T04:11:50.856Z",
             level: "division",
             children: [{
               id: 2,
               name: "Section 1",
               parent_id: 1,
               manager_id: 3,
-              created_at: "2018-06-28T04:11:50.859Z",
-              updated_at: "2018-06-28T04:11:50.859Z",
               level: "section",
               children: [{
                 id: 3,
                 name: "Group 1",
                 parent_id: 2,
                 manager_id: 4,
-                created_at: "2018-06-28T04:11:50.862Z",
-                updated_at: "2018-06-28T04:11:50.862Z",
                 level: "clan",
                 children: [{
                   id: 4,
                   name: "Team 1",
                   parent_id: 3,
                   manager_id: 5,
-                  created_at: "2018-06-28T04:11:50.865Z",
-                  updated_at: "2018-06-28T04:11:50.865Z",
                   level: "team",
                   children: []
                 }]
@@ -53,8 +45,6 @@ describe "Organization API" do
             name: "Division 2",
             parent_id: nil,
             manager_id: 12,
-            created_at: "2018-06-28T04:12:32.856Z",
-            updated_at: "2018-06-28T04:12:32.856Z",
             level: "division",
             children: []
           }]
@@ -65,8 +55,6 @@ describe "Organization API" do
             name: division.name,
             parent_id: nil,
             manager_id: division.manager_id,
-            created_at: division.created_at,
-            updated_at: division.updated_at,
             level: division.level,
             children: []
           },
@@ -75,8 +63,6 @@ describe "Organization API" do
             name: division2.name,
             parent_id: nil,
             manager_id: division2.manager_id,
-            created_at: division2.created_at,
-            updated_at: division2.updated_at,
             level: division2.level,
             children: [
               {
@@ -84,8 +70,6 @@ describe "Organization API" do
                 name: group.name,
                 parent_id: division2.id,
                 manager_id: group.manager_id,
-                created_at: group.created_at,
-                updated_at: group.updated_at,
                 level: group.level,
                 children: []
               },
@@ -94,8 +78,6 @@ describe "Organization API" do
                 name: group2.name,
                 parent_id: division2.id,
                 manager_id: group2.manager_id,
-                created_at: group2.created_at,
-                updated_at: group2.updated_at,
                 level: group2.level,
                 children: []
               }
@@ -117,16 +99,12 @@ describe "Organization API" do
             name: "Group 1",
             parent_id: 2,
             manager_id: 4,
-            created_at: "2018-06-28T04:11:50.862Z",
-            "updated_at": "2018-06-28T04:11:50.862Z",
             level: "clan",
             children: [{
               id: 4,
               name: "Team 1",
               parent_id: 3,
               manager_id: 5,
-              created_at: "2018-06-28T04:11:50.865Z",
-              updated_at: "2018-06-28T04:11:50.865Z",
               level: "team",
               children: []
             }]
@@ -139,8 +117,6 @@ describe "Organization API" do
             name: division2.name,
             parent_id: nil,
             manager_id: division2.manager_id,
-            created_at: division2.created_at,
-            updated_at: division2.updated_at,
             level: division2.level,
             children: [
               {
@@ -148,8 +124,6 @@ describe "Organization API" do
                 name: group.name,
                 parent_id: division2.id,
                 manager_id: group.manager_id,
-                created_at: group.created_at,
-                updated_at: group.updated_at,
                 level: group.level,
                 children: []
               },
@@ -158,8 +132,6 @@ describe "Organization API" do
                 name: group2.name,
                 parent_id: division2.id,
                 manager_id: group2.manager_id,
-                created_at: group2.created_at,
-                updated_at: group2.updated_at,
                 level: group2.level,
                 children: []
               }

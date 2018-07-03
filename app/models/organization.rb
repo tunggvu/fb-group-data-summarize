@@ -11,10 +11,4 @@ class Organization < ApplicationRecord
   enum level: {team: 1, clan: 2, section: 3, division: 4}
 
   scope :top_organization, -> { where parent_id: nil }
-
-  def as_json(options = {})
-    super((options || { }).merge({
-      methods: [:children]
-    }))
-  end
 end

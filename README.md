@@ -7,8 +7,20 @@ Create Data:
 
 ## Build Docker Image
 
-`docker-compose build emres-server` will create emresserver_emres-server and
-emresserver_postgres images.
+#### Create data folder for postgres
+`mkdir -p /data/emres-server/`
 
-Run `docker-compose run -e SECRET_KEY_BASE="[rails secret key]" --service-ports
-emres-server`
+#### Set SECRET_KEY_BASE
+`rails secret | docker secret create rails_secret -`
+
+#### Build the latest version
+`docker build -t emres-server --rm .`
+
+#### Deploy emres-server with postgres
+`docker stack deploy -c docker-compose.yml emres-server`
+
+#### (OPTIONAL) Make emres-server service update order `start-first`
+`docker service update --update-order 'start-first' emres-server_emres-server`
+
+#### Update the emres-server to the latest version
+`docker service update --image emres-server emres-server_emres-server`

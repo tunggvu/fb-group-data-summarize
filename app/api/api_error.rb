@@ -21,6 +21,6 @@ module APIError
   class TokenExpired < APIError::Base
   end
 
-  class PwdNotCorrect < APIError::Base
+  class WrongEmailPassword < APIError::Base
   end
 end

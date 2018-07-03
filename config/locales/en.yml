@@ -34,3 +34,6 @@ en:
   grape:
     errors:
       messages:
+  api_error:
+    wrong_email_password: "Wrong email or password"
+    unauthorized: "Unauthorized"

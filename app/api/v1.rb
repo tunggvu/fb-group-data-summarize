@@ -4,6 +4,7 @@ class V1 < Grape::API
   version "v1", using: :path
 
   mount TestAPI
+  mount SessionAPI
 
   desc "Return the current API version - V1."
   get do

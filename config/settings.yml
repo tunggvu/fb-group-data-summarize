@@ -1,4 +1,5 @@
-access_token_header: "Emres-Access-Token"
+access_token_header: "Authorization"
+access_token_value_prefix: "Bearer"
 
 http_code:
   code_200: 200
@@ -15,8 +16,11 @@ error_formatter:
     token_expired: 602
     record_not_found: 603
     validation_errors: 604
-    pwd_not_correct: 605
+    wrong_email_password: 605
     unauthenticated: 606
+    decode_error: 601
+    verification_error: 601
+
   message_key: "message"
   http_code:
     data_operation: 422
@@ -24,18 +28,23 @@ error_formatter:
     token_expired: 401
     record_not_found: 404
     validation_errors: 400
-    pwd_not_correct: 401
+    wrong_email_password: 401
     unauthenticated: 401
+    decode_error: 401
+    verification_error: 401
 
 validations:
   strings:
     max_length: 255
+  email_regex: !ruby/regexp '/\b[A-Z0-9._%a-z\-]+@framgia\.com\z/'
+  password_regex: !ruby/regexp '/^(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,}$/'
 
-user_tokens:
+employee_tokens:
   token:
     secure_length: 64
   refresh_token:
     secure_length: 64
-  expired_period: 30.days
+  expires_in: <%= 30.days %>
+  short_expires_in: <%= 1.days %>
 
 members_id: ["", "", "", ""]

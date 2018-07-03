@@ -5,5 +5,71 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/sessions": {
+      "post": {
+        "summary": "Login API",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Login success with valid email/password"
+          },
+          "400": {
+            "description": "Login with invalid format of email"
+          },
+          "401": {
+            "description": "Login with invalid password"
+          }
+        }
+      },
+      "delete": {
+        "summary": "logout api",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "with valid token",
+            "examples": {
+              "application/json": {
+                "Authorization": "Bearer your_token"
+              }
+            }
+          },
+          "401": {
+            "description": "with invalid token"
+          }
+        }
+      }
+    }
   }
 }

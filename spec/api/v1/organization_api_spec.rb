@@ -4,8 +4,8 @@ require "swagger_helper"
 describe "Organization API" do
   let!(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
   let!(:division2) { FactoryBot.create(:organization, :division, name: "Division 2") }
-  let!(:group) { FactoryBot.create(:organization, :group, parent_id: division2.id) }
-  let!(:group2) { FactoryBot.create(:organization, :group, parent_id: division2.id) }
+  let!(:group) { FactoryBot.create(:organization, :group, parent: division2) }
+  let!(:group2) { FactoryBot.create(:organization, :group, parent: division2) }
 
   path "/api/v1/organizations" do
     get "organization tree" do
@@ -149,8 +149,8 @@ describe "Organization API" do
 
         let(:id) { Organization.last.id + 1 }
         run_test! do |response|
-          expect(JSON.parse(response.body)["error_code"]).to eq 603
-          expect(JSON.parse(response.body)["errors"]).to match(/Couldn't find Organization/)
+          expect(response_body["error_code"]).to eq 603
+          expect(response_body["errors"]).to match(/Couldn't find Organization/)
         end
       end
     end

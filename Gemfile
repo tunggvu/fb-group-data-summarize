@@ -16,8 +16,8 @@ gem "puma", "~> 3.11"
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
+gem "bcrypt"
+gem "jwt"
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -37,7 +37,7 @@ group :development, :test do
   gem "bullet"
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "database_cleaner"
-  gem "factory_bot_rails"
+  gem "factory_bot_rails", "~> 4.0"
   gem "faker"
   gem "rspec-rails"
   gem "rswag-specs", "~> 2.0.4"
@@ -51,7 +51,6 @@ group :development do
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
 end
-
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "api-pagination", "~> 4.8.1"

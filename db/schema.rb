@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_27_070908) do
+ActiveRecord::Schema.define(version: 2018_06_29_013850) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,15 @@ ActiveRecord::Schema.define(version: 2018_06_27_070908) do
     t.index ["skill_id"], name: "index_employee_skills_on_skill_id"
   end
 
+  create_table "employee_tokens", force: :cascade do |t|
+    t.bigint "employee_id", null: false
+    t.string "token", null: false
+    t.datetime "expired_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employee_id"], name: "index_employee_tokens_on_employee_id"
+  end
+
   create_table "employees", force: :cascade do |t|
     t.bigint "organization_id", null: false
     t.string "name", null: false
@@ -53,6 +62,7 @@ ActiveRecord::Schema.define(version: 2018_06_27_070908) do
     t.string "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "password_digest"
     t.index ["organization_id"], name: "index_employees_on_organization_id"
   end
 
@@ -127,6 +137,7 @@ ActiveRecord::Schema.define(version: 2018_06_27_070908) do
   add_foreign_key "employee_roles", "roles"
   add_foreign_key "employee_skills", "employees"
   add_foreign_key "employee_skills", "skills"
+  add_foreign_key "employee_tokens", "employees"
   add_foreign_key "employees", "organizations"
   add_foreign_key "phases", "projects"
   add_foreign_key "requirements", "phases"

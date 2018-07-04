@@ -141,7 +141,7 @@ describe "Organization API" do
         end
       end
 
-      response "404", "returns an error code" do
+      response "404", "returns invalid id error" do
         examples "application/json" => {
             "error_code": 603,
             "errors": "Couldn't find Organization with 'id'=100"
@@ -149,7 +149,6 @@ describe "Organization API" do
 
         let(:id) { Organization.last.id + 1 }
         run_test! do |response|
-          expect(response.status).to eq 404
           expect(JSON.parse(response.body)["error_code"]).to eq 603
           expect(JSON.parse(response.body)["errors"]).to match(/Couldn't find Organization/)
         end

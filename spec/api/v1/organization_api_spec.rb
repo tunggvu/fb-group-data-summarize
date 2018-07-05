@@ -4,8 +4,8 @@ require "swagger_helper"
 describe "Organization API" do
   let!(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
   let!(:division2) { FactoryBot.create(:organization, :division, name: "Division 2") }
-  let!(:group) { FactoryBot.create(:organization, :group, parent: division2) }
-  let!(:group2) { FactoryBot.create(:organization, :group, parent: division2) }
+  let!(:section) { FactoryBot.create(:organization, :section, parent: division2) }
+  let!(:section2) { FactoryBot.create(:organization, :section, parent: division2) }
 
   path "/api/v1/organizations" do
     get "organization tree" do

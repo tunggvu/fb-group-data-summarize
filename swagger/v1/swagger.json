@@ -5,6 +5,193 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/employees": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Information of all employees",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "return all employee",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "organization_id": 1,
+                  "name": "Employee",
+                  "employee_code": "B120000",
+                  "email": "employee@framgia.com",
+                  "birthday": "1/1/2018",
+                  "phone": "0123456789"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create employee",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "employee_code": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "organization_id": {
+                  "type": "integer"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "create successfully",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "organization_id": 1,
+                "name": "Employee",
+                "employee_code": "B120000",
+                "email": "employee@framgia.com",
+                "birthday": "1/1/2018",
+                "phone": "0123456789"
+              }
+            }
+          },
+          "400": {
+            "description": "missing params email",
+            "examples": {
+              "application/json": {
+                "error_code": 604,
+                "errors": [
+                  {
+                    "params": [
+                      "email"
+                    ],
+                    "messages": [
+                      "is missing",
+                      "is empty"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "422": {
+            "description": "email has been taken",
+            "examples": {
+              "application/json": {
+                "error_code": 600,
+                "errors": "Validation failed: Email has already been taken"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/employees/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Get information of specific employee",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return one employee",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "organization_id": 1,
+                "name": "Employee",
+                "employee_code": "B120000",
+                "email": "employee@framgia.com",
+                "birthday": "1/1/2018",
+                "phone": "0123456789"
+              }
+            }
+          },
+          "404": {
+            "description": "invalid id",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Employee with 'id'=0"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete employee",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete successfully",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "organization_id": 1,
+                "name": "Employee",
+                "employee_code": "B120000",
+                "email": "employee@framgia.com",
+                "birthday": "1/1/2018",
+                "phone": "0123456789"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/sessions": {
       "post": {
         "summary": "Login API",

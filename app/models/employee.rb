@@ -10,7 +10,7 @@ class Employee < ApplicationRecord
   has_one :employee_token, dependent: :destroy
   validates :name, presence: true
   validates :employee_code, presence: true
-  validates :email, presence: true, format: { with: Settings.validations.email_regex }
+  validates :email, presence: true, uniqueness: true, format: { with: Settings.validations.email_regex }
 
   has_secure_password validations: false
 

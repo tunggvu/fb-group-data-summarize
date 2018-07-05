@@ -37,7 +37,7 @@ group :development, :test do
   gem "bullet"
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "database_cleaner"
-  gem "factory_bot_rails", "~> 4.0"
+  gem "factory_bot_rails"
   gem "faker"
   gem "rspec-rails"
   gem "rswag-specs", "~> 2.0.4"

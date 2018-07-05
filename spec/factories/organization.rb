@@ -13,5 +13,9 @@ FactoryBot.define do
     trait :group do
       level :clan
     end
+
+    trait :has_parent do
+      association :parent, factory: :organization, optional: true
+    end
   end
 end

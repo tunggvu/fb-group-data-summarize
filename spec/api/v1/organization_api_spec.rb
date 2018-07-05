@@ -83,7 +83,7 @@ describe "Organization API" do
 
         let(:id) { division2.id }
         run_test! do |response|
-          expected = Entities::Organization.represent(division2)
+          expected = Entities::Organization.represent division2, only: [:id, :name, :parent_id, :manager_id, :level, :children]
           expect(response.body).to eq expected.to_json
         end
       end

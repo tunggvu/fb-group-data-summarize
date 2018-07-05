@@ -94,7 +94,7 @@ describe "Organization API" do
             "errors": "Couldn't find Organization with 'id'=100"
           }
 
-        let(:id) { Organization.last.id + 1 }
+        let(:id) { 0 }
         run_test! do |response|
           expect(response_body["error_code"]).to eq 603
           expect(response_body["errors"]).to match /Couldn't find Organization/

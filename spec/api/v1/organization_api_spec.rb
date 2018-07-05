@@ -50,39 +50,10 @@ describe "Organization API" do
           }]
 
         run_test! do |response|
-          expected = [{
-            id: division.id,
-            name: division.name,
-            parent_id: nil,
-            manager_id: division.manager_id,
-            level: division.level,
-            children: []
-          },
-          {
-            id: division2.id,
-            name: division2.name,
-            parent_id: nil,
-            manager_id: division2.manager_id,
-            level: division2.level,
-            children: [
-              {
-                id: group.id,
-                name: group.name,
-                parent_id: division2.id,
-                manager_id: group.manager_id,
-                level: group.level,
-                children: []
-              },
-              {
-                id: group2.id,
-                name: group2.name,
-                parent_id: division2.id,
-                manager_id: group2.manager_id,
-                level: group2.level,
-                children: []
-              }
-            ]
-          }]
+          expected = [
+            Entities::Organization.represent(division),
+            Entities::Organization.represent(division2)
+          ]
           expect(response.body).to eq expected.to_json
         end
       end
@@ -112,31 +83,7 @@ describe "Organization API" do
 
         let(:id) { division2.id }
         run_test! do |response|
-          expected = {
-            id: division2.id,
-            name: division2.name,
-            parent_id: nil,
-            manager_id: division2.manager_id,
-            level: division2.level,
-            children: [
-              {
-                id: group.id,
-                name: group.name,
-                parent_id: division2.id,
-                manager_id: group.manager_id,
-                level: group.level,
-                children: []
-              },
-              {
-                id: group2.id,
-                name: group2.name,
-                parent_id: division2.id,
-                manager_id: group2.manager_id,
-                level: group2.level,
-                children: []
-              }
-            ]
-          }
+          expected = Entities::Organization.represent(division2)
           expect(response.body).to eq expected.to_json
         end
       end
@@ -150,7 +97,7 @@ describe "Organization API" do
         let(:id) { Organization.last.id + 1 }
         run_test! do |response|
           expect(response_body["error_code"]).to eq 603
-          expect(response_body["errors"]).to match(/Couldn't find Organization/)
+          expect(response_body["errors"]).to match /Couldn't find Organization/
         end
       end
     end

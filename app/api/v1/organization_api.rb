@@ -8,7 +8,7 @@ class V1::OrganizationAPI < Grape::API
         with: Entities::Organization
     end
 
-    desc "Returns an organization information"
+    desc "Returns an organization"
     route_param :id do
       get do
         present Organization.includes(:children).find(params[:id]),

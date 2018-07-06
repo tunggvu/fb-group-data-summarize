@@ -192,6 +192,122 @@
         }
       }
     },
+    "/api/v1/organizations": {
+      "get": {
+        "summary": "organization tree",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "return application tree",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "name": "Division 1",
+                  "parent_id": null,
+                  "manager_id": 2,
+                  "level": "division",
+                  "children": [
+                    {
+                      "id": 2,
+                      "name": "Section 1",
+                      "parent_id": 1,
+                      "manager_id": 3,
+                      "level": "section",
+                      "children": [
+                        {
+                          "id": 3,
+                          "name": "Group 1",
+                          "parent_id": 2,
+                          "manager_id": 4,
+                          "level": "clan",
+                          "children": [
+                            {
+                              "id": 4,
+                              "name": "Team 1",
+                              "parent_id": 3,
+                              "manager_id": 5,
+                              "level": "team",
+                              "children": [
+
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": 10,
+                  "name": "Division 2",
+                  "parent_id": null,
+                  "manager_id": 12,
+                  "level": "division",
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{id}": {
+      "get": {
+        "summary": "Information of an organization",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "description": "Organization ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "returns the organization information",
+            "examples": {
+              "application/json": {
+                "id": 3,
+                "name": "Group 1",
+                "parent_id": 2,
+                "manager_id": 4,
+                "level": "clan",
+                "children": [
+                  {
+                    "id": 4,
+                    "name": "Team 1",
+                    "parent_id": 3,
+                    "manager_id": 5,
+                    "level": "team",
+                    "children": [
+
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "returns invalid id error",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Organization with 'id'=100"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/sessions": {
       "post": {
         "summary": "Login API",

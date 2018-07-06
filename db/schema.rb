@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 2018_07_05_035459) do
   end
 
   create_table "employees", force: :cascade do |t|
-    t.bigint "organization_id"
+    t.bigint "organization_id", null: false
     t.string "name", null: false
     t.string "employee_code", null: false
     t.string "email", null: false

@@ -2,11 +2,16 @@
 
 FactoryBot.define do
   factory :organization do
-    name "Division 1"
-    manager_id 1
-    level "division"
-    trait :has_parent do
-      association :parent, factory: :organization, optional: true
+    name { Faker::Name.name }
+    level :team
+    manager_id 10
+
+    trait :division do
+      level :division
+    end
+
+    trait :section do
+      level :section
     end
   end
 end

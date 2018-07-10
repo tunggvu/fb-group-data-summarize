@@ -47,4 +47,7 @@ employee_tokens:
   expires_in: <%= 30.days %>
   short_expires_in: <%= 1.days %>
 
-members_id: ["", "", "", ""]
+members_backend_id: ["2273997", "3127986", "1385477", "728173", "2047101", "2161732"]
+members_frontend_id: ["1803370", "2310110", "1385477", "728173", "2047101", "2161732"]
+leader_backend_id: "2310316"
+leader_frontend_id: "1509321"

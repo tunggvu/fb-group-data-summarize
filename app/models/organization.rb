@@ -2,8 +2,8 @@
 
 class Organization < ApplicationRecord
   belongs_to :parent, class_name: Organization.name, optional: true
-  has_many :children, class_name: Organization.name, foreign_key: :parent_id
-  has_many :employees
+  has_many :children, class_name: Organization.name, foreign_key: :parent_id, dependent: :destroy
+  has_many :employees, dependent: :nullify
   validates :name, presence: true
   validates :manager_id, presence: true
   validates :level, presence: true

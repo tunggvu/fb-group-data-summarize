@@ -14,6 +14,17 @@ class Employee < ApplicationRecord
 
   has_secure_password validations: false
 
+  def is_manager?(organization)
+    orgs = []
+    # TODO: Fix here. Avoid using loop to find parent organizations
+    loop do
+      break unless organization.present?
+      orgs << organization
+      organization = organization.parent
+    end
+    orgs.pluck(:manager_id).include? self.id
+  end
+
   class << self
     def authenticate!(email, password)
       employee = Employee.find_by email: email

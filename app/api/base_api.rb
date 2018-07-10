@@ -49,6 +49,23 @@ module BaseAPI
         auth_header.scan(/^#{Settings.access_token_value_prefix} (.+)$/i)[0] ?
           auth_header.scan(/^#{Settings.access_token_value_prefix} (.+)$/i)[0].first : nil
       end
+
+      def authenticate_admin!
+        authenticate!
+        raise APIError::Unauthorized unless current_user.is_admin?
+      end
+
+      def authenticate_organization_manager!(organization)
+        authenticate!
+        raise APIError::Unauthorized unless current_user.is_manager?(organization)
+      end
+
+      def authenticate_admin_or_organization_manager!(organization)
+        authenticate!
+        unless current_user.is_admin? || current_user.is_manager?(organization)
+          raise APIError::Unauthorized
+        end
+      end
     end
   end
 end

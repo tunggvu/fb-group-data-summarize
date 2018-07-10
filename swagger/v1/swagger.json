@@ -193,6 +193,13 @@
       }
     },
     "/api/v1/organizations": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        }
+      ],
       "get": {
         "summary": "organization tree",
         "consumes": [
@@ -252,11 +259,106 @@
                 }
               ]
             }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an organization",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "organization",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "manager_id": {
+                  "type": "integer"
+                },
+                "level": {
+                  "type": "integer"
+                },
+                "parent_id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "name",
+                "manager_id",
+                "level"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "created an organization",
+            "examples": {
+              "application/json": {
+                "id": 3,
+                "name": "Group 1",
+                "parent_id": 2,
+                "manager_id": 4,
+                "level": "clan",
+                "children": [
+
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "validation failed",
+            "examples": {
+              "application/json": {
+                "error_code": 604,
+                "errors": [
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "messages": [
+                      "is missing",
+                      "is empty"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
           }
         }
       }
     },
     "/api/v1/organizations/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        }
+      ],
       "get": {
         "summary": "Information of an organization",
         "consumes": [
@@ -298,6 +400,146 @@
           },
           "404": {
             "description": "returns invalid id error",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Organization with 'id'=100"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an organization",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "organization",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Organization name"
+                },
+                "manager_id": {
+                  "type": "integer",
+                  "description": "Organization manager"
+                },
+                "level": {
+                  "type": "integer",
+                  "description": "Organization level"
+                },
+                "parent_id": {
+                  "type": "integer",
+                  "description": "Organization parent"
+                }
+              },
+              "required": [
+                "name",
+                "manager_id",
+                "level"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "description": "Organization ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "updated an organization",
+            "examples": {
+              "application/json": {
+                "id": 3,
+                "name": "Group 1",
+                "parent_id": 2,
+                "manager_id": 4,
+                "level": "clan",
+                "children": [
+
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "validation failed",
+            "examples": {
+              "application/json": {
+                "error_code": 604,
+                "errors": [
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "messages": [
+                      "is missing",
+                      "is empty"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          },
+          "404": {
+            "description": "not found organization",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Organization with 'id'=100"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an organization",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "description": "Organization ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "deleted an organization",
+            "examples": {
+              "application/json": true
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          },
+          "404": {
+            "description": "not found organization",
             "examples": {
               "application/json": {
                 "error_code": 603,

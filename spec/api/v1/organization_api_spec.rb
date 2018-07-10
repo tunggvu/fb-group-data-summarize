@@ -7,7 +7,21 @@ describe "Organization API" do
   let!(:section) { FactoryBot.create(:organization, :section, parent: division2) }
   let!(:section2) { FactoryBot.create(:organization, :section, parent: division2) }
 
+  let!(:employee) { FactoryBot.create :employee, organization: section }
+  let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
+
+  let!(:manager) { FactoryBot.create :employee, organization: division }
+  let(:manager_token) { FactoryBot.create :employee_token, employee: manager }
+
+  let!(:admin) { FactoryBot.create :employee, :admin, organization: nil }
+  let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
+
+  before do
+    division2.update manager_id: manager.id
+  end
+
   path "/api/v1/organizations" do
+    parameter name: "Authorization", in: :header, type: :string
     get "organization tree" do
       consumes "application/json"
       response "200", "return application tree" do
@@ -49,6 +63,7 @@ describe "Organization API" do
             children: []
           }]
 
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = [
             Entities::Organization.represent(division),
@@ -57,10 +72,110 @@ describe "Organization API" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "401", "unauthorized" do
+        examples "application/json" =>  {
+            "error_code": 601,
+            "errors": "unauthorized"
+          }
+
+        let(:"Authorization") { nil }
+        let(:id) { section.id }
+        run_test! do |response|
+          expected = {
+            error_code: 601,
+            errors: "unauthorized"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+    end
+
+    post "Create an organization" do
+      consumes "application/json"
+      parameter name: :organization, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: { type: :string },
+          manager_id: { type: :integer },
+          level: { type: :integer },
+          parent_id: { type: :integer }
+        },
+        required: [:name, :manager_id, :level]
+      }
+
+      response "201", "created an organization" do
+        examples "application/json" => {
+            id: 3,
+            name: "Group 1",
+            parent_id: 2,
+            manager_id: 4,
+            level: "clan",
+            children: []
+          }
+
+        let(:organization) { { name: "Test Organization",
+                               manager_id: 100,
+                               level: 2,
+                               parent_id: Organization.first.id }
+        }
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        run_test! do |response|
+          expected = Entities::Organization.represent Organization.last
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "validation failed" do
+        examples "application/json" =>  {
+            "error_code": 604,
+            "errors": [{
+              "params": ["name"],
+              "messages": ["is missing", "is empty"]
+            }]
+          }
+
+        let(:organization) { { manager_id: 100, level: 4 } }
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        run_test! do |response|
+          expected = {
+            error_code: 604,
+            errors: [
+              params: [:name],
+              messages: ["is missing", "is empty"]
+            ]
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "unauthorized" do
+        examples "application/json" =>  {
+            "error_code": 601,
+            "errors": "unauthorized"
+          }
+
+        let(:organization) { { name: "Test Organization",
+                               manager_id: 100,
+                               level: 4 }
+        }
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        run_test! do |response|
+          expected = {
+            error_code: 601,
+            errors: "unauthorized"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
   end
 
   path "/api/v1/organizations/{id}" do
+    parameter name: "Authorization", in: :header, type: :string
+    let(:"Authorization") { "Bearer #{admin_token.token}" }
+
     get "Information of an organization" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
@@ -83,7 +198,8 @@ describe "Organization API" do
 
         let(:id) { division2.id }
         run_test! do |response|
-          expected = Entities::Organization.represent division2, only: [:id, :name, :parent_id, :manager_id, :level, :children]
+          expected = Entities::Organization.represent division2,
+            only: [:id, :name, :parent_id, :manager_id, :level, :children]
           expect(response.body).to eq expected.to_json
         end
       end
@@ -96,8 +212,169 @@ describe "Organization API" do
 
         let(:id) { 0 }
         run_test! do |response|
-          expect(response_body["error_code"]).to eq 603
-          expect(response_body["errors"]).to match /Couldn't find Organization/
+          expected = {
+            error_code: 603,
+            errors: "Couldn't find Organization with 'id'=#{id}"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+
+    put "Update an organization" do
+      consumes "application/json"
+      parameter name: :organization, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: {type: :string, description: "Organization name"},
+          manager_id: {type: :integer, description: "Organization manager"},
+          level: {type: :integer, description: "Organization level"},
+          parent_id: {type: :integer, description: "Organization parent"}
+        },
+        required: [:name, :manager_id, :level]
+      }
+      parameter name: :id, in: :path, type: :integer, description: "Organization ID"
+
+      response "200", "updated an organization" do
+        examples "application/json" => {
+            id: 3,
+            name: "Group 1",
+            parent_id: 2,
+            manager_id: 4,
+            level: "clan",
+            children: []
+          }
+
+        let(:organization) { { name: "Test Section",
+                               manager_id: 100,
+                               level: 3,
+                               parent_id: division.id }
+        }
+        let(:id) { section.id }
+        run_test! do |response|
+          expected = Entities::Organization.represent section.reload
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "validation failed" do
+        examples "application/json" =>  {
+            "error_code": 604,
+            "errors": [{
+              "params": ["name"],
+              "messages": ["is missing", "is empty"]
+            }]
+          }
+
+        let(:organization) { { manager_id: 100,
+                               level: 3 }
+        }
+        let(:id) { section.id }
+        run_test! do |response|
+          expected = {
+            error_code: 604,
+            errors: [
+              params: [:name],
+              messages: ["is missing", "is empty"]
+            ]
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "unauthorized" do
+        examples "application/json" =>  {
+            "error_code": 601,
+            "errors": "unauthorized"
+          }
+
+        let(:organization) { { name: "Test Organization",
+                               manager_id: manager.id,
+                               level: 1 }
+        }
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:id) { division2.id }
+        run_test! do |response|
+          expected = {
+            error_code: 601,
+            errors: "unauthorized"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "not found organization" do
+        examples "application/json" => {
+            "error_code": 603,
+            "errors": "Couldn't find Organization with 'id'=100"
+          }
+
+        let(:organization) { { name: "Test Organization",
+                               manager_id: manager.id,
+                               level: :clan,
+                               parent_id: Organization.first.id }
+        }
+        let(:id) { 0 }
+        run_test! do |response|
+          expected = {
+            error_code: 603,
+            errors: "Couldn't find Organization with 'id'=#{id}"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+
+    delete "Deletes an organization" do
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :integer, description: "Organization ID"
+
+      response "200", "deleted an organization" do
+        examples "application/json" =>  true
+
+        let(:id) { division2.id }
+        let!(:other_employee) { FactoryBot.create :employee, organization: division2 }
+        run_test! do |response|
+          expected = { message: "Organization destroyed successfully" }
+          expect(response.body).to eq expected.to_json
+          expect(Organization.count).to eq 1
+          expect(Employee.count).to eq 4
+          expect { division2.reload }.to raise_error ActiveRecord::RecordNotFound
+          expect(other_employee.reload.organization).to be_nil
+        end
+      end
+
+      response "401", "unauthorized" do
+        examples "application/json" =>  {
+            "error_code": 601,
+            "errors": "unauthorized"
+          }
+
+        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let(:id) { section.id }
+        run_test! do |response|
+          expected = {
+            error_code: 601,
+            errors: "unauthorized"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "not found organization" do
+        examples "application/json" => {
+            "error_code": 603,
+            "errors": "Couldn't find Organization with 'id'=100"
+          }
+
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let(:id) { 0 }
+        run_test! do |response|
+          expected = {
+            error_code: 603,
+            errors: "Couldn't find Organization with 'id'=#{id}"
+          }
+          expect(response.body).to eq expected.to_json
         end
       end
     end

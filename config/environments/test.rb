@@ -51,6 +51,7 @@ Rails.application.configure do
     Bullet.bullet_logger = true
     Bullet.raise = true
     # TODO: Fix bullet error UnoptimizedQuery when run rspec
+    Bullet.add_whitelist type: :unused_eager_loading, class_name: Organization.name, association: :children
     Bullet.add_whitelist type: :n_plus_one_query, class_name: Organization.name, association: :children
   end
 end

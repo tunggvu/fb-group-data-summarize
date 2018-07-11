@@ -13,8 +13,10 @@ development:
 test:
   <<: *default
   database: emres_test
-  # username: root
-  # password: ""
+
+staging:
+  <<: *default
+  database: emres_staging
 
 production:
   <<: *default

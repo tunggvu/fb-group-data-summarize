@@ -7,7 +7,7 @@ services:
 
   emres-server:
     image: emres-server
-    command: bundle exec rails server -p 3000 -b "0.0.0.0"
+    command: ./start-server.sh
     deploy:
       resources:
         limits:
@@ -17,19 +17,14 @@ services:
         condition: on-failure
     ports:
       - "3000:3000"
-    volumes:
-      - .:/emres-server
-    networks:
-      - emres-network
     depends_on:
       - postgres
     secrets:
       - rails_secret
     environment:
       - SECRET_KEY_BASE=/run/secrets/rails_secret
-
-networks:
-  emres-network:
+      - RAILS_ENV=staging
+      - RACK_ENV=staging
 
 secrets:
   rails_secret:

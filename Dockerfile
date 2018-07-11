@@ -1,9 +1,6 @@
 FROM ruby:2.5-alpine
 MAINTAINER Nam Chu "chu.hoang.nam@framgia.com"
 
-# Setup arguments
-ARG SECRET_KEY_BASE
-
 # Minimal requirements to run a Rails app
 RUN apk add --no-cache --update build-base tzdata postgresql-dev
 
@@ -18,12 +15,8 @@ RUN bundle install --with production --without development test \
     --retry 3
 
 ENV LANG='en_US.UTF-8'
-ENV RACK_ENV='production'
-ENV RAILS_ENV='production'
 ENV RAILS_LOG_TO_STDOUT='enabled'
 ENV RAILS_SERVE_STATIC_FILES='enabled'
-
-ENV SECRET_KEY_BASE=$SECRET_KEY_BASE
 
 # Copy the application into the container
 COPY . $APP_PATH

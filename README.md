@@ -3,7 +3,7 @@
 # README
 
 Create Data:
-* rake db:seed_fu
+* `rake db:seed_fu`
 
 ## Build Docker Image
 
@@ -13,33 +13,32 @@ Create Data:
 #### Create `application.yml`
 `cp config/application.yml.sample config/application.yml`
 
-**You should update the environment variable inside this file to make `whenever`'s
-job work correctly**
+**You should update the environment variable inside this file to make the
+application run correctly**
 
 #### Build the latest version
 `docker build -t emres-server --rm .`
 
-#### Initialize Docker Swarm
-`docker swarm init`
+### Initialize database and seed data
+`docker-compose run --rm server-1 bundle exec rake db:create`
+`docker-compose run --rm server-1 bundle exec rake db:migrate`
+`docker-compose run --rm server-1 bundle exec rake db:seed_fu`
 
-#### Set SECRET_KEY_BASE
-`rails secret | docker secret create rails_secret -`
+### Start EMRES
+To start `emres-server`, run command `docker-compose up -d`
 
-#### Deploy emres-server with postgres
-`docker stack deploy -c staging.yml emres-server`
+Docker will start 3 instances of `emres-server` and an instance of `haproxy` to
+proxy those 3 instances. And the `haproxy` monitoring service is run on `.:8010`
 
-#### (OPTIONAL) Make emres-server service update order `start-first`
-`docker service update --update-order 'start-first' emres-server_emres-server`
+## Upgrade server
+To upgrade `emres-server` to the latest version, please checkout to the latest
+version on git and run `./upgrade.sh`. 
 
-#### [FIRST BUILD] Seed admin and Infrastructure organization
-`docker container exec -it [emres-server name] sh -c "bundle exec rails db:seed"`
+## Shutdown and Wipe Data
+To shutdown `emres-server`, run `docker-compose down`
 
-## Update emres-server
-#### Re-build the `emres-server` image
-`docker build -t emres-server --rm .`
+All containers for `emres-server` will be shutdown and delete. This action is
+irreversible. **BUT** the data for database will remain untouched.
 
-## Debugging
-Make sure `emres-server` and `postgres` image is up and running.
-
-To see the logs for `emres-server`
-`docker container logs [emres-server name]`
+The database's data and configuration files are stored at `/data/emres-server/`,
+delete that directory will cause data loss for the database

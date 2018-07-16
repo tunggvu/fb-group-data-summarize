@@ -1,0 +1,62 @@
+version: '3.5'
+services:
+  postgres:
+    image: postgres:9.6
+    volumes:
+      - /data/emres-server:/var/lib/postgresql/data
+
+  app-1:
+    image: emres-server
+    command: rails server -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  app-2:
+    image: emres-server
+    command: rails server -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  app-3:
+    image: emres-server
+    command: rails server -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  haproxy:
+    image: haproxy:1.8
+    volumes:
+      - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    depends_on:
+      - app-1
+      - app-2
+      - app-3
+    ports:
+      - "8001:80"
+      - "8010:70"
+
+  bot:
+    image: emres-server
+    command: ./start-bot.sh
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging

@@ -69,8 +69,22 @@
           }
         ],
         "responses": {
+          "401": {
+            "description": "create failure because current user is not manager of organization",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "organization_id": 1,
+                "name": "Employee",
+                "employee_code": "B120000",
+                "email": "employee@framgia.com",
+                "birthday": "1/1/2018",
+                "phone": "0123456789"
+              }
+            }
+          },
           "201": {
-            "description": "create successfully",
+            "description": "create success",
             "examples": {
               "application/json": {
                 "id": 1,

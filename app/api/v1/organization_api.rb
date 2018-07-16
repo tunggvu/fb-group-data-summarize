@@ -39,7 +39,7 @@ class V1::OrganizationAPI < Grape::API
         optional :parent_id, type: Integer
       end
       put do
-        authenticate_admin_or_organization_manager! @org
+        authenticate_admin_or_higher_team_manager_of! @org
         @org.update_attributes! declared(params, include_mising: false).to_h
         present @org, with: Entities::Organization
       end

@@ -13,5 +13,13 @@ FactoryBot.define do
     trait :section do
       level :section
     end
+
+    trait :clan do
+      level :clan
+    end
+
+    trait :team do
+      level :team
+    end
   end
 end

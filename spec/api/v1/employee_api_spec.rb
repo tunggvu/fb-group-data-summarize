@@ -7,6 +7,10 @@ describe "Employee API" do
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
   let!(:other_employee) { FactoryBot.create :employee }
   let(:organization) { FactoryBot.create :organization }
+  let(:group) { FactoryBot.create(:organization, :clan, name: "Group 1") }
+  let(:employee2) { FactoryBot.create :employee, organization: group }
+  let(:employee2_token) { FactoryBot.create :employee_token, employee: employee2 }
+
   path "/api/v1/employees" do
     parameter name: "Authorization", in: :header, type: :string
     let(:"Authorization") { "Bearer #{employee_token.token}" }
@@ -48,7 +52,7 @@ describe "Employee API" do
         }
       }
 
-      response "201", "create successfully" do
+      response "401", "create failure because current user is not manager of organization" do
         let(:params) {
           {
             name: "New employee",
@@ -67,6 +71,38 @@ describe "Employee API" do
           birthday: "1/1/2018",
           phone: "0123456789"
         }
+        run_test! do
+          expected = {
+            error_code: Settings.error_formatter.error_codes.unauthorized,
+            errors: "unauthorized"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "201", "create success" do
+        let(:"Authorization") { "Bearer #{employee2_token.token}" }
+        let(:params) {
+          {
+            name: "New employee",
+            employee_code: "B123456",
+            email: "new_employee@framgia.com",
+            organization_id: group.id,
+            password: "Aa@123456"
+          }
+        }
+        examples "application/json" => {
+          id: 1,
+          organization_id: 1,
+          name: "Employee",
+          employee_code: "B120000",
+          email: "employee@framgia.com",
+          birthday: "1/1/2018",
+          phone: "0123456789"
+        }
+        before do
+          group.update_attributes(manager_id: employee2.id)
+        end
         run_test! do
           expected = Entities::Employee.represent Employee.last
           expect(response.body).to eq expected.to_json
@@ -116,12 +152,13 @@ describe "Employee API" do
       end
 
       response "422", "wrong params" do
+        let(:"Authorization") { "Bearer #{employee2_token.token}" }
         let(:params) {
           {
             name: "New employee",
             employee_code: "B123456",
             email: "email",
-            organization_id: organization.id,
+            organization_id: group.id,
             password: "Aa@123456"
           }
         }
@@ -129,6 +166,9 @@ describe "Employee API" do
           error_code: Settings.error_formatter.error_codes.data_operation,
           errors: "Validation failed: Email is invalid"
         }
+        before do
+          group.update_attributes(manager_id: employee2.id)
+        end
         run_test! do
           expected = {
             error_code: Settings.error_formatter.error_codes.data_operation,
@@ -139,12 +179,13 @@ describe "Employee API" do
       end
 
       response "422", "email has been taken" do
+        let(:"Authorization") { "Bearer #{employee2_token.token}" }
         let(:params) {
           {
             name: "New employee",
             employee_code: "B123456",
             email: employee.email,
-            organization_id: organization.id,
+            organization_id: group.id,
             password: "Aa@123456"
           }
         }
@@ -152,6 +193,9 @@ describe "Employee API" do
           error_code: Settings.error_formatter.error_codes.data_operation,
           errors: "Validation failed: Email has already been taken"
         }
+        before do
+          group.update_attributes(manager_id: employee2.id)
+        end
         run_test! do
           expected = {
             error_code: Settings.error_formatter.error_codes.data_operation,
@@ -211,6 +255,9 @@ describe "Employee API" do
       parameter name: :id, in: :path, type: :integer
 
       response "200", "delete successfully" do
+        let(:"Authorization") { "Bearer #{employee2_token.token}" }
+        let(:employee) { FactoryBot.create :employee, organization: group }
+
         let(:id) { employee.id }
         examples "application/json" => {
           id: 1,
@@ -221,6 +268,9 @@ describe "Employee API" do
           birthday: "1/1/2018",
           phone: "0123456789"
         }
+        before do
+          group.update_attributes(manager_id: employee2.id)
+        end
         run_test! do
           expected = Entities::Employee.represent employee, only: [:id, :organization_id, :name, :employee_code, :email,
             :birthday, :phone]

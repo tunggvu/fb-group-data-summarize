@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+# encoding: utf-8
 namespace :project_feature do
   desc "check_mention"
   task send_message_for_reviewer: :environment do
@@ -14,7 +14,6 @@ namespace :project_feature do
         case message.body
         when /review/i
           message.body =~ /be/i ? send_message(message, "backend") : send_message(message, "frontend")
-          last_message_id = message.message_id
         end
       end
       ProjectChatRoom.first.update(last_message_id: last_message_id)

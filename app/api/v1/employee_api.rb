@@ -21,6 +21,7 @@ class V1::EmployeeAPI < Grape::API
       optional :phone, type: String
     end
     post do
+      authenticate_admin_or_higher_clan_manager_of! Organization.find_by(id: params[:organization_id])
       present Employee.create!(declared(params).to_h), with: Entities::Employee
     end
 
@@ -36,6 +37,7 @@ class V1::EmployeeAPI < Grape::API
 
       desc "Delete employee"
       delete do
+        authenticate_admin_or_higher_clan_manager_of! @employee.organization
         present @employee.destroy, with: Entities::Employee
       end
     end

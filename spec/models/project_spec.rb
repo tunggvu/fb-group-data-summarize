@@ -6,6 +6,7 @@ RSpec.describe Project, type: :model do
   describe "#associations" do
     it { should have_many(:phases) }
     it { should have_many(:sprints) }
+    it { should belong_to(:product_owner) }
   end
 
   describe "#validates" do

@@ -550,6 +550,191 @@
         }
       }
     },
+    "/api/v1/projects": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "All projects",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "return all projects",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "name": "Project 1",
+                  "product_owner": {
+                    "id": 1,
+                    "organization_id": 1,
+                    "name": "Employee",
+                    "employee_code": "B120000",
+                    "email": "employee@framgia.com",
+                    "birthday": "1/1/2018",
+                    "phone": "0123456789"
+                  }
+                },
+                {
+                  "id": 2,
+                  "name": "Project 2",
+                  "product_owner": {
+                    "id": 1,
+                    "organization_id": 1,
+                    "name": "Employee",
+                    "employee_code": "B120000",
+                    "email": "employee@framgia.com",
+                    "birthday": "1/1/2018",
+                    "phone": "0123456789"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Get information of specific project",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return a project",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Project 1",
+                "product_owner": {
+                  "id": 1,
+                  "organization_id": 1,
+                  "name": "Employee",
+                  "employee_code": "B120000",
+                  "email": "employee@framgia.com",
+                  "birthday": "1/1/2018",
+                  "phone": "0123456789"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "project not found",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Project with 'id'=0"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an project",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Project name"
+                },
+                "product_owner_id": {
+                  "type": "integer",
+                  "description": "Product owner"
+                }
+              },
+              "required": [
+                "name",
+                "product_owner_id"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "update a project",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Project 1",
+                "product_owner": {
+                  "id": 1,
+                  "organization_id": 1,
+                  "name": "Employee",
+                  "employee_code": "B120000",
+                  "email": "employee@framgia.com",
+                  "birthday": "1/1/2018",
+                  "phone": "0123456789"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "missing params product owner ",
+            "examples": {
+              "application/json": {
+                "error_code": 604,
+                "errors": [
+                  {
+                    "params": [
+                      "product_owner_id"
+                    ],
+                    "messages": [
+                      "is missing",
+                      "is empty"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/sessions": {
       "post": {
         "summary": "Login API",
@@ -625,18 +810,22 @@
         }
       ],
       "get": {
-        "summary": "Get all skill",
+        "summary": "Get all skills",
         "consumes": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "return all skill",
+            "description": "return all skills",
             "examples": {
               "application/json": [
                 {
                   "name": "Ruby",
                   "level": "Junior"
+                },
+                {
+                  "name": "Ruby",
+                  "level": "Senior"
                 }
               ]
             }

@@ -4,6 +4,7 @@ class Employee < ApplicationRecord
   belongs_to :organization, optional: true
 
   has_many :employee_skills, dependent: :destroy
+  has_many :projects, dependent: :nullify, foreign_key: :product_owner_id
   has_many :employee_roles, dependent: :destroy
   has_many :skills, through: :employee_skills
   has_many :roles, through: :employee_roles

@@ -19,25 +19,35 @@ application run correctly**
 #### Build the latest version
 `docker build -t emres-server --rm .`
 
+To build the latest version for `emres-front`, change directory to `emres-front`
+directory and run command `docker build -t emres-front --rm .`
+
 ### Initialize database and seed data
 `docker-compose run --rm server-1 bundle exec rake db:create`
 `docker-compose run --rm server-1 bundle exec rake db:migrate`
 `docker-compose run --rm server-1 bundle exec rake db:seed_fu`
 
 ### Start EMRES
-To start `emres-server`, run command `docker-compose up -d`
+To start `emres-server` and `emres-front`, run command `docker-compose up -d`
 
-Docker will start 3 instances of `emres-server` and an instance of `haproxy` to
-proxy those 3 instances. And the `haproxy` monitoring service is run on `.:8010`
+Docker will start 4 instances of `emres-server`, 4 instances of `emres-front` 
+and an instance of `haproxy` to proxy those 8 instances. And the `haproxy`
+monitoring service is run on `.:8870`
+
+`emres-front` will run on `.:8880`
+`emres-server` will run on `.:8890`
 
 ## Upgrade server
 To upgrade `emres-server` to the latest version, please checkout to the latest
-version on git and run `./upgrade.sh`. 
+version on git, re-build `emres-server` image and run `./upgrade-server.sh`
+
+The script will take care of rolling out the latest version to `emres-server`
+containers.
 
 ## Shutdown and Wipe Data
-To shutdown `emres-server`, run `docker-compose down`
+To shutdown `emres-server` and `emres-front`, run `docker-compose down`
 
-All containers for `emres-server` will be shutdown and delete. This action is
+All containers for EMRES will be shutdown and delete. This action is
 irreversible. **BUT** the data for database will remain untouched.
 
 The database's data and configuration files are stored at `/data/emres-server/`,

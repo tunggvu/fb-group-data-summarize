@@ -3,7 +3,7 @@
 # README
 
 Create Data:
-* rake db:seed_fu
+* `rake db:seed_fu`
 
 ## Build Docker Image
 
@@ -13,33 +13,42 @@ Create Data:
 #### Create `application.yml`
 `cp config/application.yml.sample config/application.yml`
 
-**You should update the environment variable inside this file to make `whenever`'s
-job work correctly**
+**You should update the environment variable inside this file to make the
+application run correctly**
 
 #### Build the latest version
 `docker build -t emres-server --rm .`
 
-#### Initialize Docker Swarm
-`docker swarm init`
+To build the latest version for `emres-front`, change directory to `emres-front`
+directory and run command `docker build -t emres-front --rm .`
 
-#### Set SECRET_KEY_BASE
-`rails secret | docker secret create rails_secret -`
+### Initialize database and seed data
+`docker-compose run --rm server-1 bundle exec rake db:create`
+`docker-compose run --rm server-1 bundle exec rake db:migrate`
+`docker-compose run --rm server-1 bundle exec rake db:seed_fu`
 
-#### Deploy emres-server with postgres
-`docker stack deploy -c staging.yml emres-server`
+### Start EMRES
+To start `emres-server` and `emres-front`, run command `docker-compose up -d`
 
-#### (OPTIONAL) Make emres-server service update order `start-first`
-`docker service update --update-order 'start-first' emres-server_emres-server`
+Docker will start 4 instances of `emres-server`, 4 instances of `emres-front` 
+and an instance of `haproxy` to proxy those 8 instances. And the `haproxy`
+monitoring service is run on `.:8870`
 
-#### [FIRST BUILD] Seed admin and Infrastructure organization
-`docker container exec -it [emres-server name] sh -c "bundle exec rails db:seed"`
+`emres-front` will run on `.:8880`
+`emres-server` will run on `.:8890`
 
-## Update emres-server
-#### Re-build the `emres-server` image
-`docker build -t emres-server --rm .`
+## Upgrade server
+To upgrade `emres-server` to the latest version, please checkout to the latest
+version on git, re-build `emres-server` image and run `./upgrade-server.sh`
 
-## Debugging
-Make sure `emres-server` and `postgres` image is up and running.
+The script will take care of rolling out the latest version to `emres-server`
+containers.
 
-To see the logs for `emres-server`
-`docker container logs [emres-server name]`
+## Shutdown and Wipe Data
+To shutdown `emres-server` and `emres-front`, run `docker-compose down`
+
+All containers for EMRES will be shutdown and delete. This action is
+irreversible. **BUT** the data for database will remain untouched.
+
+The database's data and configuration files are stored at `/data/emres-server/`,
+delete that directory will cause data loss for the database

@@ -1,0 +1,103 @@
+version: '3.5'
+services:
+  postgres:
+    image: postgres:9.6
+    volumes:
+      - /data/emres-server:/var/lib/postgresql/data
+
+  server-1:
+    image: emres-server
+    command: rails server -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  server-2:
+    image: emres-server
+    command: rails server -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  server-3:
+    image: emres-server
+    command: rails server -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  server-4:
+    image: emres-server
+    command: rails server -p 3000 -b '0.0.0.0'
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  bot:
+    image: emres-server
+    command: ./start-bot.sh
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+    environment:
+      RAILS_ENV: staging
+      RACK_ENV: staging
+
+  front-1:
+    image: emres-front
+    command: nginx -g 'daemon off;'
+    ports:
+      - "80"
+
+  front-2:
+    image: emres-front
+    command: nginx -g 'daemon off;'
+    ports:
+      - "80"
+
+  front-3:
+    image: emres-front
+    command: nginx -g 'daemon off;'
+    ports:
+      - "80"
+
+  front-4:
+    image: emres-front
+    command: nginx -g 'daemon off;'
+    ports:
+      - "80"
+
+  haproxy:
+    image: haproxy:1.8
+    volumes:
+      - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    depends_on:
+      - server-1
+      - server-2
+      - server-3
+      - server-4
+      - front-1
+      - front-2
+      - front-3
+      - front-4
+    ports:
+      - "8870:8870"
+      - "8880:8880"
+      - "8890:8890"

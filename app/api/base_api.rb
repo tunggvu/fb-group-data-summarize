@@ -65,6 +65,12 @@ module BaseAPI
           raise APIError::Unauthorized unless current_user.is_admin? || current_user.send("is_higher_#{role}_manager_of?", org)
         end
       end
+
+      Organization.levels.keys.each do |role|
+        define_method "authenticate_higher_or_equal_#{role}_manager!" do
+          raise APIError::Unauthorized unless current_user.is_admin? || current_user.send("is_higher_or_equal_#{role}_manager!")
+        end
+      end
     end
   end
 end

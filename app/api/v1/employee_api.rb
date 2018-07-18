@@ -21,7 +21,7 @@ class V1::EmployeeAPI < Grape::API
       optional :phone, type: String
     end
     post do
-      authenticate_admin_or_higher_clan_manager_of! Organization.find_by(id: params[:organization_id])
+      authenticate_admin_or_higher_clan_manager_of! Organization.find params[:organization_id]
       present Employee.create!(declared(params).to_h), with: Entities::Employee
     end
 

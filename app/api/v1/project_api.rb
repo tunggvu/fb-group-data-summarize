@@ -6,7 +6,7 @@ class V1::ProjectAPI < Grape::API
 
     desc "Return all projects"
     get do
-      projects = Project.includes(:product_owner)
+      projects = Project.includes(:product_owner, :phases)
       present projects, with: Entities::Project
     end
 

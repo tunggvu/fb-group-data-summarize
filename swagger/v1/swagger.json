@@ -564,6 +564,247 @@
         }
       }
     },
+    "/api/v1/projects/{project_id}/phases": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "project_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "All phases in project",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "404": {
+            "description": "project not found",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Project with 'id'=0"
+              }
+            }
+          },
+          "200": {
+            "description": "return all phases in project",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "name": "Phase 1"
+                },
+                {
+                  "id": 2,
+                  "name": "Phase 2"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new phase",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "manager in other division cannot create phase",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          },
+          "201": {
+            "description": "PO can create phase",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "phase 1"
+              }
+            }
+          },
+          "400": {
+            "description": "empty params",
+            "examples": {
+              "application/json": {
+                "error_code": 604,
+                "errors": [
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "messages": [
+                      "is empty"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{project_id}/phases/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "project_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "specific phase in project",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "404": {
+            "description": "phase not found",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+              }
+            }
+          },
+          "200": {
+            "description": "return specific phase in project",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Phase 1"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "update phase",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "manager in other division cannot update phase",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          },
+          "200": {
+            "description": "PO can update phase",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "phase 3"
+              }
+            }
+          },
+          "400": {
+            "description": "missing params",
+            "examples": {
+              "application/json": {
+                "error_code": 604,
+                "errors": [
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "messages": [
+                      "is missing"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "422": {
+            "description": "empty params",
+            "examples": {
+              "application/json": {
+                "error_code": 600,
+                "errors": "Validation failed: Name can't be blank"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete phase",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "deleted an organization",
+            "examples": {
+              "application/json": {
+                "message": "Delete successfully"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/projects": {
       "parameters": [
         {

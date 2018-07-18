@@ -9,6 +9,7 @@ class V1 < Grape::API
   mount EmployeeAPI
   mount SkillAPI
   mount ProjectAPI
+  mount PhaseAPI
 
   desc "Return the current API version - V1."
   get do

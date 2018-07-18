@@ -71,6 +71,17 @@ module BaseAPI
           raise APIError::Unauthorized unless current_user.is_admin? || current_user.send("is_higher_or_equal_#{role}_manager!")
         end
       end
+
+      # TO_DO
+      # def authenticate_projec_member?(project)
+      # end
+
+      def authorize_project_manager!(project)
+        return if current_user.is_admin?
+        return if current_user == project.product_owner
+        return if current_user.is_manager? project.product_owner.organization
+        raise APIError::Unauthorized
+      end
     end
   end
 end

@@ -612,6 +612,75 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create a project",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Project name"
+                },
+                "product_owner_id": {
+                  "type": "integer",
+                  "description": "Product owner"
+                }
+              },
+              "required": [
+                "name",
+                "product_owner_id"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Create a project",
+            "examples": {
+              "application/json": {
+                "id": 2,
+                "name": "Project 1",
+                "product_owner_id": 2
+              }
+            }
+          },
+          "400": {
+            "description": "missing param name",
+            "examples": {
+              "application/json": {
+                "error_code": 604,
+                "errors": [
+                  {
+                    "params": [
+                      "name"
+                    ],
+                    "messages": [
+                      "is missing",
+                      "is empty"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized create project",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/projects/{id}": {
@@ -739,6 +808,50 @@
           },
           "401": {
             "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete project",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "delete successfully",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Project 1",
+                "product_owner_id": 1
+              }
+            }
+          },
+          "404": {
+            "description": "not found project",
+            "examples": {
+              "application/json": {
+                "error_code": 603,
+                "errors": "Couldn't find project with 'id'=100"
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized delete project",
             "examples": {
               "application/json": {
                 "error_code": 601,

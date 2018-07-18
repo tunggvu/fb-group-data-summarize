@@ -1,8 +1,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: root
-  password: 12345678
+  username: <%= ENV['EMRES_DATABASE_USERNAME'] %>
+  password: <%= ENV['EMRES_DATABASE_PASSWORD'] %>
   port: 5432
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 

@@ -33,6 +33,12 @@ class Employee < ApplicationRecord
     end
   end
 
+  Organization.levels.keys.each do |role|
+    define_method "is_higher_or_equal_#{role}_manager!" do
+      Organization.levels[self.organization.level] >= Organization.levels[role]
+    end
+  end
+
   class << self
     def authenticate!(email, password)
       employee = Employee.find_by email: email

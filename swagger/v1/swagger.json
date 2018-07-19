@@ -755,7 +755,7 @@
             "examples": {
               "application/json": {
                 "id": 1,
-                "name": "phase 3"
+                "name": "phase 4"
               }
             }
           },
@@ -794,8 +794,17 @@
           "application/json"
         ],
         "responses": {
+          "401": {
+            "description": "manager in other division cannot delete phase",
+            "examples": {
+              "application/json": {
+                "error_code": 601,
+                "errors": "unauthorized"
+              }
+            }
+          },
           "200": {
-            "description": "deleted an organization",
+            "description": "deleted a phase",
             "examples": {
               "application/json": {
                 "message": "Delete successfully"
@@ -1103,7 +1112,7 @@
         }
       }
     },
-    "/api/v1/sessions": {
+    "/api/v1/session": {
       "post": {
         "summary": "Login API",
         "consumes": [
@@ -1155,7 +1164,7 @@
           }
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "with valid token",
             "examples": {
               "application/json": {

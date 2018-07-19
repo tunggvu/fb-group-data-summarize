@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class V1::SessionAPI < Grape::API
-  resources :sessions do
+  resources :session do
     desc "Login" do
       detail "Employee use email and password to login.
       Password at least 8 charcters, have 1 number and special character. Email must prefix @framgia"
@@ -20,7 +20,7 @@ class V1::SessionAPI < Grape::API
     delete do
       token = EmployeeToken.find_by token: access_token_header
       token ? token.destroy : raise(APIError::Unauthenticated)
-      status :no_content
+      { message: "You have been logged out" }
     end
   end
 end

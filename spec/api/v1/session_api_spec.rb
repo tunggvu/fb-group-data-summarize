@@ -45,7 +45,6 @@ RSpec.describe "Sessions" do
         let(:params) { FactoryBot.attributes_for(:login_request, password: "Aa@123456777") }
         run_test! do |response|
           expect_http_status :unauthorized
-          expect(error_code).to be error_code_list.wrong_email_password
         end
       end
     end

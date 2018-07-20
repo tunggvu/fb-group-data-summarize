@@ -9,18 +9,6 @@ http_code:
   code_403: 403
 
 error_formatter:
-  error_code_key: "error_code"
-  error_codes:
-    data_operation: 600
-    unauthorized: 601
-    token_expired: 602
-    record_not_found: 603
-    validation_errors: 604
-    wrong_email_password: 605
-    unauthenticated: 606
-    decode_error: 601
-    verification_error: 601
-
   message_key: "message"
   http_code:
     data_operation: 422

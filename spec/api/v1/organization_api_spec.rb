@@ -76,21 +76,24 @@ describe "Organization API" do
 
       response "401", "unauthorized" do
         examples "application/json" =>  {
-            "error_code": 601,
-            "errors": "unauthorized"
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
           }
+        }
 
         let(:"Authorization") { nil }
         let(:id) { section.id }
         run_test! do |response|
           expected = {
-            error_code: 601,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
       end
-
     end
 
     post "Create an organization" do
@@ -116,10 +119,13 @@ describe "Organization API" do
             children: []
           }
 
-        let(:organization) { { name: "Test Organization",
-                               manager_id: 100,
-                               level: 2,
-                               parent_id: Organization.first.id }
+        let(:organization) {
+          {
+             name: "Test Organization",
+             manager_id: 100,
+             level: 2,
+             parent_id: Organization.first.id
+          }
         }
         let(:"Authorization") { "Bearer #{admin_token.token}" }
         run_test! do |response|
@@ -130,22 +136,20 @@ describe "Organization API" do
 
       response "400", "validation failed" do
         examples "application/json" =>  {
-            "error_code": 604,
-            "errors": [{
-              "params": ["name"],
-              "messages": ["is missing", "is empty"]
-            }]
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "name is missing"
           }
+        }
 
         let(:organization) { { manager_id: 100, level: 4 } }
         let(:"Authorization") { "Bearer #{admin_token.token}" }
         run_test! do |response|
           expected = {
-            error_code: 604,
-            errors: [
-              params: [:name],
-              messages: ["is missing", "is empty"]
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is missing"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -153,19 +157,26 @@ describe "Organization API" do
 
       response "401", "unauthorized" do
         examples "application/json" =>  {
-            "error_code": 601,
-            "errors": "unauthorized"
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
           }
+        }
 
-        let(:organization) { { name: "Test Organization",
-                               manager_id: 100,
-                               level: 4 }
+        let(:organization) {
+          {
+            name: "Test Organization",
+             manager_id: 100,
+             level: 4
+          }
         }
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = {
-            error_code: 601,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -207,15 +218,19 @@ describe "Organization API" do
 
       response "404", "returns invalid id error" do
         examples "application/json" => {
-            "error_code": 603,
-            "errors": "Couldn't find Organization with 'id'=100"
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Organization with 'id'=100"
           }
+        }
 
         let(:id) { 0 }
         run_test! do |response|
           expected = {
-            error_code: 603,
-            errors: "Couldn't find Organization with 'id'=#{id}"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Organization with 'id'=#{id}"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -246,10 +261,13 @@ describe "Organization API" do
             children: []
           }
 
-        let(:organization) { { name: "Test Section",
-                               manager_id: 100,
-                               level: 3,
-                               parent_id: division.id }
+        let(:organization) {
+          {
+            name: "Test Section",
+            manager_id: 100,
+            level: 3,
+            parent_id: division.id
+          }
         }
         let(:id) { section.id }
         run_test! do |response|
@@ -260,11 +278,10 @@ describe "Organization API" do
 
       response "400", "validation failed" do
         examples "application/json" =>  {
-            "error_code": 604,
-            "errors": [{
-              "params": ["name"],
-              "messages": ["is missing", "is empty"]
-            }]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is missing"
+            }
           }
 
         let(:organization) { { manager_id: 100,
@@ -273,11 +290,10 @@ describe "Organization API" do
         let(:id) { section.id }
         run_test! do |response|
           expected = {
-            error_code: 604,
-            errors: [
-              params: [:name],
-              messages: ["is missing", "is empty"]
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is missing"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -285,20 +301,27 @@ describe "Organization API" do
 
       response "401", "unauthorized" do
         examples "application/json" =>  {
-            "error_code": 601,
-            "errors": "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
 
-        let(:organization) { { name: "Test Organization",
-                               manager_id: manager.id,
-                               level: 1 }
+        let(:organization) {
+          {
+            name: "Test Organization",
+            manager_id: manager.id,
+            level: 1
+          }
         }
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { division2.id }
         run_test! do |response|
           expected = {
-            error_code: 601,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -306,20 +329,27 @@ describe "Organization API" do
 
       response "404", "not found organization" do
         examples "application/json" => {
-            "error_code": 603,
-            "errors": "Couldn't find Organization with 'id'=100"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Organization with 'id'=100"
+            }
           }
 
-        let(:organization) { { name: "Test Organization",
-                               manager_id: manager.id,
-                               level: :clan,
-                               parent_id: Organization.first.id }
+        let(:organization) {
+          {
+            name: "Test Organization",
+            manager_id: manager.id,
+            level: :clan,
+            parent_id: Organization.first.id
+          }
         }
         let(:id) { 0 }
         run_test! do |response|
           expected = {
-            error_code: 603,
-            errors: "Couldn't find Organization with 'id'=#{id}"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Organization with 'id'=#{id}"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -347,16 +377,20 @@ describe "Organization API" do
 
       response "401", "unauthorized" do
         examples "application/json" =>  {
-            "error_code": 601,
-            "errors": "unauthorized"
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
           }
+        }
 
         let(:"Authorization") { "Bearer #{manager_token.token}" }
         let(:id) { section.id }
         run_test! do |response|
           expected = {
-            error_code: 601,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -364,16 +398,20 @@ describe "Organization API" do
 
       response "404", "not found organization" do
         examples "application/json" => {
-            "error_code": 603,
-            "errors": "Couldn't find Organization with 'id'=100"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Organization with 'id'=100"
+            }
           }
 
         let(:"Authorization") { "Bearer #{admin_token.token}" }
         let(:id) { 0 }
         run_test! do |response|
           expected = {
-            error_code: 603,
-            errors: "Couldn't find Organization with 'id'=#{id}"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Organization with 'id'=#{id}"
+            }
           }
           expect(response.body).to eq expected.to_json
         end

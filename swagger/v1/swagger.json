@@ -34,6 +34,17 @@
                 }
               ]
             }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
           }
         }
       },
@@ -73,13 +84,10 @@
             "description": "create failure because current user is not manager of organization",
             "examples": {
               "application/json": {
-                "id": 1,
-                "organization_id": 1,
-                "name": "Employee",
-                "employee_code": "B120000",
-                "email": "employee@framgia.com",
-                "birthday": "1/1/2018",
-                "phone": "0123456789"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           },
@@ -101,18 +109,10 @@
             "description": "missing params email",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "email"
-                    ],
-                    "messages": [
-                      "is missing",
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "email is missing"
+                }
               }
             }
           },
@@ -120,8 +120,10 @@
             "description": "email has been taken",
             "examples": {
               "application/json": {
-                "error_code": 600,
-                "errors": "Validation failed: Email has already been taken"
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Email has already been taken"
+                }
               }
             }
           }
@@ -168,8 +170,10 @@
             "description": "invalid id",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find Employee with 'id'=0"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Employee with 'id'=0"
+                }
               }
             }
           }
@@ -278,8 +282,10 @@
             "description": "unauthorized",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           }
@@ -338,18 +344,10 @@
             "description": "validation failed",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "name"
-                    ],
-                    "messages": [
-                      "is missing",
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "name is missing"
+                }
               }
             }
           },
@@ -357,8 +355,10 @@
             "description": "unauthorized",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           }
@@ -416,8 +416,10 @@
             "description": "returns invalid id error",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find Organization with 'id'=100"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Organization with 'id'=100"
+                }
               }
             }
           }
@@ -487,18 +489,10 @@
             "description": "validation failed",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "name"
-                    ],
-                    "messages": [
-                      "is missing",
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "name is missing"
+                }
               }
             }
           },
@@ -506,8 +500,10 @@
             "description": "unauthorized",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           },
@@ -515,8 +511,10 @@
             "description": "not found organization",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find Organization with 'id'=100"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Organization with 'id'=100"
+                }
               }
             }
           }
@@ -547,8 +545,10 @@
             "description": "unauthorized",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           },
@@ -556,8 +556,10 @@
             "description": "not found organization",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find Organization with 'id'=100"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Organization with 'id'=100"
+                }
               }
             }
           }
@@ -588,8 +590,10 @@
             "description": "project not found",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find Project with 'id'=0"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Project with 'id'=0"
+                }
               }
             }
           },
@@ -637,8 +641,10 @@
             "description": "manager in other division cannot create phase",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           },
@@ -655,17 +661,10 @@
             "description": "empty params",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "name"
-                    ],
-                    "messages": [
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "name is empty"
+                }
               }
             }
           }
@@ -745,8 +744,10 @@
             "description": "manager in other division cannot update phase",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           },
@@ -763,17 +764,10 @@
             "description": "missing params",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "name"
-                    ],
-                    "messages": [
-                      "is missing"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "name is missing"
+                }
               }
             }
           },
@@ -781,8 +775,10 @@
             "description": "empty params",
             "examples": {
               "application/json": {
-                "error_code": 600,
-                "errors": "Validation failed: Name can't be blank"
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Name can't be blank"
+                }
               }
             }
           }
@@ -798,8 +794,10 @@
             "description": "manager in other division cannot delete phase",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           },
@@ -906,18 +904,10 @@
             "description": "missing param name",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "name"
-                    ],
-                    "messages": [
-                      "is missing",
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "name is missing"
+                }
               }
             }
           },
@@ -925,8 +915,10 @@
             "description": "unauthorized create project",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           }
@@ -977,8 +969,10 @@
             "description": "project not found",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find Project with 'id'=0"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Project with 'id'=0"
+                }
               }
             }
           }
@@ -1041,18 +1035,10 @@
             "description": "missing params product owner ",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "product_owner_id"
-                    ],
-                    "messages": [
-                      "is missing",
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "product_owner_id is missing"
+                }
               }
             }
           },
@@ -1060,8 +1046,10 @@
             "description": "unauthorized",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           }
@@ -1095,8 +1083,10 @@
             "description": "not found project",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find project with 'id'=100"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Project with 'id'=100"
+                }
               }
             }
           },
@@ -1104,8 +1094,10 @@
             "description": "unauthorized delete project",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           }
@@ -1236,8 +1228,10 @@
             "description": "unauthorized admin",
             "examples": {
               "application/json": {
-                "error_code": 601,
-                "errors": "unauthorized"
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           },
@@ -1254,17 +1248,10 @@
             "description": "empty value for params[:name]",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "name"
-                    ],
-                    "messages": [
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "name is empty"
+                }
               }
             }
           }
@@ -1312,8 +1299,10 @@
             "description": "invalid id",
             "examples": {
               "application/json": {
-                "error_code": 603,
-                "errors": "Couldn't find Skill with 'id'=0"
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Skill with 'id'=0"
+                }
               }
             }
           },
@@ -1330,18 +1319,10 @@
             "description": "missing params name",
             "examples": {
               "application/json": {
-                "error_code": 604,
-                "errors": [
-                  {
-                    "params": [
-                      "name"
-                    ],
-                    "messages": [
-                      "is missing",
-                      "is empty"
-                    ]
-                  }
-                ]
+                "error": {
+                  "code": 400,
+                  "message": "name is missing"
+                }
               }
             }
           },
@@ -1349,8 +1330,10 @@
             "description": "empty value for params[:name]",
             "examples": {
               "application/json": {
-                "error_code": 600,
-                "errors": "Validation failed: Name can't be blank"
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Name can't be blank"
+                }
               }
             }
           }

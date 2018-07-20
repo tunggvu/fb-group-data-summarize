@@ -36,6 +36,26 @@ describe "Employee API" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "401", "unauthorized" do
+        let(:"Authorization") { "" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
 
     post "Create employee" do
@@ -63,18 +83,17 @@ describe "Employee API" do
           }
         }
         examples "application/json" => {
-          id: 1,
-          organization_id: 1,
-          name: "Employee",
-          employee_code: "B120000",
-          email: "employee@framgia.com",
-          birthday: "1/1/2018",
-          phone: "0123456789"
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.unauthorized,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -119,33 +138,17 @@ describe "Employee API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.validation_errors,
-          errors: [
-            {
-              params: [
-                "email"
-              ],
-              messages: [
-                "is missing",
-                "is empty"
-              ]
-            }
-          ]
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "email is missing"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.validation_errors,
-            errors: [
-              {
-                params: [
-                  "email"
-                ],
-                messages: [
-                  "is missing",
-                  "is empty"
-                ]
-              }
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "email is missing"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -163,16 +166,20 @@ describe "Employee API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.data_operation,
-          errors: "Validation failed: Email is invalid"
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: "Validation failed: Email is invalid"
+          }
         }
         before do
           group.update_attributes(manager_id: employee2.id)
         end
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.data_operation,
-            errors: "Validation failed: Email is invalid"
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Email is invalid"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -190,16 +197,20 @@ describe "Employee API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.data_operation,
-          errors: "Validation failed: Email has already been taken"
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: "Validation failed: Email has already been taken"
+          }
         }
         before do
           group.update_attributes(manager_id: employee2.id)
         end
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.data_operation,
-            errors: "Validation failed: Email has already been taken"
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Email has already been taken"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -237,13 +248,17 @@ describe "Employee API" do
       response "404", "invalid id" do
         let(:id) { 0 }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.record_not_found,
-          errors: "Couldn't find Employee with 'id'=0"
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Employee with 'id'=0"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.record_not_found,
-            errors: "Couldn't find Employee with 'id'=0"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Employee with 'id'=0"
+            }
           }
           expect(response.body).to eq expected.to_json
         end

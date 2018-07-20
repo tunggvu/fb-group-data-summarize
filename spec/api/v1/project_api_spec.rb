@@ -18,8 +18,7 @@ describe "Project API" do
       consumes "application/json"
 
       response "200", "return all projects" do
-        examples "application/json" =>
-        [
+        examples "application/json" => [
           {
             id: 1,
             name: "Project 1",
@@ -86,12 +85,11 @@ describe "Project API" do
       end
 
       response "400", "missing param name" do
-        examples "application/json" =>  {
-          "error_code": 604,
-          "errors": [{
-            "params": ["name"],
-            "messages": ["is missing", "is empty"]
-          }]
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "name is missing"
+          }
         }
 
         let(:params) {
@@ -99,11 +97,10 @@ describe "Project API" do
         }
         run_test! do |response|
           expected = {
-            error_code: 604,
-            errors: [
-              params: [:name],
-              messages: ["is missing", "is empty"]
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is missing"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -112,16 +109,20 @@ describe "Project API" do
       response "401", "unauthorized create project" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         examples "application/json" => {
-          "error_code": 601,
-          "errors": "unauthorized"
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
         }
         let(:params) {
           { name: "Test Project", product_owner_id: employee.id }
         }
         run_test! do |response|
           expected = {
-            error_code: 601,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -159,15 +160,19 @@ describe "Project API" do
       end
       response "404", "project not found" do
         examples "application/json" => {
-          "error_code": 603,
-          "errors": "Couldn't find Project with 'id'=0"
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Project with 'id'=0"
+          }
         }
 
         let(:id) { 0 }
         run_test! do |response|
           expected = {
-            error_code: 603,
-            errors: "Couldn't find Project with 'id'=#{id}"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Project with 'id'=#{id}"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -188,8 +193,7 @@ describe "Project API" do
 
       response "200", "update a project" do
         let(:id) { project.id }
-        examples "application/json" =>
-        {
+        examples "application/json" => {
           id: 1,
           name: "Project 1",
           product_owner: {
@@ -216,23 +220,20 @@ describe "Project API" do
 
       response "400", "missing params product owner " do
         let(:id) { project.id }
-        examples "application/json" =>
-        {
-          "error_code": 604,
-          "errors": [{
-            "params": ["product_owner_id"],
-            "messages": ["is missing", "is empty"]
-          }]
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "product_owner_id is missing"
+          }
         }
 
         let(:params) { { name: "Test Project" } }
         run_test! do |response|
           expected = {
-            error_code: 604,
-            errors: [
-              params: [:product_owner_id],
-              messages: ["is missing", "is empty"]
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "product_owner_id is missing"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -241,10 +242,11 @@ describe "Project API" do
       response "401", "unauthorized" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { project.id }
-        examples "application/json" =>
-        {
-          "error_code": 601,
-          "errors": "unauthorized"
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
         }
 
         let(:params) {
@@ -252,8 +254,10 @@ describe "Project API" do
         }
         run_test! do |response|
           expected = {
-            error_code: 601,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -281,14 +285,18 @@ describe "Project API" do
 
       response "404", "not found project" do
         examples "application/json" => {
-          "error_code": 603,
-          "errors": "Couldn't find project with 'id'=100"
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Project with 'id'=100"
+          }
         }
         let(:id) { 0 }
         run_test! do |response|
           expected = {
-            error_code: 603,
-            errors: "Couldn't find Project with 'id'=#{id}"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Project with 'id'=#{id}"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -298,13 +306,17 @@ describe "Project API" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { project.id }
         examples "application/json" => {
-          "error_code": 601,
-          "errors": "unauthorized"
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
         }
         run_test! do |response|
           expected = {
-            error_code: 601,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end

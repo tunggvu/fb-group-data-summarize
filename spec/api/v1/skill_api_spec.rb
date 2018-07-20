@@ -56,13 +56,17 @@ describe "Skill API" do
         }
 
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.unauthorized,
-          errors: "unauthorized"
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.unauthorized,
-            errors: "unauthorized"
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -93,33 +97,17 @@ describe "Skill API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.validation_errors,
-          errors: [
-            {
-              params: [
-                "name"
-              ],
-              messages: [
-                "is missing",
-                "is empty"
-              ]
-            }
-          ]
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "name is missing"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.validation_errors,
-            errors: [
-              {
-                params: [
-                  "name"
-                ],
-                messages: [
-                  "is missing",
-                  "is empty"
-                ]
-              }
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is missing"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -133,31 +121,17 @@ describe "Skill API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.validation_errors,
-          errors: [
-            {
-              params: [
-                "name"
-              ],
-              messages: [
-                "is empty"
-              ]
-            }
-          ]
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "name is empty"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.validation_errors,
-            errors: [
-              {
-                params: [
-                  "name"
-                ],
-                messages: [
-                  "is empty"
-                ]
-              }
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is empty"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -190,13 +164,17 @@ describe "Skill API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.record_not_found,
-          errors: "Couldn't find Skill with 'id'=0"
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Skill with 'id'=0"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.record_not_found,
-            errors: "Couldn't find Skill with 'id'=0"
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Skill with 'id'=0"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -229,32 +207,17 @@ describe "Skill API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.validation_errors,
-          errors: [
-            {
-              params: [
-                "name"
-              ],
-              messages: [
-                "is missing",
-                "is empty"
-              ]
-            }
-          ]
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "name is missing"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.validation_errors,
-            errors: [
-              {
-                params: [
-                  "name"
-                ],
-                messages: [
-                  "is missing"
-                ]
-              }
-            ]
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is missing"
+            }
           }
           expect(response.body).to eq expected.to_json
         end
@@ -269,13 +232,17 @@ describe "Skill API" do
           }
         }
         examples "application/json" => {
-          error_code: Settings.error_formatter.error_codes.data_operation,
-          errors: "Validation failed: Name can't be blank"
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: "Validation failed: Name can't be blank"
+          }
         }
         run_test! do
           expected = {
-            error_code: Settings.error_formatter.error_codes.data_operation,
-            errors: "Validation failed: Name can't be blank"
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Name can't be blank"
+            }
           }
           expect(response.body).to eq expected.to_json
         end

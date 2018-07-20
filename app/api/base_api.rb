@@ -9,27 +9,27 @@ module BaseAPI
     default_format :json
 
     rescue_from Grape::Exceptions::ValidationErrors, ActiveRecord::RecordNotUnique do |e|
-      message = { error_code: Settings.error_formatter.error_codes.validation_errors, errors: e.as_json }
+      message = { error: { code: Settings.error_formatter.http_code.validation_errors,
+        message: e.full_messages[0].to_s } }
       error! message, Settings.error_formatter.http_code.validation_errors
     end
 
     rescue_from APIError::Base, JWT::VerificationError, JWT::DecodeError do |e|
       error_key = e.class.name.split("::").drop(1).map(&:underscore).first
-      error_code = Settings.error_formatter.error_codes.public_send error_key
       http_code = Settings.error_formatter.http_code.public_send error_key
       error_content = I18n.t("api_error.unauthorized") if [JWT::VerificationError, JWT::DecodeError].include?(e.class)
-      message = { error_code: error_code, errors: (error_content ? error_content : error_key.gsub("_", " ")) }
+      message = { error: { code: http_code, message: (error_content ? error_content : error_key.gsub("_", " ")) } }
       error! message, http_code
     end
 
     rescue_from ActiveRecord::UnknownAttributeError, ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid,
       JSON::ParserError do |e|
-      message = { error_code: Settings.error_formatter.error_codes.data_operation, errors: e.as_json }
+      message = { error: { code: Settings.error_formatter.http_code.data_operation, message: e.as_json } }
       error! message, Settings.error_formatter.http_code.data_operation
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
-      message = { error_code: Settings.error_formatter.error_codes.record_not_found, errors: e.as_json }
+      message = { error: { code: Settings.error_formatter.http_code.record_not_found, message: e.as_json } }
       error! message, Settings.error_formatter.http_code.record_not_found
     end
 

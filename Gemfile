@@ -57,6 +57,7 @@ group :development do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "ancestry", "~> 3.0.2"
 gem "api-pagination", "~> 4.8.1"
 gem "bullet"
 gem "config"

@@ -1,57 +1,27 @@
 # frozen_string_literal: true
 
-Employee.seed do |e|
-  e.id = 1
-  e.name = "Admin"
-  e.email = "admin@framgia.com"
-  e.employee_code = "B120000"
-  e.password = "Aa@123456"
-  e.organization_id = 1
-  e.is_admin = true
-end
-
-Employee.seed do |e|
-  e.id = 2
-  e.name = "Vu Xuan Dung"
-  e.email = "vu.xuan.dung@framgia.com"
-  e.employee_code = "B120001"
-  e.password = "Aa@123456"
-  e.organization_id = 1
-end
-
-Employee.seed do |e|
-  e.id = 3
-  e.name = "Tran Van Tan"
-  e.email = "tran.van.tan@framgia.com"
-  e.employee_code = "B120002"
-  e.password = "Aa@123456"
-  e.organization_id = 2
-end
-
-Employee.seed do |e|
-  e.id = 4
-  e.name = "Tran Ngoc Thang"
-  e.email = "tran.ngoc.thang@framgia.com"
-  e.employee_code = "B120003"
-  e.password = "Aa@123456"
-  e.organization_id = 3
-end
-
-Employee.seed do |e|
-  e.id = 5
-  e.name = "Tran Thai Hoc"
-  e.email = "tran.thai.hoc@framgia.com"
-  e.employee_code = "B120004"
-  e.password = "Aa@123456"
-  e.organization_id = 4
-end
-
-10.times do |n|
+n = 0
+# Seed manager for organizations
+Organization.all.each do |org|
   Employee.seed do |e|
-    e.name = "Employee #{n+1}"
-    e.email = "employee#{n+1}@framgia.com"
-    e.employee_code = "B12100#{n}"
+    e.id = org.id
+    e.name = Faker::Name.name
+    e.email = "#{e.to_hash["name"].gsub(" ", ".").downcase}@framgia.com"
+    e.employee_code = "B1210#{(n += 1).to_s.rjust(3, "0")}"
     e.password = "Aa@123456"
-    e.organization = Organization.last
+    e.organization = org
+    org.update_attributes manager_id: e.to_hash["id"]
+  end
+end
+
+Organization.team.each do |org|
+  5.times do
+    Employee.seed do |e|
+      e.name = Faker::Name.name
+      e.email = "#{e.to_hash["name"].gsub(" ", ".").downcase}@framgia.com"
+      e.employee_code = "B1210#{(n += 1).to_s.rjust(3, "0")}"
+      e.password = "Aa@123456"
+      e.organization = org
+    end
   end
 end

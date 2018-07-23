@@ -6,8 +6,7 @@ class V1::OrganizationAPI < Grape::API
 
     desc "Returns all organizations"
     get do
-      present Organization.includes(:children).top_organization,
-        with: Entities::Organization
+      present Organization.roots, with: Entities::Organization
     end
 
     desc "Creates an organization"
@@ -24,7 +23,7 @@ class V1::OrganizationAPI < Grape::API
     end
 
     route_param :id do
-      before { @org = Organization.includes(:children).find params[:id] }
+      before { @org = Organization.find params[:id] }
 
       desc "Returns an organization"
       get do

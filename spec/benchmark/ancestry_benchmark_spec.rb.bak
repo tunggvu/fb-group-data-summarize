@@ -1,0 +1,108 @@
+require "benchmark"
+require "rails_helper"
+
+describe "Benchmark 2000 Organizations" do
+  before do
+    10.times do |i|
+      FactoryBot.create :organization, level: :division
+
+      10.times do |j|
+        FactoryBot.create :organization, level: :section, parent_id: Organization.division.last.id
+
+        20.times do
+          FactoryBot.create :organization, level: :clan, parent_id: Organization.section.last.id
+        end
+      end
+    end
+  end
+
+  it "returns organization tree" do
+    puts "#############################################################"
+    divisions = Organization.division
+    100.times do |i|
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { Entities::Organization.represent(divisions) }
+    end
+  end
+
+  it "returns an employee's organization tree (from root to employee's organization)" do
+    puts "#############################################################"
+    employee = FactoryBot.create :employee
+    employee.update_attributes organization: Organization.team.sample
+    100.times do |i|
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { employee.reload.organization.ancestors }
+    end
+  end
+
+  it "returns division from a group" do
+    puts "#############################################################"
+    100.times do |i|
+      group = Organization.clan.sample
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { group.reload.ancestors.detect(&:division?) }
+    end
+  end
+
+  it "return all employees from a division" do
+    puts "#############################################################"
+    100.times do |i|
+      division = Organization.division.sample
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { division.descendants.includes(:employees).map(&:employees).flatten }
+    end
+  end
+end
+
+describe "Benchmark 20000 Organizations" do
+  before :all do
+    100.times do |i|
+      FactoryBot.create :organization, level: :division
+
+      10.times do |j|
+        FactoryBot.create :organization, level: :section, parent_id: Organization.division.last.id
+
+        20.times do
+          FactoryBot.create :organization, level: :clan, parent_id: Organization.section.last.id
+        end
+      end
+    end
+  end
+
+  it "returns organization tree" do
+    puts "#############################################################"
+    divisions = Organization.division
+    100.times do |i|
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { Entities::Organization.represent(divisions) }
+    end
+  end
+
+  it "returns an employee's organization tree (from root to employee's organization)" do
+    puts "#############################################################"
+    employee = FactoryBot.create :employee
+    employee.update_attributes organization: Organization.team.sample
+    100.times do |i|
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { employee.reload.organization.ancestors }
+    end
+  end
+
+  it "returns division from a group" do
+    puts "#############################################################"
+    100.times do |i|
+      group = Organization.clan.sample
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { group.reload.ancestors.detect(&:division?) }
+    end
+  end
+
+  it "return all employees from a division" do
+    puts "#############################################################"
+    100.times do |i|
+      division = Organization.division.sample
+      print "Test Number #{i.to_s.rjust(2, "0")}: "
+      puts Benchmark.realtime { division.descendants.includes(:employees).map(&:employees).flatten }
+    end
+  end
+end

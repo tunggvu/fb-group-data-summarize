@@ -16,6 +16,9 @@ Create Data:
 **You should update the environment variable inside this file to make the
 application run correctly**
 
+#### Build `haproxy-socat` image
+To build `haproxy-socat`, run `docker build -t haproxy-socat -f haproxy/haproxy_Dockerfile .`
+
 #### Build the latest version
 `docker build -t emres-server --rm .`
 
@@ -24,7 +27,9 @@ directory and run command `docker build -t emres-front --rm .`
 
 ### Initialize database and seed data
 `docker-compose run --rm server-1 bundle exec rake db:create`
+
 `docker-compose run --rm server-1 bundle exec rake db:migrate`
+
 `docker-compose run --rm server-1 bundle exec rake db:seed_fu`
 
 ### Start EMRES
@@ -35,6 +40,7 @@ and an instance of `haproxy` to proxy those 8 instances. And the `haproxy`
 monitoring service is run on `.:8870`
 
 `emres-front` will run on `.:8880`
+
 `emres-server` will run on `.:8890`
 
 ## Upgrade server

@@ -2,6 +2,7 @@ version: '3.5'
 services:
   postgres:
     image: postgres:9.6
+    restart: always
     volumes:
       - /data/emres-server:/var/lib/postgresql/data
 
@@ -12,6 +13,7 @@ services:
       - "3000"
     depends_on:
       - postgres
+    restart: unless-stopped
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -23,6 +25,7 @@ services:
       - "3000"
     depends_on:
       - postgres
+    restart: unless-stopped
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -34,6 +37,7 @@ services:
       - "3000"
     depends_on:
       - postgres
+    restart: unless-stopped
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -45,6 +49,7 @@ services:
       - "3000"
     depends_on:
       - postgres
+    restart: unless-stopped
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -63,31 +68,36 @@ services:
   front-1:
     image: emres-front
     command: nginx -g 'daemon off;'
+    restart: unless-stopped
     ports:
       - "80"
 
   front-2:
     image: emres-front
     command: nginx -g 'daemon off;'
+    restart: unless-stopped
     ports:
       - "80"
 
   front-3:
     image: emres-front
     command: nginx -g 'daemon off;'
+    restart: unless-stopped
     ports:
       - "80"
 
   front-4:
     image: emres-front
     command: nginx -g 'daemon off;'
+    restart: unless-stopped
     ports:
       - "80"
 
   haproxy:
-    image: haproxy:1.8
+    image: haproxy-socat
     volumes:
-      - "./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+      - "./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+      - "./haproxy/haproxy_set_server.sh:/bin/haproxy_set_server"
     depends_on:
       - server-1
       - server-2
@@ -101,3 +111,4 @@ services:
       - "8870:8870"
       - "8880:8880"
       - "8890:8890"
+    restart: always

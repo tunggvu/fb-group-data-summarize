@@ -1,0 +1,4 @@
+# Add socat package to haproxy for better proxy management
+# Run `docker build -t haproxy-socat -f haproxy_Dockerfile .`
+FROM haproxy:1.8-alpine
+RUN apk add --no-cache socat

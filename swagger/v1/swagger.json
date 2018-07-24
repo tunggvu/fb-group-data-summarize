@@ -1104,6 +1104,302 @@
         }
       }
     },
+    "/api/v1/phases/{phase_id}/requirements": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "phase_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "All requirement in phases of project",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "404": {
+            "description": "Phase not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Phase with 'id'=0"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "return all requirement in phase",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "skill_name": "Ruby",
+                  "phase_id": 3,
+                  "skill_level": "Junior",
+                  "quantity": 10
+                },
+                {
+                  "id": 2,
+                  "skill_name": "Ruby",
+                  "skill_level": "Senior",
+                  "phase_id": 2,
+                  "quantity": 5
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "Unauthorize token",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create new requirement",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "skill_id": {
+                  "type": "integer"
+                },
+                "phase_id": {
+                  "type": "integer"
+                },
+                "quantity": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "skill_id",
+                "phase_id",
+                "quantity"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "manager in other division cannot create requirement",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "PO can create requirement",
+            "examples": {
+              "application/json": {
+                "skill_id": 1,
+                "phase_id": 1,
+                "skill_name": "Ruby",
+                "skill_level": "Junior",
+                "quantity": 5
+              }
+            }
+          },
+          "400": {
+            "description": "empty params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "skill_id is empty"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/phases/{phase_id}/requirements/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "phase_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "specific requirement in phase",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "404": {
+            "description": "requirement not found",
+            "examples": {
+              "application/json": {
+                "error_code": 404,
+                "errors": "Couldn't find Requirement with 'id'=0 [WHERE \"requirements\".\"phase_id\" = $1]"
+              }
+            }
+          },
+          "200": {
+            "description": "return specific requirement in phase",
+            "examples": {
+              "application/json": {
+                "skill_id": 1,
+                "phase_id": 1,
+                "skill_name": "Ruby",
+                "skill_level": "Junior",
+                "quantity": 5
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorize token",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "update requirement",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "skill_id": {
+                  "type": "integer"
+                },
+                "quantity": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "phase_id",
+                "skill_id",
+                "quantity"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "manager in other division cannot update requirement",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "PO can update phase",
+            "examples": {
+              "application/json": {
+                "skill_id": 1,
+                "phase_id": 1,
+                "skill_name": "Ruby",
+                "skill_level": "Junior",
+                "quantity": 5
+              }
+            }
+          },
+          "400": {
+            "description": "missing params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "skill_id is missing"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "empty params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Skill must exist"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete requirement",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "description": "manager in other division cannot delete requirement",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "PO can deleted a requirement",
+            "examples": {
+              "application/json": {
+                "message": "Delete successfully"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/session": {
       "post": {
         "summary": "Login API",

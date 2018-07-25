@@ -11,6 +11,7 @@ class V1 < Grape::API
   mount ProjectAPI
   mount PhaseAPI
   mount RequirementAPI
+  mount SprintAPI
 
   desc "Return the current API version - V1."
   get do

@@ -2,6 +2,7 @@
 
 class API < Grape::API
   include BaseAPI
+  include ApiHelpers
 
   mount API::V1
 end

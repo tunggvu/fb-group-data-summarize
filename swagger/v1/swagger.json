@@ -1660,6 +1660,221 @@
           }
         }
       }
+    },
+    "/api/v1/projects/{project_id}/phases/{phase_id}/sprints": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "project_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "phase_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "All sprint in phase",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "404": {
+            "description": "phase not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "return all sprint",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "name": "sprint 1",
+                  "starts_on": "2018-07-19T14:00:00.000Z",
+                  "ends_on": "2018-07-20T14:00:00.000Z"
+                },
+                {
+                  "id": 2,
+                  "name": "sprint 2",
+                  "starts_on": "2018-07-19T14:00:00.000Z",
+                  "ends_on": "2018-07-20T14:00:00.000Z"
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "not login",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/{project_id}/phases/{phase_id}/sprints/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "project_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "phase_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "get information specific sprint",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "404": {
+            "description": "sprint not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Sprint with 'id'=0"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "return specific sprint",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "sprint 1",
+                "starts_on": "2018-07-19T14:00:00.000Z",
+                "ends_on": "2018-07-20T14:00:00.000Z"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "update sprint",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "start_time": {
+                  "type": "datetime"
+                },
+                "end_time": {
+                  "type": "datetime"
+                }
+              },
+              "required": [
+                "name",
+                "start_time",
+                "end_time"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "sprint not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Sprint with 'id'=0"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "not login",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "PO can update sprint",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "sprint 3",
+                "starts_on": "2018-07-19T14:00:00.000Z",
+                "ends_on": "2018-07-20T14:00:00.000Z"
+              }
+            }
+          },
+          "400": {
+            "description": "empty params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "name is empty"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "start time before end time",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: End time must be after the start time"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

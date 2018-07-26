@@ -275,20 +275,13 @@ describe "Employee API" do
 
         let(:id) { employee.id }
         examples "application/json" => {
-          id: 1,
-          organization_id: 1,
-          name: "Employee",
-          employee_code: "B120000",
-          email: "employee@framgia.com",
-          birthday: "1/1/2018",
-          phone: "0123456789"
+          message: "Delete successfully"
         }
         before do
           group.update_attributes(manager_id: employee2.id)
         end
         run_test! do
-          expected = Entities::Employee.represent employee, only: [:id, :organization_id, :name, :employee_code, :email,
-            :birthday, :phone]
+          expected = { message: "Delete successfully" }
           expect(response.body).to eq expected.to_json
         end
       end

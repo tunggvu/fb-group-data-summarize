@@ -6,7 +6,7 @@ class V1::OrganizationAPI < Grape::API
 
     desc "Returns all organizations"
     get do
-      present Organization.roots, with: Entities::Organization
+      present Organization.roots, with: Entities::BaseOrganization
     end
 
     desc "Creates an organization"
@@ -19,7 +19,7 @@ class V1::OrganizationAPI < Grape::API
     post do
       authenticate_admin!
       present Organization.create!(declared(params).to_h),
-        with: Entities::Organization
+        with: Entities::BaseOrganization
     end
 
     route_param :id do
@@ -37,17 +37,17 @@ class V1::OrganizationAPI < Grape::API
         requires :level, type: Integer, allow_blank: false
         optional :parent_id, type: Integer
       end
-      put do
+      patch do
         authenticate_admin_or_higher_team_manager_of! @org
         @org.update_attributes! declared(params, include_mising: false).to_h
-        present @org, with: Entities::Organization
+        present @org, with: Entities::BaseOrganization
       end
 
       desc "Deletes an organization"
       delete do
         authenticate_admin!
         @org.destroy!
-        { message: "Organization destroyed successfully" }
+        { message: "Delete successfully" }
       end
     end
   end

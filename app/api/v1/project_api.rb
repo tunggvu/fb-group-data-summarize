@@ -36,7 +36,7 @@ class V1::ProjectAPI < Grape::API
         requires :name, type: String, allow_blank: false
         requires :product_owner_id, type: Integer, allow_blank: false
       end
-      put do
+      patch do
         authenticate_admin_or_higher_clan_manager_of! @project.product_owner.organization
         @project.update_attributes! declared(params, include_missing: false)
         present @project, with: Entities::Project
@@ -46,7 +46,7 @@ class V1::ProjectAPI < Grape::API
       delete do
         authenticate_admin_or_higher_clan_manager_of! @project.product_owner.organization
         @project.destroy!
-        { message: "Project destroyed successfully" }
+        { message: "Delete successfully" }
       end
     end
   end

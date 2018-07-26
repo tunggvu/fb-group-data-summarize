@@ -179,7 +179,7 @@ describe "Project API" do
       end
     end
 
-    put "Update an project" do
+    patch "Update an project" do
       consumes "application/json"
       parameter name: :params, in: :body, schema: {
         type: :object,
@@ -271,13 +271,11 @@ describe "Project API" do
       response "200", "delete successfully" do
         let(:id) { project.id }
         examples "application/json" => {
-          id: 1,
-          name: "Project 1",
-          product_owner_id: 1
+          message: "Delete successfully"
         }
         run_test! do
           expected = {
-            "message": "Project destroyed successfully"
+            message: "Delete successfully"
           }
           expect(response.body).to eq expected.to_json
         end

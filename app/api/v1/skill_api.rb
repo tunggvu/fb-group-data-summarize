@@ -28,14 +28,15 @@ class V1::SkillAPI < Grape::API
         requires :name, type: String
         requires :level, type: String
       end
-      put do
+      patch do
         @skill.update_attributes! declared(params).to_h
         present @skill, with: Entities::Skill
       end
 
       desc "Delete skill"
       delete do
-        present @skill.destroy, with: Entities::Skill
+        @skill.destroy!
+        { message: "Delete successfully" }
       end
     end
   end

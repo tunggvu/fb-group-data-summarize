@@ -67,8 +67,8 @@ describe "Organization API" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = [
-            Entities::Organization.represent(division),
-            Entities::Organization.represent(division2)
+            Entities::BaseOrganization.represent(division),
+            Entities::BaseOrganization.represent(division2)
           ]
           expect(response.body).to eq expected.to_json
         end
@@ -122,14 +122,14 @@ describe "Organization API" do
         let(:organization) {
           {
              name: "Test Organization",
-             manager_id: 100,
+             manager_id: manager.id,
              level: 2,
              parent_id: Organization.first.id
           }
         }
         let(:"Authorization") { "Bearer #{admin_token.token}" }
         run_test! do |response|
-          expected = Entities::Organization.represent Organization.last
+          expected = Entities::BaseOrganization.represent Organization.last
           expect(response.body).to eq expected.to_json
         end
       end
@@ -210,8 +210,7 @@ describe "Organization API" do
 
         let(:id) { division2.id }
         run_test! do |response|
-          expected = Entities::Organization.represent division2,
-            only: [:id, :name, :parent_id, :manager_id, :level, :children]
+          expected = Entities::Organization.represent division2
           expect(response.body).to eq expected.to_json
         end
       end
@@ -237,7 +236,7 @@ describe "Organization API" do
       end
     end
 
-    put "Update an organization" do
+    patch "Update an organization" do
       consumes "application/json"
       parameter name: :organization, in: :body, schema: {
         type: :object,
@@ -264,14 +263,14 @@ describe "Organization API" do
         let(:organization) {
           {
             name: "Test Section",
-            manager_id: 100,
+            manager_id: employee.id,
             level: 3,
             parent_id: division.id
           }
         }
         let(:id) { section.id }
         run_test! do |response|
-          expected = Entities::Organization.represent section.reload
+          expected = Entities::BaseOrganization.represent section.reload
           expect(response.body).to eq expected.to_json
         end
       end
@@ -361,12 +360,14 @@ describe "Organization API" do
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
       response "200", "deleted an organization" do
-        examples "application/json" =>  true
+        examples "application/json" =>  {
+          message: "Delete successfully"
+        }
 
         let(:id) { division2.id }
         let!(:other_employee) { FactoryBot.create :employee, organization: division2 }
         run_test! do |response|
-          expected = { message: "Organization destroyed successfully" }
+          expected = { message: "Delete successfully" }
           expect(response.body).to eq expected.to_json
           expect(Organization.count).to eq 1
           expect(Employee.count).to eq 4

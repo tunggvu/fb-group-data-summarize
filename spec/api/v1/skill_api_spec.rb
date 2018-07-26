@@ -85,7 +85,7 @@ describe "Skill API" do
           level: "Senior"
         }
         run_test! do
-          expected = Entities::Skill.represent Skill.last, only: [:name, :level]
+          expected = Entities::Skill.represent Skill.last, only: [:id, :name, :level]
           expect(response.body).to eq expected.to_json
         end
       end
@@ -143,7 +143,7 @@ describe "Skill API" do
     parameter name: "Authorization", in: :header, type: :string
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
-    put "Update skill" do
+    patch "Update skill" do
       consumes "application/json"
 
       parameter name: :id, in: :path, type: :integer
@@ -194,7 +194,7 @@ describe "Skill API" do
           level: "Senior"
         }
         run_test! do
-          expected = Entities::Skill.represent skill.reload, only: [:name, :level]
+          expected = Entities::Skill.represent skill.reload, only: [:id, :name, :level]
           expect(response.body).to eq expected.to_json
         end
       end
@@ -256,11 +256,10 @@ describe "Skill API" do
       response "200", "delete successfully" do
         let(:id) { skill.id }
         examples "application/json" => {
-          name: "Ruby on Rails",
-          level: "Junior"
+          message: "Delete successfully"
         }
         run_test! do
-          expected = Entities::Skill.represent skill, only: [:name, :level]
+          expected = { message: "Delete successfully" }
           expect(response.body).to eq expected.to_json
           expect { skill.reload }.to raise_error ActiveRecord::RecordNotFound
         end

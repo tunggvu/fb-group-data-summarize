@@ -43,7 +43,7 @@ class V1::PhaseAPI < Grape::API
           desc "delete a phase"
           delete do
             authorize_project_manager! @project
-            @phase.destroy
+            @phase.destroy!
             { message: "Delete successfully" }
           end
         end

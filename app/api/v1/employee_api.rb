@@ -38,7 +38,8 @@ class V1::EmployeeAPI < Grape::API
       desc "Delete employee"
       delete do
         authenticate_admin_or_higher_clan_manager_of! @employee.organization
-        present @employee.destroy, with: Entities::Employee
+        @employee.destroy!
+        { message: "Delete successfully" }
       end
     end
   end

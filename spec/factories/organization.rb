@@ -4,7 +4,6 @@ FactoryBot.define do
   factory :organization do
     name { Faker::Name.name }
     level :team
-    manager_id 10
 
     trait :division do
       level :division

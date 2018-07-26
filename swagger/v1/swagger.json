@@ -197,13 +197,7 @@
             "description": "delete successfully",
             "examples": {
               "application/json": {
-                "id": 1,
-                "organization_id": 1,
-                "name": "Employee",
-                "employee_code": "B120000",
-                "email": "employee@framgia.com",
-                "birthday": "1/1/2018",
-                "phone": "0123456789"
+                "message": "Delete successfully"
               }
             }
           }
@@ -425,7 +419,7 @@
           }
         }
       },
-      "put": {
+      "patch": {
         "summary": "Update an organization",
         "consumes": [
           "application/json"
@@ -538,7 +532,9 @@
           "200": {
             "description": "deleted an organization",
             "examples": {
-              "application/json": true
+              "application/json": {
+                "message": "Delete successfully"
+              }
             }
           },
           "401": {
@@ -978,7 +974,7 @@
           }
         }
       },
-      "put": {
+      "patch": {
         "summary": "Update an project",
         "consumes": [
           "application/json"
@@ -1073,9 +1069,7 @@
             "description": "delete successfully",
             "examples": {
               "application/json": {
-                "id": 1,
-                "name": "Project 1",
-                "product_owner_id": 1
+                "message": "Delete successfully"
               }
             }
           },
@@ -1562,7 +1556,7 @@
           "type": "string"
         }
       ],
-      "put": {
+      "patch": {
         "summary": "Update skill",
         "consumes": [
           "application/json"
@@ -1653,8 +1647,7 @@
             "description": "delete successfully",
             "examples": {
               "application/json": {
-                "name": "Ruby on Rails",
-                "level": "Junior"
+                "message": "Delete successfully"
               }
             }
           }

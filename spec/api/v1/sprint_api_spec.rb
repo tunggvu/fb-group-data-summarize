@@ -3,14 +3,27 @@
 require "swagger_helper"
 
 describe "SprintAPI" do
-  let!(:section) { FactoryBot.create :organization, :section }
-  let!(:group) { FactoryBot.create :organization, :clan, parent: section }
-  let!(:group_leader) { FactoryBot.create :employee, organization: group }
-  let!(:group_leader_token) { FactoryBot.create :employee_token, employee: group_leader }
-  let!(:project) { FactoryBot.create :project, product_owner: group_leader }
-  let!(:phase) { FactoryBot.create :phase, project: project }
-  let!(:sprint1) { FactoryBot.create :sprint, project: project, phase: phase }
-  let!(:sprint2) { FactoryBot.create :sprint, project: project, phase: phase }
+  let!(:section) { create :organization, :section }
+  let!(:group) { create :organization, :clan, parent: section }
+  let(:div2) { create :organization, :division }
+
+  let(:div2_manager) { create :employee, organization: div2 }
+  let(:div2_manager_token) { create :employee_token, employee: div2_manager }
+
+  let!(:group_leader) { create :employee, organization: group }
+  let!(:group_leader_token) { create :employee_token, employee: group_leader }
+
+  let!(:section_manager) { create :employee, organization: section }
+  let(:section_manager_token) { create :employee_token, employee: section_manager }
+
+  let!(:employee) { create :employee }
+  let(:employee_token) { create :employee_token, employee: employee }
+
+  let!(:project) { create :project, product_owner: group_leader }
+  let!(:phase) { create :phase, project: project }
+  let!(:sprint1) { create :sprint, project: project, phase: phase }
+  let!(:sprint2) { create :sprint, project: project, phase: phase }
+
   path "/api/v1/projects/{project_id}/phases/{phase_id}/sprints" do
     parameter name: "Authorization", in: :header, type: :string
     parameter name: :project_id, in: :path, type: :integer
@@ -102,6 +115,273 @@ describe "SprintAPI" do
         end
       end
     end
+    post "Create new sprint" do
+      consumes "application/json"
+
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: {type: :string},
+          start_time: {type: :datetime},
+          end_time: {type: :datetime},
+        }
+      }
+
+      response "201", "PO can create sprint" do
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+
+        examples "application/json" => {
+          id: 1,
+          name: "Sprint 1",
+          starts_on: "2018-07-25T08:37:02.984Z",
+          ends_on: "2018-08-04T08:37:02.984Z"
+        }
+        run_test! do |response|
+          expected = Entities::Sprint.represent Sprint.last
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "201", "manager of PO can create sprint" do
+        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+
+        before { section.update_attributes! manager_id: section_manager.id }
+
+        examples "application/json" => {
+          id: 1,
+          name: "Sprint 1",
+          starts_on: "2018-07-25T08:37:02.984Z",
+          ends_on: "2018-08-04T08:37:02.984Z"
+        }
+        run_test! do |response|
+          expected = Entities::Sprint.represent Sprint.last
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "User hasn't logged in cannot create sprint" do
+        let(:"Authorization") {}
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+
+        examples "application/json" => {
+          error_code: Settings.error_formatter.http_code.unauthorized,
+          message: "unauthorized"
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "employee cannot create sprint" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+
+        examples "application/json" => {
+          error_code: Settings.error_formatter.http_code.unauthorized,
+          message: "unauthorized"
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "manager in other division cannot create sprint" do
+        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+
+        before { div2.update_attributes! manager_id: div2_manager.id }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "empty params" do
+        let(:params) {
+          {
+            name: "",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+
+        examples "application/json" => {
+          error: {
+            error_code: Settings.error_formatter.http_code.validation_errors,
+            message: "name is empty"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is empty"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "missing params" do
+        let(:params) {
+          {
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "name is missing"
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "name is missing"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "could not find project " do
+        let(:project_id) { 0 }
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Project with 'id'=0"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Project with 'id'=0"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "could not find phase " do
+        let(:phase_id) { 0 }
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.from_now
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "invalid end time" do
+        let(:params) {
+          {
+            name: "Sprint 1",
+            start_time: Time.now,
+            end_time: 7.days.ago
+          }
+        }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: "Validation failed: End time must be after start the time"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: End time must be after the start time"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
   end
 
   path "/api/v1/projects/{project_id}/phases/{phase_id}/sprints/{id}" do
@@ -112,6 +392,7 @@ describe "SprintAPI" do
     let(:Authorization) { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:phase_id) { phase.id }
+    let(:id) { sprint1.id }
 
     get "get information specific sprint" do
       consumes "application/json"
@@ -467,6 +748,151 @@ describe "SprintAPI" do
             error: {
               code: Settings.error_formatter.http_code.data_operation,
               message: "Validation failed: End time must be after the start time"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+
+    delete "Delete sprint" do
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :integer
+
+      response "200", "delete successfully" do
+        examples "appication/json" => {
+          message: "Delete successfully"
+        }
+        run_test! do |response|
+          expected = { message: "Delete successfully" }
+          expect(response.body).to eq expected.to_json
+          expect { Sprint.find(id) }.to raise_error ActiveRecord::RecordNotFound
+        end
+      end
+
+      response "200", "manager of PO can delete sprint" do
+        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+
+        before { section.update_attributes! manager_id: section_manager.id }
+
+        examples "appication/json" => {
+          message: "Delete successfully"
+        }
+        run_test! do |response|
+          expected = { message: "Delete successfully" }
+          expect(response.body).to eq expected.to_json
+          expect { Sprint.find(id) }.to raise_error ActiveRecord::RecordNotFound
+        end
+      end
+
+      response "401", "user hasn't logged in cannot delete sprint" do
+        let(:"Authorization") {}
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "employee cannot delete sprint" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "manager of other division cannot delete sprint" do
+        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "could not find sprint " do
+        let(:id) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Sprint with 'id'=0 [WHERE \"sprints\".\"phase_id\" = $1]"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Sprint with 'id'=0 [WHERE \"sprints\".\"phase_id\" = $1]"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "could not find phase " do
+        let(:phase_id) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "could not find project " do
+        let(:project_id) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: "Couldn't find Project with 'id'=0"
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: "Couldn't find Project with 'id'=0"
             }
           }
           expect(response.body).to eq expected.to_json

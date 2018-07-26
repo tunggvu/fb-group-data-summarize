@@ -19,6 +19,18 @@ class V1::SprintAPI < Grape::API
               present @phase.sprints, with: Entities::Sprint
             end
 
+            desc "Create new sprint"
+            params do
+              requires :name, type: String, allow_blank: false
+              requires :start_time, type: DateTime, allow_blank: false
+              requires :end_time, type: DateTime, allow_blank: false
+            end
+            post do
+              authorize_project_manager! @project
+              present @project.sprints.create!(declared(params).merge(phase_id: @phase.id)),
+                with: Entities::Sprint
+            end
+
             route_param :id do
               before do
                 @sprint = @phase.sprints.find params[:id]
@@ -39,6 +51,13 @@ class V1::SprintAPI < Grape::API
                 authorize_project_manager! @project
                 @sprint.update_attributes! declared(params, include_missing: false)
                 present @sprint, with: Entities::Sprint
+              end
+
+              desc "Delete a sprint"
+              delete do
+                authorize_project_manager! @project
+                @sprint.destroy!
+                { message: "Delete successfully" }
               end
             end
           end

@@ -17,14 +17,32 @@ RSpec.describe Sprint, type: :model do
     it { expect(sprint.end_time > sprint.start_time).to eq true }
   end
 
-  describe "#validate_end_time_after_start_time" do
-    let(:sprint) { FactoryBot.build :sprint, start_time: Time.zone.now, end_time: 10.days.ago }
-    it "should be invalid" do
-      expect(sprint).to be_invalid
+  describe "#end_time_must_after_start_time" do
+    context "when start time after end time" do
+      let(:sprint) { build :sprint, start_time: Time.zone.now, end_time: 3.days.ago }
+
+      it "should be invalid" do
+        expect(sprint).to be_invalid
+      end
+
+      it "shoud return error" do
+        sprint.save
+        expect(sprint.errors.full_messages).to include "End time must be after the start time"
+        expect(Sprint.count).to eq 0
+      end
     end
-    it "should be return error" do
-      sprint.save
-      expect(sprint.errors.full_messages).to include "End time must be after the start time"
+
+    context "when start time before end time" do
+      let(:sprint) { build :sprint, start_time: Time.zone.now, end_time: 3.days.from_now }
+
+      it "should be valid" do
+        expect(sprint).to be_valid
+      end
+
+      it "save to DB" do
+        sprint.save
+        expect(Sprint.count).to eq 1
+      end
     end
   end
 end

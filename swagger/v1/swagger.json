@@ -1729,6 +1729,92 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create new sprint",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "start_time": {
+                  "type": "datetime"
+                },
+                "end_time": {
+                  "type": "datetime"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "manager of PO can create sprint",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Sprint 1",
+                "starts_on": "2018-07-25T08:37:02.984Z",
+                "ends_on": "2018-08-04T08:37:02.984Z"
+              }
+            }
+          },
+          "401": {
+            "description": "manager in other division cannot create sprint",
+            "examples": {
+              "application/json": {
+                "error_code": 401,
+                "message": "unauthorized",
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "missing params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "error_code": 400,
+                  "message": "name is missing",
+                  "code": 400
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "could not find phase ",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid end time",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: End time must be after start the time"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/projects/{project_id}/phases/{phase_id}/sprints/{id}": {
@@ -1869,6 +1955,52 @@
                 "error": {
                   "code": 422,
                   "message": "Validation failed: End time must be after the start time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete sprint",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "manager of PO can delete sprint",
+            "examples": {
+              "appication/json": {
+                "message": "Delete successfully"
+              }
+            }
+          },
+          "401": {
+            "description": "manager of other division cannot delete sprint",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "could not find project ",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Project with 'id'=0"
                 }
               }
             }

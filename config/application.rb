@@ -38,6 +38,15 @@ module Emres
     config.autoload_paths << Rails.root.join("lib")
     config.eager_load_paths << Rails.root.join("lib")
 
+    if ENV["FRONTEND_HOST"].present?
+      config.middleware.insert_before 0, Rack::Cors do
+        allow do
+          origins ENV["FRONTEND_HOST"]
+          resource "/api/v1/*", headers: :any, methods: [:get, :post, :options, :delete, :put, :patch]
+        end
+      end
+    end
+
     ApiPagination.configure do |config|
       config.paginator = :kaminari
       config.total_header = "X-Total"

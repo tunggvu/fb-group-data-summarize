@@ -207,6 +207,7 @@ GEM
     rack (2.0.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-cors (1.0.2)
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
     rails (5.2.0)
@@ -340,6 +341,7 @@ DEPENDENCIES
   pry-rails
   pry-stack_explorer
   puma (~> 3.11)
+  rack-cors
   rails (~> 5.2.0)
   rspec-rails
   rswag-api (~> 2.0.4)

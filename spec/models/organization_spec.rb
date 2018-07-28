@@ -12,24 +12,11 @@ RSpec.describe Organization, type: :model do
     it { should validate_presence_of(:level) }
   end
 
-  describe "#manager_name" do
-    let!(:organization) { create(:organization, :division, name: "Division") }
-    let(:manager) { create(:employee, organization: organization) }
-
-    before do
-      organization.update manager_id: manager.id
-    end
-
-    it "should return manager name" do
-      expect(organization.manager_name).to eq manager.name
-    end
-  end
-
   describe "#full_name" do
-    let!(:division) { create(:organization, :division, name: "Division 1") }
-    let!(:section) { create(:organization, :section, parent: division, name: "Section 1") }
-    let!(:group) { create(:organization, :clan, parent: section, name: "Group 1") }
-    let!(:team) { create(:organization, :team, parent: group, name: "Team 1") }
+    let!(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
+    let!(:section) { FactoryBot.create(:organization, :section, parent: division, name: "Section 1") }
+    let!(:group) { FactoryBot.create(:organization, :clan, parent: section, name: "Group 1") }
+    let!(:team) { FactoryBot.create(:organization, :team, parent: group, name: "Team 1") }
 
     it "should return divistion's full name" do
       expect(division.full_name).to eq "Division 1"
@@ -49,16 +36,16 @@ RSpec.describe Organization, type: :model do
   end
 
   describe "#employee_ids" do
-    let!(:division) { create(:organization, :division) }
-    let!(:section) { create(:organization, :section, parent: division) }
-    let!(:group) { create(:organization, :clan, parent: section) }
-    let!(:team) { create(:organization, :team, parent: group) }
+    let!(:division) { FactoryBot.create(:organization, :division) }
+    let!(:section) { FactoryBot.create(:organization, :section, parent: division) }
+    let!(:group) { FactoryBot.create(:organization, :clan, parent: section) }
+    let!(:team) { FactoryBot.create(:organization, :team, parent: group) }
 
-    let!(:team_member_1) { create :employee, organization: team }
-    let!(:team_member_2) { create :employee, organization: team }
-    let!(:group_leader) { create :employee, organization: group }
-    let!(:section_manager) { create :employee, organization: section }
-    let!(:division_manager) { create :employee, organization: division }
+    let!(:team_member_1) { FactoryBot.create :employee, organization: team }
+    let!(:team_member_2) { FactoryBot.create :employee, organization: team }
+    let!(:group_leader) { FactoryBot.create :employee, organization: group }
+    let!(:section_manager) { FactoryBot.create :employee, organization: section }
+    let!(:division_manager) { FactoryBot.create :employee, organization: division }
 
     before do
       division.update manager_id: division_manager.id

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Skill < ApplicationRecord
-  has_many :employee_skills, dependent: :destroy
-  has_many :requirements
-  has_many :employees, through: :employee_skills
+  has_many :levels, dependent: :destroy
   validates :name, presence: true
+
+  accepts_nested_attributes_for :levels
 end

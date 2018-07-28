@@ -2,6 +2,7 @@
 
 module Entities
   class Skill < Grape::Entity
-    expose :id, :name, :level
+    expose :id, :name, :logo
+    expose :levels, using: Entities::Level
   end
 end

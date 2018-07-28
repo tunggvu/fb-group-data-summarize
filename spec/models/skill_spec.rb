@@ -4,9 +4,7 @@ require "rails_helper"
 
 RSpec.describe Skill, type: :model do
   describe "#associations" do
-    it { should have_many(:employee_skills) }
-    it { should have_many(:requirements) }
-    it { should have_many(:employees) }
+    it { should have_many(:levels) }
   end
 
   describe "#validates" do

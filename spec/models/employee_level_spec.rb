@@ -2,9 +2,9 @@
 
 require "rails_helper"
 
-RSpec.describe EmployeeSkill, type: :model do
+RSpec.describe EmployeeLevel, type: :model do
   describe "#associations" do
-    it { should belong_to(:skill) }
+    it { should belong_to(:level) }
     it { should belong_to(:employee) }
   end
 end

@@ -19,7 +19,7 @@ RSpec.describe Sprint, type: :model do
 
   describe "#end_time_must_after_start_time" do
     context "when start time after end time" do
-      let(:sprint) { build :sprint, start_time: Time.zone.now, end_time: 3.days.ago }
+      let(:sprint) { FactoryBot.build :sprint, start_time: Time.zone.now, end_time: 3.days.ago }
 
       it "should be invalid" do
         expect(sprint).to be_invalid
@@ -33,7 +33,7 @@ RSpec.describe Sprint, type: :model do
     end
 
     context "when start time before end time" do
-      let(:sprint) { build :sprint, start_time: Time.zone.now, end_time: 3.days.from_now }
+      let(:sprint) { FactoryBot.build :sprint, start_time: Time.zone.now, end_time: 3.days.from_now }
 
       it "should be valid" do
         expect(sprint).to be_valid

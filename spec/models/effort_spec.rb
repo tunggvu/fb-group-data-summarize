@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe Effort, type: :model do
   describe "#associations" do
     it { should belong_to(:sprint) }
-    it { should belong_to(:employee_skill) }
+    it { should belong_to(:employee_level) }
   end
 
   describe "#validates" do

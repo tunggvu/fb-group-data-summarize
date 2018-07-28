@@ -9,12 +9,12 @@ class V1::RequirementAPI < Grape::API
       resource :requirements do
         desc "Get all requirements"
         get do
-          present @phase.requirements.includes(:skill), with: Entities::Requirement
+          present @phase.requirements.includes(level: :skill), with: Entities::Requirement
         end
 
         desc "Create requirements"
         params do
-          requires :skill_id, type: Integer, allow_blank: false
+          requires :level_id, type: Integer, allow_blank: false
           requires :quantity, type: Integer, allow_blank: false
         end
         post do
@@ -33,7 +33,7 @@ class V1::RequirementAPI < Grape::API
 
           desc "edit a requirement"
           params do
-            requires :skill_id, type: Integer
+            requires :level_id, type: Integer
             requires :quantity, type: Integer
           end
           patch do

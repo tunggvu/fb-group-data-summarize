@@ -5,10 +5,8 @@ require "rails_helper"
 RSpec.describe Employee, type: :model do
   subject { FactoryBot.create(:employee) }
   describe "#associations" do
-    it { should have_many(:employee_skills) }
-    it { should have_many(:employee_roles) }
-    it { should have_many(:skills) }
-    it { should have_many(:roles) }
+    it { should have_many(:employee_levels) }
+    it { should have_many(:levels) }
     it { should have_many(:projects) }
     it { should belong_to(:organization) }
   end

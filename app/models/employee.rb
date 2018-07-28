@@ -3,11 +3,9 @@
 class Employee < ApplicationRecord
   belongs_to :organization, optional: true
 
-  has_many :employee_skills, dependent: :destroy
+  has_many :employee_levels, dependent: :destroy
   has_many :projects, dependent: :nullify, foreign_key: :product_owner_id
-  has_many :employee_roles, dependent: :destroy
-  has_many :skills, through: :employee_skills
-  has_many :roles, through: :employee_roles
+  has_many :levels, through: :employee_levels
   has_one :employee_token, dependent: :destroy
   validates :name, presence: true
   validates :employee_code, presence: true

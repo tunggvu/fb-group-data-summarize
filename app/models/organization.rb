@@ -13,8 +13,6 @@ class Organization < ApplicationRecord
   validates :name, presence: true
   validates :level, presence: true
 
-
-
   def full_name
     path.pluck(:name).join(" / ")
   end

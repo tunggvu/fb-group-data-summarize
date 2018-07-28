@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :requirement do
     association :phase
-    association :skill
+    association :level
     quantity { Faker::Number.between(1, 10) }
   end
 end

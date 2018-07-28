@@ -11,9 +11,9 @@ describe "Requirement API" do
   let!(:project) { FactoryBot.create :project, product_owner: group_leader }
   let!(:phase1) { FactoryBot.create :phase, project: project }
   let!(:phase2) { FactoryBot.create :phase, project: project }
-  let!(:skill1) { FactoryBot.create :skill }
-  let!(:skill2) { FactoryBot.create :skill }
-  let!(:requirement) { FactoryBot.create :requirement, phase: phase1, skill: skill1 }
+  let!(:level1) { FactoryBot.create :level }
+  let!(:level2) { FactoryBot.create :level }
+  let!(:requirement) { FactoryBot.create :requirement, phase: phase1, level: level1 }
   path "/api/v1/phases/{phase_id}/requirements" do
     parameter name: "Authorization", in: :header, type: :string
     parameter name: :phase_id, in: :path, type: :integer
@@ -62,8 +62,7 @@ describe "Requirement API" do
             }
           ]
         run_test! do
-          @phase = Phase.find_by(id: phase_id)
-          expected = Entities::Requirement.represent(@phase.requirements.includes(:skill))
+          expected = Entities::Requirement.represent phase1.requirements
           expect(response.body).to eq expected.to_json
         end
       end
@@ -96,18 +95,18 @@ describe "Requirement API" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          skill_id: { type: :integer },
+          level_id: { type: :integer },
           phase_id: { type: :integer },
           quantity: { type: :integer }
         },
-        required: [:skill_id, :phase_id, :quantity]
+        required: [:level_id, :phase_id, :quantity]
       }
 
       response "401", "employee cannot create requirement" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { { phase_id: phase1.id, skill_id: skill1.id, quantity: 5 } }
+        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
 
         examples "application/json" => {
           error: {
@@ -131,7 +130,7 @@ describe "Requirement API" do
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { phase_id: phase1.id, skill_id: skill1.id, quantity: 5 } }
+        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -156,12 +155,12 @@ describe "Requirement API" do
         let!(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:"Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { phase_id: phase1.id, skill_id: skill1.id, quantity: 5 } }
+        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
-          skill_id: 1,
+          level_id: 1,
           phase_id: 1,
           skill_name: "Ruby",
           skill_level: "Junior",
@@ -175,10 +174,10 @@ describe "Requirement API" do
       end
 
       response "201", "PO can create requirement" do
-        let(:params) { { phase_id: phase1.id, skill_id: skill1.id, quantity: 5 } }
+        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
 
         examples "application/json" => {
-          skill_id: 1,
+          level_id: 1,
           phase_id: 1,
           skill_name: "Ruby",
           skill_level: "Junior",
@@ -197,14 +196,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "skill_id is missing"
+            message: "level_id is missing"
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "skill_id is missing"
+              message: "level_id is missing"
             }
           }
           expect(response.body).to eq expected.to_json
@@ -212,19 +211,19 @@ describe "Requirement API" do
       end
 
       response "400", "empty params" do
-        let(:params) { { skill_id: "", quantity: "" } }
+        let(:params) { { level_id: "", quantity: "" } }
 
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "skill_id is empty"
+            message: "level_id is empty"
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "skill_id is empty"
+              message: "level_id is empty"
             }
           }
           expect(response.body).to eq expected.to_json
@@ -264,7 +263,7 @@ describe "Requirement API" do
       response "200", "return specific requirement in phase" do
         let(:id) { requirement.id }
         examples "application/json" => {
-          skill_id: 1,
+          level_id: 1,
           phase_id: 1,
           skill_name: "Ruby",
           skill_level: "Junior",
@@ -304,10 +303,10 @@ describe "Requirement API" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          skill_id: { type: :integer },
+          level_id: { type: :integer },
           quantity: { type: :integer },
         },
-        required: [:phase_id, :skill_id, :quantity]
+        required: [:phase_id, :level_id, :quantity]
       }
 
       let(:id) { requirement.id }
@@ -316,7 +315,7 @@ describe "Requirement API" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { { skill_id: skill2.id, quantity: 6 } }
+        let(:params) { { level_id: level2.id, quantity: 6 } }
 
         examples "application/json" => {
           error: {
@@ -340,7 +339,7 @@ describe "Requirement API" do
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { skill_id: skill2.id, quantity: 6 } }
+        let(:params) { { level_id: level2.id, quantity: 6 } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -365,36 +364,36 @@ describe "Requirement API" do
         let!(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:"Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { skill_id: skill2.id, quantity: 6 } }
+        let(:params) { { level_id: level2.id, quantity: 6 } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
-          skill_id: 1,
+          level_id: 1,
           phase_id: 1,
           skill_name: "Ruby",
           skill_level: "Junior",
           quantity: 5
         }
         run_test! do
-          requirement = Requirement.find_by(phase_id: phase1.id, skill_id: skill2.id, quantity: 6)
+          requirement = Requirement.find_by(phase_id: phase1.id, level_id: level2.id, quantity: 6)
           expected = Entities::Requirement.represent(requirement)
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "200", "PO can update phase" do
-        let(:params) { { skill_id: skill2.id, quantity: 6 } }
+        let(:params) { { level_id: level2.id, quantity: 6 } }
 
         examples "application/json" => {
-          skill_id: 1,
+          level_id: 1,
           phase_id: 1,
           skill_name: "Ruby",
           skill_level: "Junior",
           quantity: 5
         }
         run_test! do
-          requirement = Requirement.find_by(phase_id: phase1.id, skill_id: skill2.id, quantity: 6)
+          requirement = Requirement.find_by(phase_id: phase1.id, level_id: level2.id, quantity: 6)
           expected = Entities::Requirement.represent(requirement)
           expect(response.body).to eq expected.to_json
         end
@@ -406,14 +405,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "skill_id is missing"
+            message: "level_id is missing"
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "skill_id is missing"
+              message: "level_id is missing"
             }
           }
           expect(response.body).to eq expected.to_json
@@ -421,19 +420,19 @@ describe "Requirement API" do
       end
 
       response "422", "empty params" do
-        let(:params) { { skill_id: "", quantity: "" } }
+        let(:params) { { level_id: "", quantity: "" } }
 
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Skill must exist"
+            message: "Validation failed: Level must exist"
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: Skill must exist"
+              message: "Validation failed: Level must exist"
             }
           }
           expect(response.body).to eq expected.to_json

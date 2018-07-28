@@ -10,19 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_26_030157) do
+ActiveRecord::Schema.define(version: 2018_07_26_120443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "efforts", force: :cascade do |t|
     t.bigint "sprint_id", null: false
-    t.bigint "employee_skill_id", null: false
+    t.bigint "employee_level_id", null: false
     t.integer "effort", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["employee_skill_id"], name: "index_efforts_on_employee_skill_id"
+    t.index ["employee_level_id"], name: "index_efforts_on_employee_level_id"
     t.index ["sprint_id"], name: "index_efforts_on_sprint_id"
+  end
+
+  create_table "employee_levels", force: :cascade do |t|
+    t.bigint "employee_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "level_id"
+    t.index ["employee_id"], name: "index_employee_levels_on_employee_id"
+    t.index ["level_id"], name: "index_employee_levels_on_level_id"
   end
 
   create_table "employee_roles", force: :cascade do |t|
@@ -32,15 +41,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_030157) do
     t.datetime "updated_at", null: false
     t.index ["employee_id"], name: "index_employee_roles_on_employee_id"
     t.index ["role_id"], name: "index_employee_roles_on_role_id"
-  end
-
-  create_table "employee_skills", force: :cascade do |t|
-    t.bigint "employee_id", null: false
-    t.bigint "skill_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["employee_id"], name: "index_employee_skills_on_employee_id"
-    t.index ["skill_id"], name: "index_employee_skills_on_skill_id"
   end
 
   create_table "employee_tokens", force: :cascade do |t|
@@ -65,6 +65,16 @@ ActiveRecord::Schema.define(version: 2018_07_26_030157) do
     t.string "password_digest"
     t.index ["email"], name: "index_employees_on_email", unique: true
     t.index ["organization_id"], name: "index_employees_on_organization_id"
+  end
+
+  create_table "levels", force: :cascade do |t|
+    t.integer "rank", null: false
+    t.string "name", null: false
+    t.string "logo"
+    t.bigint "skill_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_levels_on_skill_id"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -100,13 +110,13 @@ ActiveRecord::Schema.define(version: 2018_07_26_030157) do
   end
 
   create_table "requirements", force: :cascade do |t|
-    t.bigint "skill_id", null: false
     t.bigint "phase_id", null: false
     t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "level_id"
+    t.index ["level_id"], name: "index_requirements_on_level_id"
     t.index ["phase_id"], name: "index_requirements_on_phase_id"
-    t.index ["skill_id"], name: "index_requirements_on_skill_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -119,9 +129,9 @@ ActiveRecord::Schema.define(version: 2018_07_26_030157) do
 
   create_table "skills", force: :cascade do |t|
     t.string "name", null: false
-    t.string "level"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "logo"
   end
 
   create_table "sprints", force: :cascade do |t|
@@ -136,18 +146,19 @@ ActiveRecord::Schema.define(version: 2018_07_26_030157) do
     t.index ["project_id"], name: "index_sprints_on_project_id"
   end
 
-  add_foreign_key "efforts", "employee_skills"
+  add_foreign_key "efforts", "employee_levels"
   add_foreign_key "efforts", "sprints"
+  add_foreign_key "employee_levels", "employees"
+  add_foreign_key "employee_levels", "levels"
   add_foreign_key "employee_roles", "employees"
   add_foreign_key "employee_roles", "roles"
-  add_foreign_key "employee_skills", "employees"
-  add_foreign_key "employee_skills", "skills"
   add_foreign_key "employee_tokens", "employees"
   add_foreign_key "employees", "organizations"
+  add_foreign_key "levels", "skills"
   add_foreign_key "organizations", "employees", column: "manager_id"
   add_foreign_key "phases", "projects"
+  add_foreign_key "requirements", "levels"
   add_foreign_key "requirements", "phases"
-  add_foreign_key "requirements", "skills"
   add_foreign_key "roles", "employees"
   add_foreign_key "sprints", "phases"
   add_foreign_key "sprints", "projects"

@@ -7,8 +7,13 @@ describe "Skill API" do
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
   let!(:admin) { FactoryBot.create :employee, is_admin: true }
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
+
   let!(:skill) { FactoryBot.create :skill }
   let!(:other_skill) { FactoryBot.create :skill }
+
+  let!(:level) { FactoryBot.create :level, skill: skill }
+  let!(:level2) { FactoryBot.create :level, skill: skill }
+
   path "/api/v1/skills" do
     parameter name: "Authorization", in: :header, type: :string
     let(:"Authorization") { "Bearer #{admin_token.token}" }
@@ -16,44 +21,9 @@ describe "Skill API" do
     get "Get all skills" do
       consumes "application/json"
 
-      response "200", "return all skills" do
-        examples "application/json" =>
-          [
-            {
-              name: "Ruby",
-              level: "Junior"
-            },
-            {
-              name: "Ruby",
-              level: "Senior"
-            }
-          ]
-        run_test! do
-          expected = [Entities::Skill.represent(skill), Entities::Skill.represent(other_skill)]
-          expect(response.body).to eq expected.to_json
-        end
-      end
-    end
 
-    post "Create skill" do
-      consumes "application/json"
-
-      parameter name: :params, in: :body, schema: {
-        type: :object,
-        properties: {
-          name: {type: :string},
-          level: {type: :string}
-        }
-      }
-
-      response "401", "unauthorized admin" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) {
-          {
-            name: "Ruby on Rails",
-            level: "Junior"
-          }
-        }
+      response "401", "unauthenticated user" do
+        let(:"Authorization") { "" }
 
         examples "application/json" => {
           error: {
@@ -72,20 +42,131 @@ describe "Skill API" do
         end
       end
 
+      response "401", "unauthorized user" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return all skills" do
+        examples "application/json" =>
+        [
+          {
+            "id": 28523152,
+            "name": "eu i",
+            "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            "levels": [
+              {
+                "id": 67354355,
+                "name": "aliquip ",
+                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                "rank": 45196393,
+                "skill_id": 3593242
+              }
+            ],
+          },
+          {
+            "id": 87853089,
+            "name": "Ut ",
+            "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            "levels": [
+              {
+                "id": 67725294,
+                "name": "ali",
+                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                "rank": -1861221,
+                "skill_id": -76872276
+              },
+              {
+                "id": 61694819,
+                "name": "off",
+                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                "rank": -29289828,
+                "skill_id": 24437180
+              }
+            ]
+          }
+        ]
+        run_test! do
+          expected = [Entities::Skill.represent(skill), Entities::Skill.represent(other_skill)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+
+    post "Create skill" do
+      consumes "application/json"
+
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: {type: :string},
+          logo: {type: :string},
+          levels: [
+              name: {type: :string},
+              rank: {type: :integer},
+              logo: {type: :string}
+          ]
+        }
+      }
+
       response "201", "created successfully" do
         let(:params) {
           {
             name: "Ruby on Rails",
-            level: "Junior"
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                name: "Something",
+                logo: "#",
+                rank: 123
+              },
+              {
+                name: "Something else",
+                logo: "#",
+                rank: 456
+              }
+            ]
           }
         }
 
         examples "application/json" => {
-          name: "Ruby on Rails",
-          level: "Senior"
+          id: 42814442,
+          name: "volup",
+          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+          levels: [
+            {
+              id: 15785576,
+              name: "al",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              rank: 92878607,
+              skill_id: 60261939
+            },
+            {
+              id: 4155938,
+              name: "volupta",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              rank: -27562324,
+              skill_id: 63219058
+            }
+          ]
         }
         run_test! do
-          expected = Entities::Skill.represent Skill.last, only: [:id, :name, :level]
+          expected = Entities::Skill.represent Skill.last, only: [:id, :name, :logo, :levels]
           expect(response.body).to eq expected.to_json
         end
       end
@@ -93,9 +174,22 @@ describe "Skill API" do
       response "400", "missing params name" do
         let(:params) {
           {
-            level: "Senior"
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                name: "Something",
+                logo: "#",
+                rank: 123
+              },
+              {
+                name: "Something else",
+                logo: "#",
+                rank: 456
+              }
+            ]
           }
         }
+
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
@@ -117,9 +211,22 @@ describe "Skill API" do
         let(:params) {
           {
             name: "",
-            level: "Senior"
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                name: "Something",
+                logo: "#",
+                rank: 123
+              },
+              {
+                name: "Something else",
+                logo: "#",
+                rank: 456
+              }
+            ]
           }
         }
+
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
@@ -151,7 +258,13 @@ describe "Skill API" do
         type: :object,
         properties: {
           name: {type: :string},
-          level: {type: :string}
+          logo: {type: :string},
+          levels: [
+            id: {type: :integer},
+            name: {type: :string},
+            rank: {type: :integer},
+            logo: {type: :string}
+          ]
         }
       }
 
@@ -160,7 +273,21 @@ describe "Skill API" do
         let(:params) {
           {
             name: "Ruby on Rails",
-            level: "Junior"
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                name: level.name,
+                logo: level.logo,
+                rank: level.rank
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank
+              }
+            ]
           }
         }
         examples "application/json" => {
@@ -180,32 +307,28 @@ describe "Skill API" do
         end
       end
 
-      response "200", "update successfully" do
-        let(:id) { skill.id }
-        let(:params) {
-          {
-            name: "Ruby on Rails",
-            level: "Junior"
-          }
-        }
-
-        examples "application/json" => {
-          name: "Ruby on Rails",
-          level: "Senior"
-        }
-        run_test! do
-          expected = Entities::Skill.represent skill.reload, only: [:id, :name, :level]
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
       response "400", "missing params name" do
         let(:id) { skill.id }
         let(:params) {
           {
-            level: "Senior"
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                name: level.name,
+                logo: level.logo,
+                rank: level.rank
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank
+              }
+            ]
           }
         }
+
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
@@ -228,7 +351,21 @@ describe "Skill API" do
         let(:params) {
           {
             name: "",
-            level: "Senior"
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                name: level.name,
+                logo: level.logo,
+                rank: level.rank
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank
+              }
+            ]
           }
         }
         examples "application/json" => {
@@ -247,6 +384,56 @@ describe "Skill API" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "200", "update successfully" do
+        let(:id) { skill.id }
+        let(:params) {
+          {
+            name: "Ruby on Rails",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                name: level.name,
+                logo: level.logo,
+                rank: level.rank
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank
+              }
+            ]
+          }
+        }
+
+        examples "application/json" => {
+          id: 42814442,
+          name: "volup",
+          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+          levels: [
+            {
+              id: 15785576,
+              name: "al",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              level: 92878607,
+              skill_id: 60261939
+            },
+            {
+              id: 4155938,
+              name: "volupta",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              level: -27562324,
+              skill_id: 63219058
+            }
+          ]
+        }
+        run_test! do
+          expected = Entities::Skill.represent skill.reload
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
 
     delete "Delete skill" do
@@ -258,6 +445,7 @@ describe "Skill API" do
         examples "application/json" => {
           message: "Delete successfully"
         }
+
         run_test! do
           expected = { message: "Delete successfully" }
           expect(response.body).to eq expected.to_json

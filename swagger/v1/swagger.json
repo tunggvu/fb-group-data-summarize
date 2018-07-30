@@ -1175,7 +1175,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "skill_id": {
+                "level_id": {
                   "type": "integer"
                 },
                 "phase_id": {
@@ -1186,7 +1186,7 @@
                 }
               },
               "required": [
-                "skill_id",
+                "level_id",
                 "phase_id",
                 "quantity"
               ]
@@ -1209,7 +1209,7 @@
             "description": "PO can create requirement",
             "examples": {
               "application/json": {
-                "skill_id": 1,
+                "level_id": 1,
                 "phase_id": 1,
                 "skill_name": "Ruby",
                 "skill_level": "Junior",
@@ -1223,7 +1223,7 @@
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "skill_id is empty"
+                  "message": "level_id is empty"
                 }
               }
             }
@@ -1270,7 +1270,7 @@
             "description": "return specific requirement in phase",
             "examples": {
               "application/json": {
-                "skill_id": 1,
+                "level_id": 1,
                 "phase_id": 1,
                 "skill_name": "Ruby",
                 "skill_level": "Junior",
@@ -1303,7 +1303,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "skill_id": {
+                "level_id": {
                   "type": "integer"
                 },
                 "quantity": {
@@ -1312,7 +1312,7 @@
               },
               "required": [
                 "phase_id",
-                "skill_id",
+                "level_id",
                 "quantity"
               ]
             }
@@ -1334,7 +1334,7 @@
             "description": "PO can update phase",
             "examples": {
               "application/json": {
-                "skill_id": 1,
+                "level_id": 1,
                 "phase_id": 1,
                 "skill_name": "Ruby",
                 "skill_level": "Junior",
@@ -1348,7 +1348,7 @@
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "skill_id is missing"
+                  "message": "level_id is missing"
                 }
               }
             }
@@ -1359,7 +1359,7 @@
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: Skill must exist"
+                  "message": "Validation failed: Level must exist"
                 }
               }
             }
@@ -1474,17 +1474,55 @@
           "application/json"
         ],
         "responses": {
+          "401": {
+            "description": "unauthorized user",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
           "200": {
             "description": "return all skills",
             "examples": {
               "application/json": [
                 {
-                  "name": "Ruby",
-                  "level": "Junior"
+                  "id": 28523152,
+                  "name": "eu i",
+                  "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                  "levels": [
+                    {
+                      "id": 67354355,
+                      "name": "aliquip ",
+                      "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                      "rank": 45196393,
+                      "skill_id": 3593242
+                    }
+                  ]
                 },
                 {
-                  "name": "Ruby",
-                  "level": "Senior"
+                  "id": 87853089,
+                  "name": "Ut ",
+                  "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                  "levels": [
+                    {
+                      "id": 67725294,
+                      "name": "ali",
+                      "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                      "rank": -1861221,
+                      "skill_id": -76872276
+                    },
+                    {
+                      "id": 61694819,
+                      "name": "off",
+                      "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                      "rank": -29289828,
+                      "skill_id": 24437180
+                    }
+                  ]
                 }
               ]
             }
@@ -1506,31 +1544,50 @@
                 "name": {
                   "type": "string"
                 },
-                "level": {
+                "logo": {
                   "type": "string"
-                }
+                },
+                "levels": [
+                  {
+                    "name": {
+                      "type": "string"
+                    },
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "logo": {
+                      "type": "string"
+                    }
+                  }
+                ]
               }
             }
           }
         ],
         "responses": {
-          "401": {
-            "description": "unauthorized admin",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 401,
-                  "message": "unauthorized"
-                }
-              }
-            }
-          },
           "201": {
             "description": "created successfully",
             "examples": {
               "application/json": {
-                "name": "Ruby on Rails",
-                "level": "Senior"
+                "id": 42814442,
+                "name": "volup",
+                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                "levels": [
+                  {
+                    "id": 15785576,
+                    "name": "al",
+                    "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                    "rank": 92878607,
+                    "skill_id": 60261939
+                  },
+                  {
+                    "id": 4155938,
+                    "name": "volupta",
+                    "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                    "rank": -27562324,
+                    "skill_id": 63219058
+                  }
+                ]
               }
             }
           },
@@ -1577,9 +1634,25 @@
                 "name": {
                   "type": "string"
                 },
-                "level": {
+                "logo": {
                   "type": "string"
-                }
+                },
+                "levels": [
+                  {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "logo": {
+                      "type": "string"
+                    }
+                  }
+                ]
               }
             }
           }
@@ -1596,34 +1669,51 @@
               }
             }
           },
-          "200": {
-            "description": "update successfully",
-            "examples": {
-              "application/json": {
-                "name": "Ruby on Rails",
-                "level": "Senior"
-              }
-            }
-          },
           "400": {
-            "description": "missing params name",
+            "description": "missing params[:levels][:name]",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "name is missing"
+                  "message": "levels[0][name] is missing"
                 }
               }
             }
           },
           "422": {
-            "description": "empty value for params[:name]",
+            "description": "empty value for params[:level][:name]",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: Name can't be blank"
+                  "message": "Validation failed: Levels name can't be blank, Name can't be blank"
                 }
+              }
+            }
+          },
+          "200": {
+            "description": "update successfully",
+            "examples": {
+              "application/json": {
+                "id": 42814442,
+                "name": "volup",
+                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                "levels": [
+                  {
+                    "id": 15785576,
+                    "name": "al",
+                    "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                    "level": 92878607,
+                    "skill_id": 60261939
+                  },
+                  {
+                    "id": 4155938,
+                    "name": "volupta",
+                    "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                    "level": -27562324,
+                    "skill_id": 63219058
+                  }
+                ]
               }
             }
           }

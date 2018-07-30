@@ -32,7 +32,7 @@ class V1::SkillAPI < Grape::API
         requires :name, type: String
         optional :logo, type: String
         requires :levels, type: Array do
-          requires :id, type: Integer
+          optional :id, type: Integer
           requires :name, type: String
           requires :rank, type: Integer
           optional :logo, type: String

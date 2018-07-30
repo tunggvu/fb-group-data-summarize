@@ -346,6 +346,44 @@ describe "Skill API" do
         end
       end
 
+      response "400", "missing params[:levels][:name]" do
+        let(:id) { skill.id }
+        let(:params) {
+          {
+            name: "",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                logo: level.logo,
+                rank: level.rank
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank
+              }
+            ]
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "levels[0][name] is missing"
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "levels[0][name] is missing"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
       response "422", "empty value for params[:name]" do
         let(:id) { skill.id }
         let(:params) {
@@ -381,6 +419,105 @@ describe "Skill API" do
               message: "Validation failed: Name can't be blank"
             }
           }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "empty value for params[:level][:name]" do
+        let(:id) { skill.id }
+        let(:params) {
+          {
+            name: "",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                name: "",
+                logo: level.logo,
+                rank: level.rank
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank
+              }
+            ]
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: "Validation failed: Levels name can't be blank, Name can't be blank"
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Levels name can't be blank, Name can't be blank"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "update skill with new level successfully" do
+        let(:id) { skill.id }
+        let(:params) {
+          {
+            name: "Ruby on Rails",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                name: level.name,
+                logo: level.logo,
+                rank: level.rank
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank
+              },
+              {
+                name: "level name",
+                logo: "#",
+                rank: 20
+              }
+            ]
+          }
+        }
+
+        examples "application/json" => {
+          id: 42814442,
+          name: "volup",
+          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+          levels: [
+            {
+              id: 15785576,
+              name: "al",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              level: 92878607,
+              skill_id: 60261939
+            },
+            {
+              id: 4155938,
+              name: "volupta",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              level: -27562324,
+              skill_id: 63219058
+            },
+            {
+              name: "level name",
+              logo: "#",
+              rank: 20
+            }
+          ]
+        }
+        run_test! do
+          expected = Entities::Skill.represent skill.reload
           expect(response.body).to eq expected.to_json
         end
       end

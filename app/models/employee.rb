@@ -26,11 +26,8 @@ class Employee < ApplicationRecord
     orgs.pluck(:manager_id).include? self.id
   end
 
-  Organization.levels.keys.each do |role|
-    define_method "is_higher_#{role}_manager_of?" do |org|
-      is_manager?(org) && Organization.levels[role] >= org.level_before_type_cast &&
-        Organization.levels[role] <= Organization.levels[organization.level]
-    end
+  def is_higher_manager?(level, org)
+    is_manager?(org) && Organization.levels[organization.level] >= level
   end
 
   Organization.levels.keys.each do |role|

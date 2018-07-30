@@ -37,14 +37,14 @@ class V1::ProjectAPI < Grape::API
         requires :product_owner_id, type: Integer, allow_blank: false
       end
       patch do
-        authenticate_admin_or_higher_clan_manager_of! @project.product_owner.organization
+        authorize_can_manage_project! @project
         @project.update_attributes! declared(params, include_missing: false)
         present @project, with: Entities::Project
       end
 
       desc "Deletes an project"
       delete do
-        authenticate_admin_or_higher_clan_manager_of! @project.product_owner.organization
+        authorize_can_manage_project! @project
         @project.destroy!
         { message: "Delete successfully" }
       end

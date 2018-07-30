@@ -60,21 +60,30 @@ module BaseAPI
         raise APIError::Unauthorized unless current_user.is_manager?(organization)
       end
 
-      Organization.levels.keys.each do |role|
-        define_method "authenticate_admin_or_higher_#{role}_manager_of!" do |org|
-          raise APIError::Unauthorized unless current_user.is_admin? || current_user.send("is_higher_#{role}_manager_of?", org)
-        end
+      def authorize_can_manage_employee_for!(org)
+        raise APIError::Unauthorized unless CheckPolicyService.new(
+          user: current_user).can_manage_employee_for?(org)
       end
+
+      def authorize_can_manage_organization!(org)
+        raise APIError::Unauthorized unless CheckPolicyService.new(
+          user: current_user).can_manage_organization?(org)
+      end
+
+      def authorize_can_manage_project!(project)
+        raise APIError::Unauthorized unless CheckPolicyService.new(
+          user: current_user).can_manage_project?(project)
+      end
+
+      # TO_DO
+      # def authenticate_projec_member?(project)
+      # end
 
       Organization.levels.keys.each do |role|
         define_method "authenticate_higher_or_equal_#{role}_manager!" do
           raise APIError::Unauthorized unless current_user.is_admin? || current_user.send("is_higher_or_equal_#{role}_manager!")
         end
       end
-
-      # TO_DO
-      # def authenticate_projec_member?(project)
-      # end
 
       def authorize_project_manager!(project)
         return if current_user.is_admin?

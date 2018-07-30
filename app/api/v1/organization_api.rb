@@ -38,7 +38,7 @@ class V1::OrganizationAPI < Grape::API
         optional :parent_id, type: Integer
       end
       patch do
-        authenticate_admin_or_higher_team_manager_of! @org
+        authorize_can_manage_organization! @org
         @org.update_attributes! declared(params, include_mising: false).to_h
         present @org, with: Entities::BaseOrganization
       end

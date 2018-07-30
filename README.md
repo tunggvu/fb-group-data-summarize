@@ -5,6 +5,11 @@
 Create Data:
 * `rake db:seed_fu`
 
+# Environment note
+
+* SECRET_JWT PUBLIC_JWT you can generate base on RSA 2048
+* Example http://csfieldguide.org.nz/en/interactives/rsa-key-generator/index.html
+* Remember to replace NEW_LINE character by "\n" in application.yml
 ## Build Docker Image
 
 #### Create data folder for postgres

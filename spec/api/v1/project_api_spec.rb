@@ -134,50 +134,50 @@ describe "Project API" do
     parameter name: "Authorization", in: :header, type: :string
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
-    get "Get information of specific project" do
-      consumes "application/json"
-      parameter name: :id, in: :path, type: :integer
-      response "200", "return a project" do
-        examples "application/json" => {
-          id: 1,
-          name: "Project 1",
-          product_owner: {
-            id: 1,
-            organization_id: 1,
-            name: "Employee",
-            employee_code: "B120000",
-            email: "employee@framgia.com",
-            birthday: "1/1/2018",
-            phone: "0123456789"
-          }
-        }
+    # get "Get information of specific project" do
+    #   consumes "application/json"
+    #   parameter name: :id, in: :path, type: :integer
+    #   response "200", "return a project" do
+    #     examples "application/json" => {
+    #       id: 1,
+    #       name: "Project 1",
+    #       product_owner: {
+    #         id: 1,
+    #         organization_id: 1,
+    #         name: "Employee",
+    #         employee_code: "B120000",
+    #         email: "employee@framgia.com",
+    #         birthday: "1/1/2018",
+    #         phone: "0123456789"
+    #       }
+    #     }
 
-        let(:id) { project.id }
-        run_test! do
-          expected = Entities::Project.represent(project)
-          expect(response.body).to eq expected.to_json
-        end
-      end
-      response "404", "project not found" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Project with 'id'=0"
-          }
-        }
+    #     let(:id) { project.id }
+    #     run_test! do
+    #       expected = Entities::Project.represent(project)
+    #       expect(response.body).to eq expected.to_json
+    #     end
+    #   end
+    #   response "404", "project not found" do
+    #     examples "application/json" => {
+    #       error: {
+    #         code: Settings.error_formatter.http_code.record_not_found,
+    #         message: "Couldn't find Project with 'id'=0"
+    #       }
+    #     }
 
-        let(:id) { 0 }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Project with 'id'=#{id}"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-    end
+    #     let(:id) { 0 }
+    #     run_test! do |response|
+    #       expected = {
+    #         error: {
+    #           code: Settings.error_formatter.http_code.record_not_found,
+    #           message: "Couldn't find Project with 'id'=#{id}"
+    #         }
+    #       }
+    #       expect(response.body).to eq expected.to_json
+    #     end
+    #   end
+    # end
 
     patch "Update an project" do
       consumes "application/json"

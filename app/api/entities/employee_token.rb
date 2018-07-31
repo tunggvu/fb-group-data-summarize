@@ -2,6 +2,9 @@
 
 module Entities
   class EmployeeToken < Grape::Entity
-    expose :token, :expired_at
+    expose :token do |employee_token|
+      "Bearer #{employee_token.token}"
+    end
+    expose :expired_at
   end
 end

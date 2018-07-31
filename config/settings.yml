@@ -16,7 +16,8 @@ error_formatter:
     token_expired: 401
     record_not_found: 404
     validation_errors: 400
-    wrong_email_password: 401
+    <%# TODO: wrong email, password should return 401 %>
+    wrong_email_password: 400
     unauthenticated: 401
     decode_error: 401
     verification_error: 401

@@ -3,6 +3,7 @@ default: &default
   encoding: unicode
   username: <%= ENV['EMRES_DATABASE_USERNAME'] %>
   password: <%= ENV['EMRES_DATABASE_PASSWORD'] %>
+  host: <%= ENV['EMRES_DATABASE_HOSTNAME'] %>
   port: 5432
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 

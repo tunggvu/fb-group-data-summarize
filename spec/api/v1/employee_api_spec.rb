@@ -28,7 +28,8 @@ describe "Employee API" do
               employee_code: "B120000",
               email: "employee@framgia.com",
               birthday: "1/1/2018",
-              phone: "0123456789"
+              phone: "0123456789",
+              avatar: "#"
             }
           ]
         run_test! do |response|
@@ -117,7 +118,8 @@ describe "Employee API" do
           employee_code: "B120000",
           email: "employee@framgia.com",
           birthday: "1/1/2018",
-          phone: "0123456789"
+          phone: "0123456789",
+          avatar: "#"
         }
         before do
           group.update_attributes(manager_id: employee2.id)
@@ -236,11 +238,12 @@ describe "Employee API" do
           employee_code: "B120000",
           email: "employee@framgia.com",
           birthday: "1/1/2018",
-          phone: "0123456789"
+          phone: "0123456789",
+          avatar: "#"
         }
         run_test! do
-          expected = Entities::Employee.represent employee, only: [:id, :organization_id, :name, :employee_code, :email,
-            :birthday, :phone]
+          expected = Entities::Employee.represent employee,
+            only: [:id, :organization_id, :name, :employee_code, :email, :birthday, :phone, :avatar]
           expect(response.body).to eq expected.to_json
         end
       end

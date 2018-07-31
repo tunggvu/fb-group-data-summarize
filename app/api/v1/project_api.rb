@@ -28,7 +28,9 @@ class V1::ProjectAPI < Grape::API
 
       desc "Get specific project's information"
       get do
-        present @project, with: Entities::Project
+        # present @project, with: Entities::Project
+        # TODO: Dummy
+        Dummy::GET_PROJECT
       end
 
       desc "Updates a project"

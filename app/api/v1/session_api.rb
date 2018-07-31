@@ -12,6 +12,7 @@ class V1::SessionAPI < Grape::API
       optional :remember, type: Boolean
     end
     post do
+      status 200
       token = EmployeeToken.generate Employee.authenticate!(params[:email], params[:password]).id, params[:remember]
       present token, with: Entities::EmployeeToken
     end
@@ -21,6 +22,12 @@ class V1::SessionAPI < Grape::API
       token = EmployeeToken.find_by token: access_token_header
       token ? token.destroy : raise(APIError::Unauthenticated)
       { message: "You have been logged out" }
+    end
+
+    desc "Change password for current user"
+    patch do
+      # TODO: Dummy
+      Dummy::CHANGE_PASSWORD
     end
   end
 end

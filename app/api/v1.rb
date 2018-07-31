@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class V1 < Grape::API
+  extend Dummy
   version "v1", using: :path
 
   mount TestAPI
@@ -12,6 +13,8 @@ class V1 < Grape::API
   mount PhaseAPI
   mount RequirementAPI
   mount SprintAPI
+  mount ProfileAPI
+  mount LevelAPI
 
   desc "Return the current API version - V1."
   get do

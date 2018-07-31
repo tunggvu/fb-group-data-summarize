@@ -5,7 +5,12 @@
 Create Data:
 * `rake db:seed_fu`
 
-# Environment note
+### Configure environments
+The default environment file is `config/application.yml`.
+
+There is an example file under the name `config/application.yml.example`. In the
+file, you will find necessary environment variables to configure the
+application.
 
 * SECRET_JWT PUBLIC_JWT you can generate base on RSA 2048
 * Example http://csfieldguide.org.nz/en/interactives/rsa-key-generator/index.html

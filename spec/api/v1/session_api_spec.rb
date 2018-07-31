@@ -21,13 +21,13 @@ RSpec.describe "Sessions" do
         required: ["email", "password"]
       }
 
-      response "201", "Login success with valid email/password" do
+      response "200", "Login success with valid email/password" do
         let(:params) { FactoryBot.attributes_for :login_request }
         before do
           employee.update_attributes email: params[:email], password: params[:password]
         end
         run_test! do |response|
-          expect_http_status :created
+          expect_http_status :ok
         end
       end
 
@@ -41,10 +41,10 @@ RSpec.describe "Sessions" do
         end
       end
 
-      response "401", "Login with invalid password" do
+      response "400", "Login with invalid password" do
         let(:params) { FactoryBot.attributes_for(:login_request, password: "Aa@123456777") }
         run_test! do |response|
-          expect_http_status :unauthorized
+          expect_http_status :bad_request
         end
       end
     end

@@ -6,6 +6,8 @@ Employee.seed do |e|
   e.password = "Aa@123456"
   e.employee_code = "B1210000"
   e.is_admin = true
+  e.avatar = "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+  e.phone = "0987654321"
 end
 
 n = 0
@@ -17,6 +19,8 @@ Organization.all.each do |org|
     e.employee_code = "B1210#{(n += 1).to_s.rjust(3, "0")}"
     e.password = "Aa@123456"
     e.organization = org
+    e.avatar = "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+    e.phone = "0987654321"
   end
   org.update_attributes manager_id: employee.last.id
 end
@@ -29,6 +33,8 @@ Organization.team.each do |org|
       e.employee_code = "B1210#{(n += 1).to_s.rjust(3, "0")}"
       e.password = "Aa@123456"
       e.organization = org
+      e.avatar = "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+      e.phone = "0987654321"
     end
   end
 end

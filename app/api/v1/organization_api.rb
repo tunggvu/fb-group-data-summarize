@@ -17,9 +17,8 @@ class V1::OrganizationAPI < Grape::API
       optional :parent_id, type: Integer
     end
     post do
-      authenticate_admin!
-      present Organization.create!(declared(params).to_h),
-        with: Entities::BaseOrganization
+      authorize :organization, :admin?
+      present Organization.create!(declared(params).to_h), with: Entities::BaseOrganization
     end
 
     route_param :id do
@@ -38,14 +37,14 @@ class V1::OrganizationAPI < Grape::API
         optional :parent_id, type: Integer
       end
       patch do
-        authorize_can_manage_organization! @org
+        authorize @org, :organization_manager?
         @org.update_attributes! declared(params, include_mising: false).to_h
         present @org, with: Entities::BaseOrganization
       end
 
       desc "Deletes an organization"
       delete do
-        authenticate_admin!
+        authorize :organization, :admin?
         @org.destroy!
         { message: "Delete successfully" }
       end

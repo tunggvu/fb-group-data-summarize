@@ -15,9 +15,6 @@ module APIError
   class Unauthenticated < APIError::Base
   end
 
-  class Unauthorized < APIError::Base
-  end
-
   class TokenExpired < APIError::Base
   end
 

@@ -18,7 +18,7 @@ class V1::RequirementAPI < Grape::API
           requires :quantity, type: Integer, allow_blank: false
         end
         post do
-          authorize_project_manager! @phase.project
+          authorize @phase.project, :project_manager?
           requirement = @phase.requirements.create!(declared(params).to_h)
           present requirement, with: Entities::Requirement
         end
@@ -37,14 +37,14 @@ class V1::RequirementAPI < Grape::API
             requires :quantity, type: Integer
           end
           patch do
-            authorize_project_manager! @phase.project
+            authorize @phase.project, :project_manager?
             @requirement.update_attributes! params
             present @requirement, with: Entities::Requirement
           end
 
           desc "delete a requirement"
           delete do
-            authorize_project_manager! @phase.project
+            authorize @phase.project, :project_manager?
             @requirement.destroy!
             { message: "Delete successfully" }
           end

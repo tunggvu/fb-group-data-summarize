@@ -18,7 +18,7 @@ class V1::PhaseAPI < Grape::API
           requires :name, type: String, allow_blank: false
         end
         post do
-          authorize_project_manager! @project
+          authorize @project, :project_manager?
           present @project.phases.create!(declared(params).to_h), with: Entities::Phase
         end
 
@@ -35,14 +35,14 @@ class V1::PhaseAPI < Grape::API
             requires :name, type: String
           end
           patch do
-            authorize_project_manager! @project
+            authorize @project, :project_manager?
             @phase.update_attributes!(declared(params).to_h)
             present @phase, with: Entities::Phase
           end
 
           desc "delete a phase"
           delete do
-            authorize_project_manager! @project
+            authorize @project, :project_manager?
             @phase.destroy!
             { message: "Delete successfully" }
           end

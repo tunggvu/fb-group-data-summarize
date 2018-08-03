@@ -204,6 +204,8 @@ GEM
       pry (>= 0.9.11)
     public_suffix (3.0.2)
     puma (3.11.4)
+    pundit (2.0.0)
+      activesupport (>= 3.0.0)
     rack (2.0.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -341,6 +343,7 @@ DEPENDENCIES
   pry-rails
   pry-stack_explorer
   puma (~> 3.11)
+  pundit
   rack-cors
   rails (~> 5.2.0)
   rspec-rails

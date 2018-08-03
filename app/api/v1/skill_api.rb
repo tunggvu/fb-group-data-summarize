@@ -2,7 +2,10 @@
 
 class V1::SkillAPI < Grape::API
   resource :skills do
-    before { authenticate_admin! }
+    before do
+      authenticate!
+      authorize :skill, :admin?
+    end
 
     desc "Show all skill available"
     get do

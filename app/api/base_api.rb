@@ -14,10 +14,10 @@ module BaseAPI
       error! message, Settings.error_formatter.http_code.validation_errors
     end
 
-    rescue_from APIError::Base, JWT::VerificationError, JWT::DecodeError do |e|
+    rescue_from APIError::Base, JWT::VerificationError, JWT::DecodeError, Pundit::NotAuthorizedError do |e|
       error_key = e.class.name.split("::").drop(1).map(&:underscore).first
       http_code = Settings.error_formatter.http_code.public_send error_key
-      error_content = I18n.t("api_error.unauthorized") if [JWT::VerificationError, JWT::DecodeError].include?(e.class)
+      error_content = I18n.t("api_error.unauthorized") unless e.is_a? APIError::Base
       message = { error: { code: http_code, message: (error_content ? error_content : error_key.gsub("_", " ")) } }
       error! message, http_code
     end
@@ -33,6 +33,7 @@ module BaseAPI
       error! message, Settings.error_formatter.http_code.record_not_found
     end
 
+    helpers Pundit
     helpers do
       def authenticate!
         raise APIError::Unauthorized unless EmployeeToken.verify(access_token_header)
@@ -48,48 +49,6 @@ module BaseAPI
         return nil unless auth_header
         auth_header.scan(/^#{Settings.access_token_value_prefix} (.+)$/i)[0] ?
           auth_header.scan(/^#{Settings.access_token_value_prefix} (.+)$/i)[0].first : nil
-      end
-
-      def authenticate_admin!
-        authenticate!
-        raise APIError::Unauthorized unless current_user.is_admin?
-      end
-
-      def authenticate_organization_manager!(organization)
-        authenticate!
-        raise APIError::Unauthorized unless current_user.is_manager?(organization)
-      end
-
-      def authorize_can_manage_employee_for!(org)
-        raise APIError::Unauthorized unless CheckPolicyService.new(
-          user: current_user).can_manage_employee_for?(org)
-      end
-
-      def authorize_can_manage_organization!(org)
-        raise APIError::Unauthorized unless CheckPolicyService.new(
-          user: current_user).can_manage_organization?(org)
-      end
-
-      def authorize_can_manage_project!(project)
-        raise APIError::Unauthorized unless CheckPolicyService.new(
-          user: current_user).can_manage_project?(project)
-      end
-
-      # TO_DO
-      # def authenticate_projec_member?(project)
-      # end
-
-      Organization.levels.keys.each do |role|
-        define_method "authenticate_higher_or_equal_#{role}_manager!" do
-          raise APIError::Unauthorized unless current_user.is_admin? || current_user.send("is_higher_or_equal_#{role}_manager!")
-        end
-      end
-
-      def authorize_project_manager!(project)
-        return if current_user.is_admin?
-        return if current_user == project.product_owner
-        return if current_user.is_manager? project.product_owner.organization
-        raise APIError::Unauthorized
       end
     end
   end

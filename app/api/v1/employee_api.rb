@@ -21,7 +21,7 @@ class V1::EmployeeAPI < Grape::API
       optional :phone, type: String
     end
     post do
-      authorize_can_manage_employee_for! Organization.find params[:organization_id]
+      authorize :organization, :executive?, policy_class: EmployeePolicy
       present Employee.create!(declared(params).to_h), with: Entities::Employee
     end
 
@@ -37,7 +37,7 @@ class V1::EmployeeAPI < Grape::API
 
       desc "Delete employee"
       delete do
-        authorize_can_manage_employee_for! @employee.organization
+        authorize @employee, :executive?
         @employee.destroy!
         { message: "Delete successfully" }
       end

@@ -30,7 +30,8 @@
                   "employee_code": "B120000",
                   "email": "employee@framgia.com",
                   "birthday": "1/1/2018",
-                  "phone": "0123456789"
+                  "phone": "0123456789",
+                  "avatar": "#"
                 }
               ]
             }
@@ -81,7 +82,7 @@
         ],
         "responses": {
           "401": {
-            "description": "create failure because current user is not manager of organization",
+            "description": "member cannot create employee",
             "examples": {
               "application/json": {
                 "error": {
@@ -92,7 +93,7 @@
             }
           },
           "201": {
-            "description": "create success",
+            "description": "manager create successfully",
             "examples": {
               "application/json": {
                 "id": 1,
@@ -101,7 +102,8 @@
                 "employee_code": "B120000",
                 "email": "employee@framgia.com",
                 "birthday": "1/1/2018",
-                "phone": "0123456789"
+                "phone": "0123456789",
+                "avatar": "#"
               }
             }
           },
@@ -162,7 +164,8 @@
                 "employee_code": "B120000",
                 "email": "employee@framgia.com",
                 "birthday": "1/1/2018",
-                "phone": "0123456789"
+                "phone": "0123456789",
+                "avatar": "#"
               }
             }
           },
@@ -193,8 +196,19 @@
           }
         ],
         "responses": {
+          "401": {
+            "description": "member cannot delete",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
           "200": {
-            "description": "delete successfully",
+            "description": "admin can delete",
             "examples": {
               "application/json": {
                 "message": "Delete successfully"
@@ -929,51 +943,6 @@
           "type": "string"
         }
       ],
-      "get": {
-        "summary": "Get information of specific project",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "type": "integer",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "return a project",
-            "examples": {
-              "application/json": {
-                "id": 1,
-                "name": "Project 1",
-                "product_owner": {
-                  "id": 1,
-                  "organization_id": 1,
-                  "name": "Employee",
-                  "employee_code": "B120000",
-                  "email": "employee@framgia.com",
-                  "birthday": "1/1/2018",
-                  "phone": "0123456789"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "project not found",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 404,
-                  "message": "Couldn't find Project with 'id'=0"
-                }
-              }
-            }
-          }
-        }
-      },
       "patch": {
         "summary": "Update an project",
         "consumes": [
@@ -1422,13 +1391,10 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Login success with valid email/password"
           },
           "400": {
-            "description": "Login with invalid format of email"
-          },
-          "401": {
             "description": "Login with invalid password"
           }
         }

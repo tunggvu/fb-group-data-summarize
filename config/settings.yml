@@ -13,6 +13,7 @@ error_formatter:
   http_code:
     data_operation: 422
     unauthorized: 401
+    not_authorized_error: 401
     token_expired: 401
     record_not_found: 404
     validation_errors: 400

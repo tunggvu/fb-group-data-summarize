@@ -5,7 +5,7 @@ require "swagger_helper"
 describe "Skill API" do
   let!(:employee) { FactoryBot.create :employee }
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-  let!(:admin) { FactoryBot.create :employee, is_admin: true }
+  let!(:admin) { FactoryBot.create :employee, :admin }
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
 
   let!(:skill) { FactoryBot.create :skill }

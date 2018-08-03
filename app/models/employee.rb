@@ -16,24 +16,7 @@ class Employee < ApplicationRecord
   has_secure_password validations: false
 
   def is_manager?(organization)
-    orgs = []
-    # TODO: Fix here. Avoid using loop to find parent organizations
-    loop do
-      break unless organization.present?
-      orgs << organization
-      organization = organization.parent
-    end
-    orgs.pluck(:manager_id).include? self.id
-  end
-
-  def is_higher_manager?(level, org)
-    is_manager?(org) && Organization.levels[organization.level] >= level
-  end
-
-  Organization.levels.keys.each do |role|
-    define_method "is_higher_or_equal_#{role}_manager!" do
-      Organization.levels[self.organization.level] >= Organization.levels[role]
-    end
+    organization.level_before_type_cast > 1 && organization.path.pluck(:manager_id).include?(self.id)
   end
 
   class << self

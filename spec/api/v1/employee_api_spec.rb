@@ -5,11 +5,14 @@ require "swagger_helper"
 describe "Employee API" do
   let!(:employee) { FactoryBot.create :employee }
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-  let!(:other_employee) { FactoryBot.create :employee }
-  let(:organization) { FactoryBot.create :organization }
   let(:group) { FactoryBot.create(:organization, :clan, name: "Group 1") }
-  let(:employee2) { FactoryBot.create :employee, organization: group }
-  let(:employee2_token) { FactoryBot.create :employee_token, employee: employee2 }
+  let!(:manager) { FactoryBot.create :employee, organization: group }
+  let(:manager_token) { FactoryBot.create :employee_token, employee: manager }
+  let!(:admin) { FactoryBot.create :employee, :admin }
+  let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
+  before do
+    group.update_attributes(manager_id: manager.id)
+  end
 
   path "/api/v1/employees" do
     parameter name: "Authorization", in: :header, type: :string
@@ -33,7 +36,8 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = [Entities::Employee.represent(employee), Entities::Employee.represent(other_employee)]
+          expected = [Entities::Employee.represent(employee), Entities::Employee.represent(manager),
+            Entities::Employee.represent(admin)]
           expect(response.body).to eq expected.to_json
         end
       end
@@ -73,13 +77,13 @@ describe "Employee API" do
         }
       }
 
-      response "401", "create failure because current user is not manager of organization" do
+      response "401", "member cannot create employee" do
         let(:params) {
           {
             name: "New employee",
             employee_code: "B123456",
             email: "new_employee@framgia.com",
-            organization_id: organization.id,
+            organization_id: group.id,
             password: "Aa@123456"
           }
         }
@@ -100,8 +104,8 @@ describe "Employee API" do
         end
       end
 
-      response "201", "create success" do
-        let(:"Authorization") { "Bearer #{employee2_token.token}" }
+      response "201", "admin create successfully" do
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
         let(:params) {
           {
             name: "New employee",
@@ -121,9 +125,33 @@ describe "Employee API" do
           phone: "0123456789",
           avatar: "#"
         }
-        before do
-          group.update_attributes(manager_id: employee2.id)
+        run_test! do
+          expected = Entities::Employee.represent Employee.last
+          expect(response.body).to eq expected.to_json
         end
+      end
+
+      response "201", "manager create successfully" do
+        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let(:params) {
+          {
+            name: "New employee",
+            employee_code: "B123456",
+            email: "new_employee@framgia.com",
+            organization_id: group.id,
+            password: "Aa@123456"
+          }
+        }
+        examples "application/json" => {
+          id: 1,
+          organization_id: 1,
+          name: "Employee",
+          employee_code: "B120000",
+          email: "employee@framgia.com",
+          birthday: "1/1/2018",
+          phone: "0123456789",
+          avatar: "#"
+        }
         run_test! do
           expected = Entities::Employee.represent Employee.last
           expect(response.body).to eq expected.to_json
@@ -135,7 +163,7 @@ describe "Employee API" do
           {
             name: "New employee",
             employee_code: "B123456",
-            organization_id: organization.id,
+            organization_id: group.id,
             password: "Aa@123456"
           }
         }
@@ -157,7 +185,7 @@ describe "Employee API" do
       end
 
       response "422", "wrong params" do
-        let(:"Authorization") { "Bearer #{employee2_token.token}" }
+        let(:"Authorization") { "Bearer #{manager_token.token}" }
         let(:params) {
           {
             name: "New employee",
@@ -174,7 +202,7 @@ describe "Employee API" do
           }
         }
         before do
-          group.update_attributes(manager_id: employee2.id)
+          group.update_attributes(manager_id: manager.id)
         end
         run_test! do
           expected = {
@@ -188,7 +216,7 @@ describe "Employee API" do
       end
 
       response "422", "email has been taken" do
-        let(:"Authorization") { "Bearer #{employee2_token.token}" }
+        let(:"Authorization") { "Bearer #{manager_token.token}" }
         let(:params) {
           {
             name: "New employee",
@@ -205,7 +233,7 @@ describe "Employee API" do
           }
         }
         before do
-          group.update_attributes(manager_id: employee2.id)
+          group.update_attributes(manager_id: manager.id)
         end
         run_test! do
           expected = {
@@ -272,19 +300,53 @@ describe "Employee API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer
 
-      response "200", "delete successfully" do
-        let(:"Authorization") { "Bearer #{employee2_token.token}" }
-        let(:employee) { FactoryBot.create :employee, organization: group }
+      response "401", "member cannot delete" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+        let(:id) { employee.id }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: "unauthorized"
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "manager can delete" do
+        let(:"Authorization") { "Bearer #{manager_token.token}" }
 
         let(:id) { employee.id }
         examples "application/json" => {
           message: "Delete successfully"
         }
-        before do
-          group.update_attributes(manager_id: employee2.id)
-        end
         run_test! do
-          expected = { message: "Delete successfully" }
+          expected = {
+            message: "Delete successfully"
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "admin can delete" do
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+
+        let(:id) { employee.id }
+        examples "application/json" => {
+          message: "Delete successfully"
+        }
+        run_test! do
+          expected = {
+            message: "Delete successfully"
+          }
           expect(response.body).to eq expected.to_json
         end
       end

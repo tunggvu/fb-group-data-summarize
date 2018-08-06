@@ -48,14 +48,14 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -90,14 +90,14 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -170,14 +170,14 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "email is missing"
+            message: I18n.t("api_error.missing_params", params: "email")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "email is missing"
+              message: I18n.t("api_error.missing_params", params: "email")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -198,7 +198,7 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Email is invalid"
+            message: I18n.t("api_error.invalid_params", params: "Email")
           }
         }
         before do
@@ -208,7 +208,7 @@ describe "Employee API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: Email is invalid"
+              message: I18n.t("api_error.invalid_params", params: "Email")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -229,7 +229,7 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Email has already been taken"
+            message: I18n.t("api_error.taken_params", params: "Email")
           }
         }
         before do
@@ -239,7 +239,7 @@ describe "Employee API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: Email has already been taken"
+              message: I18n.t("api_error.taken_params", params: "Email")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -281,14 +281,14 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Employee with 'id'=0"
+            message: I18n.t("api_error.invalid_id", model: "Employee", id: id)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Employee with 'id'=0"
+              message: I18n.t("api_error.invalid_id", model: "Employee", id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -307,14 +307,14 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -330,7 +330,7 @@ describe "Employee API" do
         }
         run_test! do
           expected = {
-            message: "Delete successfully"
+            message: I18n.t("delete_success")
           }
           expect(response.body).to eq expected.to_json
         end
@@ -345,7 +345,7 @@ describe "Employee API" do
         }
         run_test! do
           expected = {
-            message: "Delete successfully"
+            message: I18n.t("delete_success")
           }
           expect(response.body).to eq expected.to_json
         end

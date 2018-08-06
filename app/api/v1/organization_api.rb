@@ -46,7 +46,7 @@ class V1::OrganizationAPI < Grape::API
       delete do
         authorize :organization, :admin?
         @org.destroy!
-        { message: "Delete successfully" }
+        { message: I18n.t("delete_success") }
       end
     end
   end

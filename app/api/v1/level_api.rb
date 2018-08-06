@@ -38,7 +38,7 @@ class V1::LevelAPI < Grape::API
           desc "Delete a level"
           delete do
             @level.destroy!
-            { message: "Delete successfully" }
+            { message: I18n.t("delete_success") }
           end
         end
       end

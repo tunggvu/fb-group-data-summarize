@@ -59,7 +59,7 @@ RSpec.describe "Sessions" do
         }
         let("Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
-          expected = { message: "You have been logged out" }
+          expected = { message: I18n.t("log_out") }
           expect(response.body).to eq expected.to_json
         end
       end

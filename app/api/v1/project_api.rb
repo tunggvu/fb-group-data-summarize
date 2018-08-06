@@ -48,7 +48,7 @@ class V1::ProjectAPI < Grape::API
       delete do
         authorize @project, :project_manager?
         @project.destroy!
-        { message: "Delete successfully" }
+        { message: I18n.t("delete_success") }
       end
     end
   end

@@ -50,6 +50,11 @@ module BaseAPI
         auth_header.scan(/^#{Settings.access_token_value_prefix} (.+)$/i)[0] ?
           auth_header.scan(/^#{Settings.access_token_value_prefix} (.+)$/i)[0].first : nil
       end
+
+      def set_locale
+        language = headers["Accept-Language"].present? ? headers["Accept-Language"] : I18n.default_locale.to_s
+        I18n.locale = HTTP::Accept::Languages.parse(language)[0].locale
+      end
     end
   end
 end

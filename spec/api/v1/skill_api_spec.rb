@@ -28,14 +28,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -48,14 +48,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -193,14 +193,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
+            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -230,14 +230,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is empty"
+            message: I18n.t("api_error.empty_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is empty"
+              message: I18n.t("api_error.empty_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -293,14 +293,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Skill with 'id'=0"
+            message: I18n.t("api_error.invalid_id", model: "Skill", id: id)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Skill with 'id'=0"
+              message: I18n.t("api_error.invalid_id", model: "Skill", id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -332,14 +332,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
+            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -370,14 +370,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "levels[0][name] is missing"
+            message: I18n.t("api_error.missing_params", params: "levels[0][name]")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "levels[0][name] is missing"
+              message: I18n.t("api_error.missing_params", params: "levels[0][name]")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -409,53 +409,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Name can't be blank"
+            message: I18n.t("api_error.blank_params", params: "Name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: Name can't be blank"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "422", "empty value for params[:level][:name]" do
-        let(:id) { skill.id }
-        let(:params) {
-          {
-            name: "",
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                id: level.id,
-                name: "",
-                logo: level.logo,
-                rank: level.rank
-              },
-              {
-                id: level2.id,
-                name: level2.name,
-                logo: level2.logo,
-                rank: level2.rank
-              }
-            ]
-          }
-        }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Levels name can't be blank, Name can't be blank"
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: Levels name can't be blank, Name can't be blank"
+              message: I18n.t("api_error.blank_params", params: "Name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -659,11 +620,11 @@ describe "Skill API" do
       response "200", "delete successfully" do
         let(:id) { skill.id }
         examples "application/json" => {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
 
         run_test! do
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect { skill.reload }.to raise_error ActiveRecord::RecordNotFound
         end

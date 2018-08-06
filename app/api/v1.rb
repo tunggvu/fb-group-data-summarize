@@ -4,6 +4,8 @@ class V1 < Grape::API
   extend Dummy
   version "v1", using: :path
 
+  before { set_locale }
+
   mount TestAPI
   mount SessionAPI
   mount OrganizationAPI

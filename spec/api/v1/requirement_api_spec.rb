@@ -29,14 +29,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Phase with 'id'=0"
+            message: I18n.t("api_error.invalid_id", model: "Phase", id: 0)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Phase with 'id'=#{phase_id}"
+              message: I18n.t("api_error.invalid_id", model: "Phase", id: phase_id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -74,14 +74,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -111,14 +111,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -137,14 +137,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -196,14 +196,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "level_id is missing"
+            message: I18n.t("api_error.missing_params", params: "level_id")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "level_id is missing"
+              message: I18n.t("api_error.missing_params", params: "level_id")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -216,14 +216,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "level_id is empty"
+            message: I18n.t("api_error.empty_params", params: "level_id")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "level_id is empty"
+              message: I18n.t("api_error.empty_params", params: "level_id")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -282,14 +282,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -320,14 +320,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -346,14 +346,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -405,14 +405,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "level_id is missing"
+            message: I18n.t("api_error.missing_params", params: "level_id")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "level_id is missing"
+              message: I18n.t("api_error.missing_params", params: "level_id")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -425,14 +425,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Level must exist"
+            message: I18n.t("api_error.must_exist", model: "Level")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: Level must exist"
+              message: I18n.t("api_error.must_exist", model: "Level")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -453,14 +453,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -478,14 +478,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -500,10 +500,10 @@ describe "Requirement API" do
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
         run_test! do
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect { requirement.reload }.to raise_error ActiveRecord::RecordNotFound
         end
@@ -513,11 +513,11 @@ describe "Requirement API" do
         let(:id) { requirement.id }
 
         examples "application/json" =>  {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
 
         run_test! do
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect { requirement.reload }.to raise_error ActiveRecord::RecordNotFound
         end

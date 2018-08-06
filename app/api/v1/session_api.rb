@@ -21,7 +21,7 @@ class V1::SessionAPI < Grape::API
     delete do
       token = EmployeeToken.find_by token: access_token_header
       token ? token.destroy : raise(APIError::Unauthenticated)
-      { message: "You have been logged out" }
+      { message: I18n.t("log_out") }
     end
 
     desc "Change password for current user"

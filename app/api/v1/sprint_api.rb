@@ -57,7 +57,7 @@ class V1::SprintAPI < Grape::API
               delete do
                 authorize @project, :project_manager?
                 @sprint.destroy!
-                { message: "Delete successfully" }
+                { message: I18n.t("delete_success") }
               end
             end
           end

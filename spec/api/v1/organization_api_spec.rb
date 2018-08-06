@@ -78,7 +78,7 @@ describe "Organization API" do
         examples "application/json" =>  {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
 
@@ -88,7 +88,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -138,7 +138,7 @@ describe "Organization API" do
         examples "application/json" =>  {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
+            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
 
@@ -148,7 +148,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -159,7 +159,7 @@ describe "Organization API" do
         examples "application/json" =>  {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
 
@@ -175,7 +175,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -219,7 +219,7 @@ describe "Organization API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Organization with 'id'=100"
+            message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
           }
         }
 
@@ -228,7 +228,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Organization with 'id'=#{id}"
+              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -279,7 +279,7 @@ describe "Organization API" do
         examples "application/json" =>  {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
 
@@ -291,7 +291,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -302,7 +302,7 @@ describe "Organization API" do
         examples "application/json" =>  {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
 
@@ -319,7 +319,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -330,7 +330,7 @@ describe "Organization API" do
         examples "application/json" => {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Organization with 'id'=100"
+              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
             }
           }
 
@@ -347,7 +347,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Organization with 'id'=#{id}"
+              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -361,13 +361,13 @@ describe "Organization API" do
 
       response "200", "deleted an organization" do
         examples "application/json" =>  {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
 
         let(:id) { division2.id }
         let!(:other_employee) { FactoryBot.create :employee, organization: division2 }
         run_test! do |response|
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect(Organization.count).to eq 1
           expect(Employee.count).to eq 4
@@ -380,7 +380,7 @@ describe "Organization API" do
         examples "application/json" =>  {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
 
@@ -390,7 +390,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -401,7 +401,7 @@ describe "Organization API" do
         examples "application/json" => {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Organization with 'id'=100"
+              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
             }
           }
 
@@ -411,7 +411,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Organization with 'id'=#{id}"
+              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
             }
           }
           expect(response.body).to eq expected.to_json

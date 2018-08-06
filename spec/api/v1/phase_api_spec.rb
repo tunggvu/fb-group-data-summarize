@@ -28,14 +28,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Project with 'id'=0"
+            message: I18n.t("api_error.invalid_id", model: "Project", id: 0)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Project with 'id'=#{project_id}"
+              message: I18n.t("api_error.invalid_id", model: "Project", id: project_id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -80,14 +80,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -106,14 +106,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -157,34 +157,34 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
+            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
         end
       end
 
-      response "400", "empty params" do
+      response "400", "empty params name" do
         let(:params) { { name: "" } }
 
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is empty"
+            message: I18n.t("api_error.empty_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is empty"
+              message: I18n.t("api_error.empty_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -250,14 +250,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -276,14 +276,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -333,14 +333,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
+            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -353,14 +353,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Name can't be blank"
+            message: I18n.t("api_error.blank_params", params: "Name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: Name can't be blank"
+              message: I18n.t("api_error.blank_params", params: "Name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -382,14 +382,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -408,14 +408,14 @@ describe "Phase API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -430,10 +430,10 @@ describe "Phase API" do
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
         run_test! do
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect { phase1.reload }.to raise_error ActiveRecord::RecordNotFound
         end
@@ -443,11 +443,11 @@ describe "Phase API" do
         let(:id) { phase2.id }
 
         examples "application/json" =>  {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
 
         run_test! do
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect { phase2.reload }.to raise_error ActiveRecord::RecordNotFound
         end

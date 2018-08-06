@@ -41,14 +41,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Project with 'id'=0"
+            message: I18n.t("api_error.invalid_id", model: "Project", id: 0)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Project with 'id'=#{project_id}"
+              message: I18n.t("api_error.invalid_id", model: "Project", id: project_id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -100,7 +100,7 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         let(:Authorization) {}
@@ -108,7 +108,7 @@ describe "SprintAPI" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -172,32 +172,6 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "User hasn't logged in cannot create sprint" do
-        let(:"Authorization") {}
-        let(:params) {
-          {
-            name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.from_now
-          }
-        }
-
-        examples "application/json" => {
-          error_code: Settings.error_formatter.http_code.unauthorized,
-          message: "unauthorized"
-        }
-
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
       response "401", "employee cannot create sprint" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
@@ -210,14 +184,14 @@ describe "SprintAPI" do
 
         examples "application/json" => {
           error_code: Settings.error_formatter.http_code.unauthorized,
-          message: "unauthorized"
+          message: I18n.t("api_error.unauthorized")
         }
 
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -239,7 +213,7 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
 
@@ -247,7 +221,7 @@ describe "SprintAPI" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -266,14 +240,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             error_code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is empty"
+            message: I18n.t("api_error.empty_params", params: "name")
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is empty"
+              message: I18n.t("api_error.empty_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -290,66 +264,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
+            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "could not find project " do
-        let(:project_id) { 0 }
-        let(:params) {
-          {
-            name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.from_now
-          }
-        }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Project with 'id'=0"
-          }
-        }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Project with 'id'=0"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "could not find phase " do
-        let(:phase_id) { 0 }
-        let(:params) {
-          {
-            name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.from_now
-          }
-        }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
-          }
-        }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -368,14 +290,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: End time must be after start the time"
+            message: I18n.t("api_error.validate_time")
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: End time must be after the start time"
+              message: I18n.t("api_error.validate_time")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -396,47 +318,6 @@ describe "SprintAPI" do
 
     get "get information specific sprint" do
       consumes "application/json"
-
-      response "404", "project not found" do
-        let(:project_id) { 0 }
-        let(:id) { sprint1.id }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Project with 'id'=0"
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Project with 'id'=#{project_id}"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "phase not found" do
-        let(:phase_id) { 0 }
-        let(:id) { sprint1.id }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Phase with 'id'=#{phase_id} [WHERE \"phases\".\"project_id\" = $1]"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
 
       response "404", "sprint not found" do
         let(:id) { 0 }
@@ -482,83 +363,6 @@ describe "SprintAPI" do
 
       let(:id) { sprint1.id }
 
-      response "404", "project not found" do
-        let(:project_id) { 0 }
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Project with 'id'=0"
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Project with 'id'=#{project_id}"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "phase not found" do
-        let(:phase_id) { 0 }
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Phase with 'id'=#{phase_id} [WHERE \"phases\".\"project_id\" = $1]"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "sprint not found" do
-        let(:id) { 0 }
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Sprint with 'id'=0"
-          }
-        }
-        run_test! do
-          expect(response.body).to include("Couldn't find Sprint with 'id'=0")
-        end
-      end
-
-      response "401", "not login" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
-          }
-        }
-        let(:Authorization) {}
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
       response "401", "employee cannot update sprint" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
@@ -568,14 +372,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -594,14 +398,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -659,14 +463,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
+            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is missing"
+              message: I18n.t("api_error.missing_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -679,54 +483,34 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "start_time is invalid"
+            message: I18n.t("api_error.invalid", params: "start_time")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "start_time is invalid"
+              message: I18n.t("api_error.invalid", params: "start_time")
             }
           }
           expect(response.body).to eq expected.to_json
         end
       end
 
-      response "400", "empty params" do
+      response "400", "empty params name" do
         let(:params) { { name: "", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
 
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is empty"
+            message: I18n.t("api_error.empty_params", params: "name")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: "name is empty"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "not login" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
-          }
-        }
-        let(:Authorization) {}
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.empty_params", params: "name")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -739,7 +523,7 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: End time must be after the start time"
+            message: I18n.t("api_error.validate_time")
           }
         }
 
@@ -747,7 +531,7 @@ describe "SprintAPI" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Validation failed: End time must be after the start time"
+              message: I18n.t("api_error.validate_time")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -761,10 +545,10 @@ describe "SprintAPI" do
 
       response "200", "delete successfully" do
         examples "appication/json" => {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
         run_test! do |response|
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect { Sprint.find(id) }.to raise_error ActiveRecord::RecordNotFound
         end
@@ -776,31 +560,12 @@ describe "SprintAPI" do
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "appication/json" => {
-          message: "Delete successfully"
+          message: I18n.t("delete_success")
         }
         run_test! do |response|
-          expected = { message: "Delete successfully" }
+          expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
           expect { Sprint.find(id) }.to raise_error ActiveRecord::RecordNotFound
-        end
-      end
-
-      response "401", "user hasn't logged in cannot delete sprint" do
-        let(:"Authorization") {}
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
-          }
-        }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
-            }
-          }
-          expect(response.body).to eq expected.to_json
         end
       end
 
@@ -809,14 +574,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -828,71 +593,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
+            message: I18n.t("api_error.unauthorized")
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
-              message: "unauthorized"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "could not find sprint " do
-        let(:id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Sprint with 'id'=0 [WHERE \"sprints\".\"phase_id\" = $1]"
-          }
-        }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Sprint with 'id'=0 [WHERE \"sprints\".\"phase_id\" = $1]"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "could not find phase " do
-        let(:phase_id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
-          }
-        }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "404", "could not find project " do
-        let(:project_id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Project with 'id'=0"
-          }
-        }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Project with 'id'=0"
+              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json

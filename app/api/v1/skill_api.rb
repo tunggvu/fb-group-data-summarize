@@ -55,7 +55,7 @@ class V1::SkillAPI < Grape::API
       delete do
         skill = Skill.includes(:levels).find params[:id]
         skill.destroy!
-        { message: "Delete successfully" }
+        { message: I18n.t("delete_success") }
       end
     end
   end

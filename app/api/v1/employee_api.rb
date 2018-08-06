@@ -39,7 +39,7 @@ class V1::EmployeeAPI < Grape::API
       delete do
         authorize @employee, :executive?
         @employee.destroy!
-        { message: "Delete successfully" }
+        { message: I18n.t("delete_success") }
       end
     end
   end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Level < ApplicationRecord
-  has_many :requirements, dependent: :destroy
-  has_many :employee_levels, dependent: :destroy
+  has_many :requirements, dependent: :restrict_with_error
+  has_many :employee_levels, dependent: :restrict_with_error
   has_many :employees, through: :employee_levels
   belongs_to :skill
 

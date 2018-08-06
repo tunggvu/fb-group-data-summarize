@@ -39,6 +39,7 @@ class V1::SkillAPI < Grape::API
           requires :name, type: String
           requires :rank, type: Integer
           optional :logo, type: String
+          optional :_destroy, type: Integer
         end
       end
       patch do
@@ -52,7 +53,7 @@ class V1::SkillAPI < Grape::API
 
       desc "Delete skill"
       delete do
-        skill = Skill.includes(levels: [:requirements, :employee_levels]).find params[:id]
+        skill = Skill.includes(:levels).find params[:id]
         skill.destroy!
         { message: "Delete successfully" }
       end

@@ -58,5 +58,14 @@ Rails.application.configure do
     Bullet.enable = true
     Bullet.bullet_logger = true
     Bullet.raise = true
+    Bullet.add_whitelist type: :n_plus_one_query, class_name: Level.name, association: :requirements
+    Bullet.add_whitelist type: :n_plus_one_query, class_name: Level.name, association: :employee_levels
+  end
+
+  config.middleware.insert_before 0, Rack::Cors do
+    allow do
+      origins "*"
+      resource "/api/v1/*", headers: :any, methods: [:get, :post, :options, :delete, :put, :patch]
+    end
   end
 end

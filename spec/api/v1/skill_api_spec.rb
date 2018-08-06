@@ -522,6 +522,64 @@ describe "Skill API" do
         end
       end
 
+      response "200", "delete levels when update skill successfully" do
+        let(:id) { skill.id }
+        let(:params) {
+          {
+            name: "Ruby on Rails",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            levels: [
+              {
+                id: level.id,
+                name: level.name,
+                logo: level.logo,
+                rank: level.rank,
+                _destroy: 1
+              },
+              {
+                id: level2.id,
+                name: level2.name,
+                logo: level2.logo,
+                rank: level2.rank,
+                _destroy: 1
+              },
+              {
+                name: "Some Name",
+                logo: "#",
+                rank: 100
+              }
+            ]
+          }
+        }
+
+        examples "application/json" => {
+          id: 42814442,
+          name: "volup",
+          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+          levels: [
+            {
+              id: 15785576,
+              name: "al",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              level: 92878607,
+              skill_id: 60261939
+            },
+            {
+              id: 4155938,
+              name: "volupta",
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              level: -27562324,
+              skill_id: 63219058
+            }
+          ]
+        }
+        run_test! do
+          expected = Entities::Skill.represent skill.reload
+          expect(response.body).to eq expected.to_json
+          expect(skill.levels.count).to eq 1
+        end
+      end
+
       response "200", "update successfully" do
         let(:id) { skill.id }
         let(:params) {
@@ -576,6 +634,27 @@ describe "Skill API" do
     delete "Delete skill" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer
+
+      response "422", "unable to delete when having association" do
+        let(:id) { skill.id }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: "Failed to destroy the record"
+          }
+        }
+
+        let!(:requirement) { FactoryBot.create :requirement, level: level }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Failed to destroy the record"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
 
       response "200", "delete successfully" do
         let(:id) { skill.id }

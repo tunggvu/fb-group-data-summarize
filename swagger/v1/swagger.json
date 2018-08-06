@@ -218,6 +218,212 @@
         }
       }
     },
+    "/api/v1/skills/{skill_id}/levels": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "skill_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Create a new level",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "rank": {
+                  "type": "integer"
+                },
+                "logo": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "rank"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "empty parameter 'name'",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "name is empty"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "employee cannot create level",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "skill not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Skill with 'id'=0"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "level created",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Master",
+                "rank": 100,
+                "logo": "#",
+                "skill_id": 1234
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/skills/{skill_id}/levels/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "skill_id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "patch": {
+        "summary": "update a level",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "rank": {
+                  "type": "integer"
+                },
+                "logo": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "rank"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "empty parameter 'name'",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "name is empty"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "employee cannot update level",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "level updated",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Master",
+                "rank": 100,
+                "logo": "#",
+                "skill_id": 1234
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete phase",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "description": "employee cannot delete phase",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "deleted a phase",
+            "examples": {
+              "application/json": {
+                "message": "Delete successfully"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/organizations": {
       "parameters": [
         {
@@ -1699,6 +1905,17 @@
           }
         ],
         "responses": {
+          "422": {
+            "description": "unable to delete when having association",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Failed to destroy the record"
+                }
+              }
+            }
+          },
           "200": {
             "description": "delete successfully",
             "examples": {

@@ -10,5 +10,5 @@ class Level < ApplicationRecord
   validates :rank, presence: true
   validates :skill, presence: true
 
-  delegate :name, to: :skill, prefix: true
+  delegate :name, :logo, to: :skill, prefix: true
 end

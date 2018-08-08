@@ -5,4 +5,6 @@ class EmployeeLevel < ApplicationRecord
   belongs_to :employee
 
   has_many :efforts
+
+  delegate :name, to: :employee, prefix: false
 end

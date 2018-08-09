@@ -1319,6 +1319,64 @@
         }
       }
     },
+    "/api/v1/profile": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "profile",
+          "in": "body",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "phone": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "patch": {
+        "summary": "Update current user profile",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated profile",
+            "examples": {
+              "application/json": {
+                "id": -25217952,
+                "organization_id": -18753403,
+                "name": "fugiat consectetur nulla",
+                "employee_code": "V612453",
+                "email": "Eff4Io5b-9@ILYSqeFBanInhDEINmNKeyzW.xy",
+                "birthday": "2436-05-01",
+                "phone": "43722327",
+                "avatar": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+              }
+            }
+          },
+          "401": {
+            "description": "invalid token",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/projects": {
       "parameters": [
         {

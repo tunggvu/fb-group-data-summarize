@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Project.all.each do |project|
-  Phase.all.each do |phase|
+  project.phases.each do |phase|
     5.times do |n|
       Sprint.seed do |sprint|
         sprint.name = "sprint #{n+1}"

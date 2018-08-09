@@ -60,6 +60,7 @@ end
 gem "ancestry", "~> 3.0.2"
 gem "api-pagination", "~> 4.8.1"
 gem "bullet"
+gem "carrierwave"
 gem "config"
 gem "faker"
 gem "grape"

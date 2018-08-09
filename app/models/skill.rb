@@ -5,4 +5,6 @@ class Skill < ApplicationRecord
   validates :name, presence: true
 
   accepts_nested_attributes_for :levels, allow_destroy: true
+
+  mount_uploader :logo, ImageUploader
 end

@@ -14,6 +14,8 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+    volumes:
+      - /data/emres-storage:/emres-server/uploads
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -26,6 +28,8 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+    volumes:
+      - /data/emres-storage:/emres-server/uploads
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -38,6 +42,8 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+    volumes:
+      - /data/emres-storage:/emres-server/uploads
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -50,17 +56,8 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
-    environment:
-      RAILS_ENV: staging
-      RACK_ENV: staging
-
-  bot:
-    image: emres-server
-    command: ./start-bot.sh
-    ports:
-      - "3000"
-    depends_on:
-      - postgres
+    volumes:
+      - /data/emres-storage:/emres-server/uploads
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging

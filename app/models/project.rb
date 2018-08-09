@@ -10,4 +10,6 @@ class Project < ApplicationRecord
   has_many :employees, -> { distinct }, through: :employee_levels
 
   validates :name, presence: true
+
+  mount_uploader :logo, ImageUploader
 end

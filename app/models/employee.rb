@@ -7,6 +7,7 @@ class Employee < ApplicationRecord
   has_many :projects, dependent: :nullify, foreign_key: :product_owner_id
   has_many :levels, through: :employee_levels
   has_one :employee_token, dependent: :destroy
+
   validates :name, presence: true
   validates :employee_code, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: Settings.validations.email_regex }
@@ -14,6 +15,8 @@ class Employee < ApplicationRecord
   scope :of_organizations, -> (org_ids) { where(organization_id: org_ids).ids }
 
   has_secure_password validations: false
+
+  mount_uploader :avatar, ImageUploader
 
   def is_manager?(organization)
     organization.level_before_type_cast > 1 && organization.path.pluck(:manager_id).include?(self.id)

@@ -1858,6 +1858,81 @@
             "description": "with invalid token"
           }
         }
+      },
+      "patch": {
+        "summary": "Change Password API",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "current_password": {
+                  "type": "string"
+                },
+                "new_password": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "current_password",
+                "new_password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "new password is wrong format ",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "new_password is invalid"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Wrong current password",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "wrong current password"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Change Password success with valid new_password",
+            "examples": {
+              "application/json": {
+                "message": "Success"
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/skills": {

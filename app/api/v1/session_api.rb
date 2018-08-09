@@ -25,9 +25,15 @@ class V1::SessionAPI < Grape::API
     end
 
     desc "Change password for current user"
+    params do
+      requires :current_password, type: String, allow_blank: false
+      requires :new_password, type: String, allow_blank: false, regexp: Settings.validations.password_regex
+    end
     patch do
-      # TODO: Dummy
-      Dummy::CHANGE_PASSWORD
+      authenticate!
+      raise APIError::WrongCurrentPassword unless current_user.try(:authenticate, params[:current_password])
+      current_user.update_attributes! password: params[:new_password]
+      { message: I18n.t("success") }
     end
   end
 end

@@ -50,5 +50,7 @@ en:
     effort_greater: "Validation failed: Effort must be less than or equal to 100"
     effort_less_than_zero: "Validation failed: Effort must be greater than or equal to 0"
     invalid: "%{params} is invalid"
+    wrong_current_password: "wrong current password"    
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
+  success: "Success"

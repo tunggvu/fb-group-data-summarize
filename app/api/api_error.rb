@@ -12,12 +12,12 @@ module APIError
     end
   end
 
-  class Unauthenticated < APIError::Base
-  end
+  class Unauthenticated < APIError::Base; end
 
-  class TokenExpired < APIError::Base
-  end
+  class TokenExpired < APIError::Base; end
 
-  class WrongEmailPassword < APIError::Base
-  end
+  class WrongCurrentPassword < APIError::Base; end
+
+  class WrongEmailPassword < APIError::Base; end
+
 end

@@ -71,5 +71,110 @@ RSpec.describe "Sessions" do
         end
       end
     end
+
+    patch "Change Password API" do
+      consumes "application/json"
+      parameter name: "Authorization", in: :header, type: :string
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          current_password: { type: :string },
+          new_password: { type: :string }
+        },
+        required: ["current_password", "new_password"]
+      }
+
+      response "400", "new password is wrong format " do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) {
+          {
+            current_password: employee.password,
+            new_password: "Aa123456798"
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.invalid", params: "new_password")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.invalid", params: "new_password")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "Unauthorized" do
+        let(:"Authorization") { "Bearer" }
+        let(:params) {
+          {
+            current_password: "Aa@123456",
+            new_password: "Aa@123456"
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Wrong current password" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) {
+          {
+            current_password: "Aa@23450",
+            new_password: "Aa@123456"
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.wrong_current_password,
+            message: I18n.t("api_error.wrong_current_password")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.wrong_current_password,
+              message: I18n.t("api_error.wrong_current_password")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "Change Password success with valid new_password" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) {
+          {
+            current_password: employee.password,
+            new_password: "Aa@123456798"
+          }
+        }
+        examples "application/json" => {
+          message: I18n.t("success")
+        }
+        run_test! do |response|
+          expected = { message: I18n.t("success") }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
   end
 end

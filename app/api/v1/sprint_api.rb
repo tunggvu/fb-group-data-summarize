@@ -13,9 +13,8 @@ class V1::SprintAPI < Grape::API
 
           resource :sprints do
             desc "return all sprints"
-
-            # TODO authenticate_project_member and authenticate_manager
             get do
+              authorize @project, :view?
               present @phase.sprints, with: Entities::Sprint
             end
 
@@ -38,6 +37,7 @@ class V1::SprintAPI < Grape::API
 
               desc "get specific sprint's information"
               get do
+                authorize @project, :view?
                 present @sprint, with: Entities::Sprint
               end
 

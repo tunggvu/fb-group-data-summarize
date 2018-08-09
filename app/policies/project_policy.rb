@@ -9,4 +9,8 @@ class ProjectPolicy < ApplicationPolicy
   def project_owner?
     user == @record.product_owner
   end
+
+  def view?
+    executive? || @record.employees.include?(user)
+  end
 end

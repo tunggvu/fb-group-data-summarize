@@ -9,6 +9,7 @@ class V1::RequirementAPI < Grape::API
       resource :requirements do
         desc "Get all requirements"
         get do
+          authorize @phase.project, :view?
           present @phase.requirements.includes(level: :skill), with: Entities::Requirement
         end
 
@@ -28,6 +29,7 @@ class V1::RequirementAPI < Grape::API
 
           desc "return a requirement"
           get do
+            authorize @phase.project, :view?
             present @requirement, with: Entities::Requirement
           end
 

@@ -87,6 +87,29 @@ describe "Requirement API" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "401", "employee isn't in project cannot get all requirements" do
+        let(:employee) { FactoryBot.create :employee }
+        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.not_authorized_error,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.not_authorized_error,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
 
     post "Create new requirement" do
@@ -289,6 +312,30 @@ describe "Requirement API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "employee isn't in project cannot get requirement" do
+        let(:employee) { FactoryBot.create :employee }
+        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:id) { requirement.id }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.not_authorized_error,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.not_authorized_error,
               message: I18n.t("api_error.unauthorized")
             }
           }

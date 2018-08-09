@@ -1,0 +1,20 @@
+vi:
+  hello: "Hello world"
+  grape:
+    errors:
+      messages:
+        required:
+  api_error:
+    wrong_email_password: "Sai email hoặc mật khẩu"
+    unauthorized: "Không được phép truy cập"
+    missing_params: "Thiếu %{params}"
+    invalid_params: "Xác thực không thành công: %{params} không hợp lệ"
+    taken_params: "Xác thực không thành công: %{params} đã tồn tại"
+    invalid_id: "Không tìm thấy %{model} với 'id'=%{id}"
+    empty_params: "%{params} rỗng"
+    blank_params: "Xác thực không thành công: %{params} không để trống"
+    must_exist: "Xác thực không thành công: %{model} phải tồn tại"
+    validate_time: "Xác thực không thành công: Thời gian kết thúc phải sau hơn thời gian bắt đầu"
+    invalid: "%{params} không hợp lệ"
+  delete_success: "Xóa thành công"
+  log_out: "Bạn đã đăng xuất!"

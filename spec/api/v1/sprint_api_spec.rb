@@ -114,6 +114,28 @@ describe "SprintAPI" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "401", "employee isn't in project cannot view all sprints" do
+        let(:employee) { FactoryBot.create :employee }
+        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.not_authorized_error,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.not_authorized_error,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
     post "Create new sprint" do
       consumes "application/json"
@@ -343,6 +365,29 @@ describe "SprintAPI" do
         }
         run_test! do
           expected = Entities::Sprint.represent sprint1, only: [:id, :name, :starts_on, :ends_on]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "employee isn't in project cannot get information specific sprint" do
+        let(:employee) { FactoryBot.create :employee }
+        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.not_authorized_error,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.not_authorized_error,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
           expect(response.body).to eq expected.to_json
         end
       end

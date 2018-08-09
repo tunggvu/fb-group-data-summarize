@@ -28,6 +28,7 @@ class V1::ProjectAPI < Grape::API
 
       desc "Get specific project's information"
       get do
+        authorize @project, :view?
         # present @project, with: Entities::Project
         # TODO: Dummy
         Dummy::GET_PROJECT

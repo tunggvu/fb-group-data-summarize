@@ -10,6 +10,7 @@ class V1::PhaseAPI < Grape::API
       resource :phases do
         desc "return all phases in project"
         get do
+          authorize @project, :view?
           present @project.phases, with: Entities::Phase
         end
 
@@ -27,6 +28,7 @@ class V1::PhaseAPI < Grape::API
 
           desc "return a phase"
           get do
+            authorize @project, :view?
             present @phase, with: Entities::Phase
           end
 

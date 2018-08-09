@@ -7,6 +7,9 @@ RSpec.describe Project, type: :model do
     it { should have_many(:phases) }
     it { should have_many(:sprints) }
     it { should belong_to(:product_owner) }
+    it { should have_many(:efforts).through(:sprints) }
+    it { should have_many(:employee_levels).through(:efforts) }
+    it { should have_many(:employees).through(:employee_levels) }
   end
 
   describe "#validates" do

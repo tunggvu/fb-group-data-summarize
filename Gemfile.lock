@@ -246,6 +246,11 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (3.0.0)
     rake (12.3.1)
+    ransack (2.0.0)
+      actionpack (>= 5.0)
+      activerecord (>= 5.0)
+      activesupport (>= 5.0)
+      i18n
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
@@ -356,6 +361,7 @@ DEPENDENCIES
   pundit
   rack-cors
   rails (~> 5.2.0)
+  ransack
   rspec-rails
   rswag-api (~> 2.0.4)
   rswag-specs (~> 2.0.4)

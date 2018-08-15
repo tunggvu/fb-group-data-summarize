@@ -21,7 +21,14 @@ describe "Employee API" do
     get "Information of all employees" do
       consumes "application/json"
 
-      response "200", "return all employee" do
+      response "200", "return employee with correct params" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) {
+          {
+            query: "B12100",
+            organization_id: 1
+          }
+        }
         examples "application/json" =>
           [
             {
@@ -42,8 +49,69 @@ describe "Employee API" do
         end
       end
 
+      response "200", "return employee with params nil" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) {
+          {
+            query: "",
+            organization_id: ""
+          }
+        }
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            },
+            {
+              id: 2,
+              organization_id: 1,
+              name: "Eldora Fay",
+              employee_code: "B1210001",
+              email: "eldora.fay@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0987654321",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [Entities::Employee.represent(employee), Entities::Employee.represent(manager),
+            Entities::Employee.represent(admin)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return nil employee" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) {
+          {
+            query: "abcdegfh",
+            organization_id: 10000
+          }
+        }
+        examples "application/json" =>
+          []
+        run_test! do |response|
+          expected = [Entities::Employee.represent(employee), Entities::Employee.represent(manager),
+            Entities::Employee.represent(admin)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
       response "401", "unauthorized" do
         let(:"Authorization") { "" }
+        let(:params) {
+          {
+            query: "a",
+            organization_id: 1
+          }
+        }
 
         examples "application/json" => {
           error: {

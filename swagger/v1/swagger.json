@@ -289,19 +289,10 @@
         ],
         "responses": {
           "200": {
-            "description": "return all employee",
+            "description": "return nil employee",
             "examples": {
               "application/json": [
-                {
-                  "id": 1,
-                  "organization_id": 1,
-                  "name": "Employee",
-                  "employee_code": "B120000",
-                  "email": "employee@framgia.com",
-                  "birthday": "1/1/2018",
-                  "phone": "0123456789",
-                  "avatar": "#"
-                }
+
               ]
             }
           },
@@ -1089,7 +1080,7 @@
         ],
         "responses": {
           "401": {
-            "description": "member cannot add employee",
+            "description": "manager of other organization cannot add employee",
             "examples": {
               "application/json": {
                 "error": {

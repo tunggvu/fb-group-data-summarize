@@ -419,4 +419,160 @@ describe "Organization API" do
       end
     end
   end
+
+  path "/api/v1/organizations/{id}/employees" do
+    parameter name: "Authorization", in: :header, type: :string
+    let(:id) { division2.id }
+
+    patch "Update an organization for employees" do
+      consumes "application/json"
+
+      parameter name: :employees, in: :body, schema: {
+        type: :object,
+        properties: {
+          employees: [{type: :integer}]
+        },
+      }
+      parameter name: :id, in: :path, type: :integer, description: "Organization ID"
+
+      response "401", "member cannot add employee" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:employee2) { FactoryBot.create :employee }
+        let(:employee1) { FactoryBot.create :employee }
+        let(:employees) {
+          {
+            employees: [employee1.id, employee2.id]
+          }
+        }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "manager of other organization cannot add employee" do
+        let(:manager2) { FactoryBot.create :employee, organization: division }
+        let(:manager2_token) { FactoryBot.create :employee_token, employee: manager2 }
+
+        before do
+          division.update manager_id: manager2.id
+        end
+
+        let(:"Authorization") { "Bearer #{manager2_token.token}" }
+        let(:employee2) { FactoryBot.create :employee }
+        let(:employee1) { FactoryBot.create :employee }
+        let(:employees) {
+          {
+            employees: [employee1.id, employee2.id]
+          }
+        }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return blank array if params is blank" do
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let(:employees) {
+          {
+            employees: []
+          }
+        }
+        examples "application/json" =>
+          []
+
+        run_test! do |response|
+          expected = []
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "admin can add employee" do
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let(:employee2) { FactoryBot.create :employee }
+        let(:employee1) { FactoryBot.create :employee }
+        let(:employees) {
+          {
+            employees: [employee1.id, employee2.id]
+          }
+        }
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+
+        run_test! do |response|
+          expected = [
+            Entities::Employee.represent(employee1.reload),
+            Entities::Employee.represent(employee2.reload)
+          ]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "manager of organization can add employee" do
+        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let(:employee2) { FactoryBot.create :employee }
+        let(:employee1) { FactoryBot.create :employee }
+        let(:employees) {
+          {
+            employees: [employee1.id, employee2.id]
+          }
+        }
+
+        examples "application/json" => [
+          {
+            id: 1,
+            organization_id: 1,
+            name: "Employee",
+            employee_code: "B120000",
+            email: "employee@framgia.com",
+            birthday: "1/1/2018",
+            phone: "0123456789",
+            avatar: "#"
+          }
+        ]
+        run_test! do
+          expected = [
+            Entities::Employee.represent(employee1.reload),
+            Entities::Employee.represent(employee2.reload)
+          ]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
 end

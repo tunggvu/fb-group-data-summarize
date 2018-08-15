@@ -12,7 +12,7 @@ class Employee < ApplicationRecord
   validates :employee_code, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: Settings.validations.email_regex }
 
-  scope :of_organizations, -> (org_ids) { where(organization_id: org_ids).ids }
+  scope :of_organizations, -> (org_ids) { where organization_id: org_ids }
 
   has_secure_password validations: false
 

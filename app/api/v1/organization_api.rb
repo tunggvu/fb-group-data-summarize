@@ -48,6 +48,22 @@ class V1::OrganizationAPI < Grape::API
         @org.destroy!
         { message: I18n.t("delete_success") }
       end
+
+      resource :employees do
+        desc "Add employees to organization"
+        params do
+          requires :employees, type: Array[Integer]
+        end
+        patch do
+          authorize @org, :organization_manager?
+          ActiveRecord::Base.transaction do
+            employees = Employee.where id: params[:employees]
+            return [] unless employees.present?
+            employees.update_all organization_id: @org.id
+            present employees.reload, with: Entities::Employee
+          end
+        end
+      end
     end
   end
 end

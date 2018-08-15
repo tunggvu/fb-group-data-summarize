@@ -20,6 +20,6 @@ class Organization < ApplicationRecord
   end
 
   def employee_ids
-    Employee.of_organizations subtree_ids
+    (Employee.of_organizations subtree_ids).ids
   end
 end

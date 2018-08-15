@@ -10,16 +10,57 @@ describe "Profile API" do
     parameter name: "Authorization", in: :header, type: :string
     let(:"Authorization") { "Bearer #{user_token.token}" }
 
-    parameter name: :profile, in: :body, schema: {
-      type: :object,
-      properties: {
-        phone: { type: :string },
-        avatar: { type: :string }
-      }
-    }
+    get "Get profile information" do
+      consumes "application/json"
+
+      response "200", "Return profile of current user" do
+        examples "application/json" => {
+          id: 1,
+          organization_id: 1,
+          avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+          name: "occaecat",
+          employee_code: "D412437",
+          email: "v8uGTMi@fAXlhkXWMQNFdsEQ.qe",
+          phone: "+839948435",
+          birthday: "2621-07-19"
+        }
+        run_test! do
+          expected = Entities::Employee.represent current_user
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "Unauthenticated user" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        let(:"Authorization") { "" }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+
 
     patch "Update current user profile" do
       consumes "application/json"
+
+      parameter name: :profile, in: :body, schema: {
+        type: :object,
+        properties: {
+          phone: { type: :string },
+          avatar: { type: :string }
+        }
+      }
 
       response "200", "Updated profile" do
         examples "application/json" => {
@@ -38,13 +79,13 @@ describe "Profile API" do
             avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
           }
         }
-        run_test! do |response|
+        run_test! do
           expected = Entities::Employee.represent current_user.reload
           expect(response.body).to eq expected.to_json
         end
       end
 
-      response "401", "invalid token" do
+      response "401", "Unauthenticated user" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
@@ -58,7 +99,7 @@ describe "Profile API" do
             avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
           }
         }
-        run_test! do |response|
+        run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,

@@ -1393,27 +1393,63 @@
           "name": "Authorization",
           "in": "header",
           "type": "string"
-        },
-        {
-          "name": "profile",
-          "in": "body",
-          "schema": {
-            "type": "object",
-            "properties": {
-              "phone": {
-                "type": "string"
-              },
-              "avatar": {
-                "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Get profile information",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Return profile of current user",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "organization_id": 1,
+                "avatar": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                "name": "occaecat",
+                "employee_code": "D412437",
+                "email": "v8uGTMi@fAXlhkXWMQNFdsEQ.qe",
+                "phone": "+839948435",
+                "birthday": "2621-07-19"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated user",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
               }
             }
           }
         }
-      ],
+      },
       "patch": {
         "summary": "Update current user profile",
         "consumes": [
           "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "profile",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "phone": {
+                  "type": "string"
+                },
+                "avatar": {
+                  "type": "string"
+                }
+              }
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1432,7 +1468,7 @@
             }
           },
           "401": {
-            "description": "invalid token",
+            "description": "Unauthenticated user",
             "examples": {
               "application/json": {
                 "error": {

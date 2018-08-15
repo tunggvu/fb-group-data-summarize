@@ -6,8 +6,7 @@ class V1::ProfileAPI < Grape::API
 
     desc "Get profile information"
     get do
-      # TODO: Dummy
-      Dummy::GET_PROFILE
+      present current_user, with: Entities::Employee
     end
 
     desc "Update current user profile"

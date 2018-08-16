@@ -1110,6 +1110,67 @@
         }
       }
     },
+    "/api/v1/organizations/{id}/employees/{employee_id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "type": "integer",
+          "description": "Organization ID",
+          "required": true
+        },
+        {
+          "name": "employee_id",
+          "in": "path",
+          "type": "integer",
+          "description": "Employee ID",
+          "required": true
+        }
+      ],
+      "delete": {
+        "summary": "Deletes an organization employee",
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "manager of organization can delete employee",
+            "examples": {
+              "application/json": {
+                "message": "Delete successfully"
+              }
+            }
+          },
+          "404": {
+            "description": "cannot delete employee not in organization",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Employee with 'id'=0 [WHERE \"employees\".\"organization_id\" = $1]"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/projects/{project_id}/phases": {
       "parameters": [
         {

@@ -575,4 +575,158 @@ describe "Organization API" do
       end
     end
   end
+
+  path "/api/v1/organizations/{id}/employees/{employee_id}" do
+    parameter name: "Authorization", in: :header, type: :string
+    parameter name: :id, in: :path, type: :integer, description: "Organization ID"
+    parameter name: :employee_id, in: :path, type: :integer, description: "Employee ID"
+    let(:"Authorization") { "Bearer #{admin_token.token}" }
+    let(:id) { division2.id }
+    let(:employee_id) { employee.id }
+
+    delete "Deletes an organization employee" do
+      consumes "application/json"
+
+      response "200", "admin can delete employee" do
+        examples "application/json" => {
+          message: I18n.t("delete_success")
+        }
+
+        run_test! do |response|
+          expected = {
+            message: I18n.t("delete_success")
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "manager of organization can delete employee" do
+        examples "application/json" => {
+          message: I18n.t("delete_success")
+        }
+
+        let(:"Authorization") { "Bearer #{manager_token.token}" }
+
+        run_test! do |response|
+          expected = {
+            message: I18n.t("delete_success")
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "not found employee" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.employee_not_in_organization", id: 0)
+          }
+        }
+
+        let(:employee_id) { 0 }
+        run_test! do |response|
+          message = I18n.t("api_error.invalid_id", model: "Employee", id: employee_id)
+          expect(response.body).to include message
+        end
+      end
+
+      response "404", "not found organization" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: "Organization", id: 0)
+          }
+        }
+
+        let(:id) { 0 }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "cannot delete employee not in organization" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.employee_not_in_organization", id: 0)
+          }
+        }
+
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let(:id) { section2.id }
+        run_test! do |response|
+          message = I18n.t("api_error.invalid_id", model: "Employee", id: employee_id)
+          expect(response.body).to include message
+        end
+      end
+
+      response "401", "employee cannot delete employee" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "manager of other organization cannot delete employee" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        let(:other_manager) { FactoryBot.create :employee, organization: division }
+        let(:other_manager_token) { FactoryBot.create :employee_token, employee: other_manager }
+        let(:"Authorization") { "Bearer #{other_manager_token.token}" }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "unauthorized" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        let(:"Authorization") { "" }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
 end

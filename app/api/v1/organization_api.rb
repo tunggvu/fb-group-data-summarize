@@ -63,6 +63,16 @@ class V1::OrganizationAPI < Grape::API
             present employees.reload, with: Entities::Employee
           end
         end
+
+        route_param :employee_id do
+          desc "Deletes an organization employee"
+          delete do
+            authorize @org, :organization_manager?
+            employee = Employee.of_organizations(@org.subtree.ids).find params[:employee_id]
+            employee.update_attributes! organization_id: :nil
+            { message: I18n.t("delete_success") }
+          end
+        end
       end
     end
   end

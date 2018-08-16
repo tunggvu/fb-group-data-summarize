@@ -16,5 +16,6 @@ vi:
     must_exist: "Xác thực không thành công: %{model} phải tồn tại"
     validate_time: "Xác thực không thành công: Thời gian kết thúc phải sau hơn thời gian bắt đầu"
     invalid: "%{params} không hợp lệ"
+    employee_not_in_organization: "Nhân viên này không thuộc tổ chức" 
   delete_success: "Xóa thành công"
   log_out: "Bạn đã đăng xuất!"

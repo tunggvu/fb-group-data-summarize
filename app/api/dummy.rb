@@ -14,7 +14,7 @@ module Dummy
   GET_PROJECT = {
     "name": "amet",
     "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHg",
-    "project_owner": {
+    "product_owner": {
       "id": 51336885,
       "organization_id": 250001,
       "name": "consectetur in nisi mag",

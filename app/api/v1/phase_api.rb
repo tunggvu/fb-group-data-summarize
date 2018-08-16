@@ -11,7 +11,7 @@ class V1::PhaseAPI < Grape::API
         desc "return all phases in project"
         get do
           authorize @project, :view?
-          present @project.phases, with: Entities::Phase
+          present @project.phases.includes(:requirements, :sprints), with: Entities::Phase
         end
 
         desc "create phase in project"

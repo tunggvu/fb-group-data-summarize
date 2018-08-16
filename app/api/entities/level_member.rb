@@ -5,8 +5,10 @@ module Entities
     with_options(override: true) do
       expose :skill_id, as: :id
       expose :skill_name, as: :name
-      expose :skill_logo, as: :logo
       unexpose :id, :name, :rank, :logo
+      expose :logo do |level_member|
+        level_member.skill_logo.url
+      end
       expose :level do
         expose :id, :name, :rank, :logo
       end

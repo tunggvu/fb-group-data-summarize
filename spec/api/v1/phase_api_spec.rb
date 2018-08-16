@@ -245,7 +245,7 @@ describe "Phase API" do
           name: "Phase 1"
         }
         run_test! do
-          expected = Entities::Phase.represent phase1, only: [:id, :name]
+          expected = Entities::Phase.represent phase1
           expect(response.body).to eq expected.to_json
         end
       end
@@ -350,10 +350,7 @@ describe "Phase API" do
           name: "phase 3"
         }
         run_test! do
-          expected = {
-            id: phase1.id,
-            name: "phase 3"
-          }
+          expected = Entities::Phase.represent phase1.reload
           expect(response.body).to eq expected.to_json
         end
       end
@@ -366,10 +363,7 @@ describe "Phase API" do
           name: "phase 4"
         }
         run_test! do
-          expected = {
-            id: phase1.id,
-            name: "phase 4"
-          }
+          expected = Entities::Phase.represent phase1.reload
           expect(response.body).to eq expected.to_json
         end
       end

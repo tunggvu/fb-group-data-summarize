@@ -6,7 +6,7 @@ class V1::ProjectAPI < Grape::API
 
     desc "Return all projects"
     get do
-      projects = Project.includes(:product_owner, :phases)
+      projects = Project.includes(:product_owner)
       present projects, with: Entities::Project
     end
 
@@ -22,33 +22,32 @@ class V1::ProjectAPI < Grape::API
     end
 
     route_param :id do
-      before do
-        @project = Project.find params[:id]
-      end
 
       desc "Get specific project's information"
       get do
-        authorize @project, :view?
-        # present @project, with: Entities::Project
-        # TODO: Dummy
-        Dummy::GET_PROJECT
+        project = Project.includes(phases: [sprints: [efforts: [employee_level: [:employee, :level]]], requirements: [level: :skill]]).find params[:id]
+        authorize project, :view?
+        present project, with: Entities::ProjectDetail
       end
 
       desc "Updates a project"
       params do
-        requires :name, type: String, allow_blank: false
-        requires :product_owner_id, type: Integer, allow_blank: false
+        optional :name, type: String
+        optional :description, type: String
+        optional :product_owner_id, type: Integer
       end
       patch do
-        authorize @project, :project_manager?
-        @project.update_attributes! declared(params, include_missing: false)
-        present @project, with: Entities::Project
+        project = Project.find params[:id]
+        authorize project, :project_manager?
+        project.update_attributes! declared(params, include_missing: false)
+        present project, with: Entities::Project
       end
 
       desc "Deletes an project"
       delete do
-        authorize @project, :project_manager?
-        @project.destroy!
+        project = Project.find params[:id]
+        authorize project, :project_manager?
+        project.destroy!
         { message: I18n.t("delete_success") }
       end
     end

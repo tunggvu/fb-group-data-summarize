@@ -12,4 +12,8 @@ class Project < ApplicationRecord
   validates :name, presence: true
 
   mount_uploader :logo, ImageUploader
+
+  def current_sprint
+    sprints.where("start_time <= :time AND end_time >= :time", {time: Time.zone.now}).first
+  end
 end

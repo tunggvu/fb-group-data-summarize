@@ -3,6 +3,6 @@
 module Entities
   class Effort < Grape::Entity
     expose :id, :effort
-    expose :employee_level, with: Entities::EmployeeLevel, merge: true
+    expose :employee_level, with: Entities::EmployeeLevel
   end
 end

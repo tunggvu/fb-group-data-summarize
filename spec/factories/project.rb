@@ -4,5 +4,7 @@ FactoryBot.define do
   factory :project do
     association :product_owner, factory: :employee
     name { Faker::Name.name }
+    logo { "image.png" }
+    description { "Description" }
   end
 end

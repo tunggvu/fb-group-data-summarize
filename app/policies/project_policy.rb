@@ -3,10 +3,10 @@
 class ProjectPolicy < ApplicationPolicy
   def project_manager?
     product_owner = @record.product_owner
-    admin? || project_owner? || user.is_manager?(product_owner.organization)
+    admin? || product_owner? || user.is_manager?(product_owner.organization)
   end
 
-  def project_owner?
+  def product_owner?
     user == @record.product_owner
   end
 

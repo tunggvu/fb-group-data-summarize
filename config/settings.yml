@@ -17,7 +17,7 @@ error_formatter:
     token_expired: 401
     record_not_found: 404
     validation_errors: 400
-    # TODO: wrong email, password should return 401 
+    # TODO: wrong email, password should return 401
     wrong_email_password: 400
     wrong_current_password: 422
     unauthenticated: 401
@@ -29,6 +29,7 @@ validations:
     max_length: 255
   email_regex: !ruby/regexp '/\b[A-Z0-9._%a-z\-]+@framgia\.com\z/'
   password_regex: !ruby/regexp '/^(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,}$/'
+  phone_regex: !ruby/regexp '/\A(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/'
 
 employee_tokens:
   token:

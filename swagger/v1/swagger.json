@@ -1529,6 +1529,17 @@
                 }
               }
             }
+          },
+          "422": {
+            "description": "phone is wrong format",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Phone is invalid"
+                }
+              }
+            }
           }
         }
       }
@@ -1835,6 +1846,9 @@
               "application/json": {
                 "id": 1,
                 "name": "Project 1",
+                "description": "Project description",
+                "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
+                "started_at": "2018-08-10T05:36:15.959Z",
                 "product_owner": {
                   "id": 1,
                   "organization_id": 1,
@@ -1842,7 +1856,8 @@
                   "employee_code": "B120000",
                   "email": "employee@framgia.com",
                   "birthday": "1/1/2018",
-                  "phone": "0123456789"
+                  "phone": "0123456789",
+                  "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl"
                 }
               }
             }

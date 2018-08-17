@@ -4,13 +4,13 @@ class Sprint < ApplicationRecord
   belongs_to :project
   belongs_to :phase
   has_many :efforts, dependent: :destroy
-  validates :name, :start_time, :end_time, presence: true
-  validate :validate_end_time_after_start_time
+  validates :name, :starts_on, :ends_on, presence: true
+  validate :validate_ends_on_after_starts_on
 
   private
-  def validate_end_time_after_start_time
-    if start_time.present? && end_time.present? && start_time > end_time
-      errors.add :end_time, "must be after the start time"
+  def validate_ends_on_after_starts_on
+    if starts_on.present? && ends_on.present? && starts_on > ends_on
+      errors.add :ends_on, "must be after the starts on"
     end
   end
 end

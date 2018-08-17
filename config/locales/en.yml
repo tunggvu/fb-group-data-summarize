@@ -46,7 +46,8 @@ en:
     empty_params: "%{params} is empty"
     blank_params: "Validation failed: %{params} can't be blank"
     must_exist: "Validation failed: %{model} must exist"
-    validate_time: "Validation failed: End time must be after the start time"
+    # Update ends on to start time
+    validate_time: "Validation failed: Ends on must be after the starts on"
     effort_greater: "Validation failed: Effort must be less than or equal to 100"
     effort_less_than_zero: "Validation failed: Effort must be greater than or equal to 0"
     invalid: "%{params} is invalid"

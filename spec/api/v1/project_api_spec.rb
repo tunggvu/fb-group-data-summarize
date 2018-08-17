@@ -237,8 +237,8 @@ describe "Project API" do
               {
                 id: 1,
                 name: "sprint 1",
-                starts_on: "2018-08-10T05:36:17.085Z",
-                ends_on: "2018-08-20T05:36:17.085Z",
+                starts_on: "2018-08-10",
+                ends_on: "2018-08-20",
                 members: [
                   {
                     id: 339,

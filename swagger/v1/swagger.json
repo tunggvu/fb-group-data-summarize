@@ -1744,8 +1744,8 @@
                       {
                         "id": 1,
                         "name": "sprint 1",
-                        "starts_on": "2018-08-10T05:36:17.085Z",
-                        "ends_on": "2018-08-20T05:36:17.085Z",
+                        "starts_on": "2018-08-10",
+                        "ends_on": "2018-08-20",
                         "members": [
                           {
                             "id": 339,
@@ -2638,14 +2638,14 @@
                 {
                   "id": 1,
                   "name": "sprint 1",
-                  "starts_on": "2018-07-19T14:00:00.000Z",
-                  "ends_on": "2018-07-20T14:00:00.000Z"
+                  "starts_on": "2018-07-19",
+                  "ends_on": "2018-07-20"
                 },
                 {
                   "id": 2,
                   "name": "sprint 2",
-                  "starts_on": "2018-07-19T14:00:00.000Z",
-                  "ends_on": "2018-07-20T14:00:00.000Z"
+                  "starts_on": "2018-07-19",
+                  "ends_on": "2018-07-20"
                 }
               ]
             }
@@ -2678,11 +2678,11 @@
                 "name": {
                   "type": "string"
                 },
-                "start_time": {
-                  "type": "datetime"
+                "starts_on": {
+                  "type": "date"
                 },
-                "end_time": {
-                  "type": "datetime"
+                "ends_on": {
+                  "type": "date"
                 }
               }
             }
@@ -2695,8 +2695,8 @@
               "application/json": {
                 "id": 1,
                 "name": "Sprint 1",
-                "starts_on": "2018-07-25T08:37:02.984Z",
-                "ends_on": "2018-08-04T08:37:02.984Z"
+                "starts_on": "2018-07-25",
+                "ends_on": "2018-08-04"
               }
             }
           },
@@ -2731,7 +2731,7 @@
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: End time must be after the start time"
+                  "message": "Validation failed: Ends on must be after the starts on"
                 }
               }
             }
@@ -2788,8 +2788,8 @@
               "application/json": {
                 "id": 1,
                 "name": "sprint 1",
-                "starts_on": "2018-07-19T14:00:00.000Z",
-                "ends_on": "2018-07-20T14:00:00.000Z"
+                "starts_on": "2018-07-19",
+                "ends_on": "2018-07-20"
               }
             }
           },
@@ -2821,17 +2821,17 @@
                 "name": {
                   "type": "string"
                 },
-                "start_time": {
-                  "type": "datetime"
+                "starts_on": {
+                  "type": "date"
                 },
-                "end_time": {
-                  "type": "datetime"
+                "ends_on": {
+                  "type": "date"
                 }
               },
               "required": [
                 "name",
-                "start_time",
-                "end_time"
+                "starts_on",
+                "ends_on"
               ]
             }
           }
@@ -2854,8 +2854,8 @@
               "application/json": {
                 "id": 1,
                 "name": "sprint 3",
-                "starts_on": "2018-07-19T14:00:00.000Z",
-                "ends_on": "2018-07-20T14:00:00.000Z"
+                "starts_on": "2018-07-19",
+                "ends_on": "2018-07-20"
               }
             }
           },
@@ -2876,7 +2876,7 @@
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: End time must be after the start time"
+                  "message": "Validation failed: Ends on must be after the starts on"
                 }
               }
             }

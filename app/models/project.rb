@@ -14,6 +14,6 @@ class Project < ApplicationRecord
   mount_uploader :logo, ImageUploader
 
   def current_sprint
-    sprints.where("start_time <= :time AND end_time >= :time", {time: Time.zone.now}).first
+    sprints.where("starts_on <= :time AND ends_on >= :time", {time: Time.zone.now}).first
   end
 end

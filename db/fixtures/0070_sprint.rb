@@ -7,8 +7,8 @@ Project.all.each do |project|
         sprint.name = "sprint #{n+1}"
         sprint.project_id = project.id
         sprint.phase_id = phase.id
-        sprint.start_time = Time.zone.now
-        sprint.end_time = 10.days.from_now
+        sprint.starts_on = (2*n-1).days.from_now
+        sprint.ends_on = (2*n+1).days.from_now
       end
     end
   end

@@ -80,14 +80,14 @@ describe "SprintAPI" do
             {
               id: 1,
               name: "sprint 1",
-              starts_on: "2018-07-19T14:00:00.000Z",
-              ends_on: "2018-07-20T14:00:00.000Z"
+              starts_on: "2018-07-19",
+              ends_on: "2018-07-20"
             },
             {
               id: 2,
               name: "sprint 2",
-              starts_on: "2018-07-19T14:00:00.000Z",
-              ends_on: "2018-07-20T14:00:00.000Z"
+              starts_on: "2018-07-19",
+              ends_on: "2018-07-20"
             }
           ]
         run_test! do
@@ -144,8 +144,8 @@ describe "SprintAPI" do
         type: :object,
         properties: {
           name: {type: :string},
-          start_time: {type: :datetime},
-          end_time: {type: :datetime},
+          starts_on: {type: :date},
+          ends_on: {type: :date},
         }
       }
 
@@ -153,16 +153,16 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.from_now
+            starts_on: Time.now,
+            ends_on: 7.days.from_now
           }
         }
 
         examples "application/json" => {
           id: 1,
           name: "Sprint 1",
-          starts_on: "2018-07-25T08:37:02.984Z",
-          ends_on: "2018-08-04T08:37:02.984Z"
+          starts_on: "2018-07-25",
+          ends_on: "2018-08-04"
         }
         run_test! do |response|
           expected = Entities::Sprint.represent Sprint.last
@@ -175,8 +175,8 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.from_now
+            starts_on: Time.now,
+            ends_on: 7.days.from_now
           }
         }
 
@@ -185,8 +185,8 @@ describe "SprintAPI" do
         examples "application/json" => {
           id: 1,
           name: "Sprint 1",
-          starts_on: "2018-07-25T08:37:02.984Z",
-          ends_on: "2018-08-04T08:37:02.984Z"
+          starts_on: "2018-07-25",
+          ends_on: "2018-08-04"
         }
         run_test! do |response|
           expected = Entities::Sprint.represent Sprint.last
@@ -199,8 +199,8 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.from_now
+            starts_on: Time.now,
+            ends_on: 7.days.from_now
           }
         }
 
@@ -225,8 +225,8 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.from_now
+            starts_on: Time.now,
+            ends_on: 7.days.from_now
           }
         }
 
@@ -254,8 +254,8 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "",
-            start_time: Time.now,
-            end_time: 7.days.from_now
+            starts_on: Time.now,
+            ends_on: 7.days.from_now
           }
         }
 
@@ -279,8 +279,8 @@ describe "SprintAPI" do
       response "400", "missing params" do
         let(:params) {
           {
-            start_time: Time.now,
-            end_time: 7.days.from_now
+            starts_on: Time.now,
+            ends_on: 7.days.from_now
           }
         }
         examples "application/json" => {
@@ -304,8 +304,8 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            start_time: Time.now,
-            end_time: 7.days.ago
+            starts_on: Time.now,
+            ends_on: 7.days.ago
           }
         }
 
@@ -360,8 +360,8 @@ describe "SprintAPI" do
         examples "application/json" => {
           id: 1,
           name: "sprint 1",
-          starts_on: "2018-07-19T14:00:00.000Z",
-          ends_on: "2018-07-20T14:00:00.000Z"
+          starts_on: "2018-07-19",
+          ends_on: "2018-07-20"
         }
         run_test! do
           expected = Entities::Sprint.represent sprint1, only: [:id, :name, :starts_on, :ends_on]
@@ -400,10 +400,10 @@ describe "SprintAPI" do
         type: :object,
         properties: {
           name: { type: :string },
-          start_time: { type: :datetime},
-          end_time: {type: :datetime}
+          starts_on: { type: :date},
+          ends_on: {type: :date}
         },
-        required: [:name, :start_time, :end_time]
+        required: [:name, :starts_on, :ends_on]
       }
 
       let(:id) { sprint1.id }
@@ -412,7 +412,7 @@ describe "SprintAPI" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let(:Authorization) { "Bearer #{employee_token.token}" }
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
+        let(:params) { { name: "sprint 3", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           error: {
@@ -436,7 +436,7 @@ describe "SprintAPI" do
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let(:Authorization) { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
+        let(:params) { { name: "sprint 3", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -461,49 +461,49 @@ describe "SprintAPI" do
         let!(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:Authorization) { "Bearer #{section_manager_token.token}" }
-        let(:params) { { name: "sprint 3", start_time: "2018-07-19T14:00:00.000Z", end_time: "2018-07-20T14:00:00.000Z" } }
+        let(:params) { { name: "sprint 3", starts_on: "2018-07-19", ends_on: "2018-07-20" } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
           id: 1,
           name: "sprint 3",
-          starts_on: "2018-07-19T14:00:00.000Z",
-          ends_on: "2018-07-20T14:00:00.000Z"
+          starts_on: "2018-07-19",
+          ends_on: "2018-07-20"
         }
         run_test! do
           expected = {
             id: sprint1.id,
             name: "sprint 3",
-            starts_on: "2018-07-19T14:00:00.000Z",
-            ends_on: "2018-07-20T14:00:00.000Z"
+            starts_on: "2018-07-19",
+            ends_on: "2018-07-20"
           }
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "200", "PO can update sprint" do
-        let(:params) { { name: "sprint 3", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
+        let(:params) { { name: "sprint 3", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           id: 1,
           name: "sprint 3",
-          starts_on: "2018-07-19T14:00:00.000Z",
-          ends_on: "2018-07-20T14:00:00.000Z"
+          starts_on: "2018-07-19",
+          ends_on: "2018-07-20"
         }
         run_test! do
           expected = {
             id: sprint1.id,
             name: "sprint 3",
-            starts_on: "2018-07-20T07:00:00.000Z",
-            ends_on: "2018-07-20T07:00:00.000Z"
+            starts_on: "2018-07-20",
+            ends_on: "2018-07-20"
           }
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "400", "missing params" do
-        let(:params) { { start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
+        let(:params) { { starts_on: "2018-07-20", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           error: {
@@ -523,19 +523,19 @@ describe "SprintAPI" do
       end
 
       response "400", "invalid date params" do
-        let(:params) { { name: "sprint 4", start_time: "2018-02-30T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
+        let(:params) { { name: "sprint 4", starts_on: "2018-02-30", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.invalid", params: "start_time")
+            message: I18n.t("api_error.invalid", params: "starts_on")
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: I18n.t("api_error.invalid", params: "start_time")
+              message: I18n.t("api_error.invalid", params: "starts_on")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -543,7 +543,7 @@ describe "SprintAPI" do
       end
 
       response "400", "empty params name" do
-        let(:params) { { name: "", start_time: "2018-07-20T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
+        let(:params) { { name: "", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           error: {
@@ -563,7 +563,7 @@ describe "SprintAPI" do
       end
 
       response "422", "start time before end time" do
-        let(:params) { { name: "sprint 4", start_time: "2018-07-28T07:00:00.000Z", end_time: "2018-07-20T07:00:00.000Z" } }
+        let(:params) { { name: "sprint 4", starts_on: "2018-07-28", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           error: {

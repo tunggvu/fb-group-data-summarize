@@ -46,8 +46,8 @@ module Dummy
           {
             "id": -66962091,
             "name": "laboris Ut incididunt",
-            "starts_on": "3416-07-17T22:11:24.768Z",
-            "ends_on": "2517-01-14T21:18:05.572Z",
+            "starts_on": "2010-07-17",
+            "ends_on": "2011-01-14",
             "members": [
               {
                 "id": -99237497,
@@ -244,8 +244,8 @@ module Dummy
           {
             "id": 23899428,
             "name": "exercitation amet qui sunt",
-            "starts_on": "4719-01-22T11:02:08.912Z",
-            "ends_on": "2443-05-10T21:56:38.419Z",
+            "starts_on": "2010-01-22",
+            "ends_on": "2011-05-10",
             "members": [
               {
                 "id": -82395795,
@@ -292,8 +292,8 @@ module Dummy
           {
             "id": -81380194,
             "name": "sed ",
-            "starts_on": "3109-08-17T17:52:48.887Z",
-            "ends_on": "4993-09-26T05:15:29.738Z",
+            "starts_on": "2010-08-17",
+            "ends_on": "2011-09-26",
             "members": [
               {
                 "id": -71119474,
@@ -598,8 +598,8 @@ module Dummy
           {
             "id": -55088410,
             "name": "nulla",
-            "starts_on": "4520-09-29T15:54:33.948Z",
-            "ends_on": "3428-09-05T23:36:10.380Z",
+            "starts_on": "2010-09-29",
+            "ends_on": "2011-09-05",
             "members": [
               {
                 "id": 21825521,
@@ -762,8 +762,8 @@ module Dummy
           {
             "id": 27220381,
             "name": "nulla culpa in",
-            "starts_on": "2947-01-07T04:53:09.801Z",
-            "ends_on": "3329-07-26T20:21:05.513Z",
+            "starts_on": "2010-01-07",
+            "ends_on": "2011-07-26",
             "members": [
               {
                 "id": -8800404,

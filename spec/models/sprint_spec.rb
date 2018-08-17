@@ -12,14 +12,14 @@ RSpec.describe Sprint, type: :model do
   describe "#validates" do
     let!(:sprint) { FactoryBot.create :sprint }
     it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:start_time) }
-    it { should validate_presence_of(:end_time) }
-    it { expect(sprint.end_time > sprint.start_time).to eq true }
+    it { should validate_presence_of(:starts_on) }
+    it { should validate_presence_of(:ends_on) }
+    it { expect(sprint.ends_on > sprint.starts_on).to eq true }
   end
 
-  describe "#end_time_must_after_start_time" do
+  describe "#ends_on_must_after_starts_on" do
     context "when start time after end time" do
-      let(:sprint) { FactoryBot.build :sprint, start_time: Time.zone.now, end_time: 3.days.ago }
+      let(:sprint) { FactoryBot.build :sprint, starts_on: Time.zone.now, ends_on: 3.days.ago }
 
       it "should be invalid" do
         expect(sprint).to be_invalid
@@ -27,13 +27,13 @@ RSpec.describe Sprint, type: :model do
 
       it "shoud return error" do
         sprint.save
-        expect(sprint.errors.full_messages).to include "End time must be after the start time"
+        expect(sprint.errors.full_messages).to include "Ends on must be after the starts on"
         expect(Sprint.count).to eq 0
       end
     end
 
     context "when start time before end time" do
-      let(:sprint) { FactoryBot.build :sprint, start_time: Time.zone.now, end_time: 3.days.from_now }
+      let(:sprint) { FactoryBot.build :sprint, starts_on: Time.zone.now, ends_on: 3.days.from_now }
 
       it "should be valid" do
         expect(sprint).to be_valid

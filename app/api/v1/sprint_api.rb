@@ -21,8 +21,8 @@ class V1::SprintAPI < Grape::API
             desc "Create new sprint"
             params do
               requires :name, type: String, allow_blank: false
-              requires :start_time, type: DateTime, allow_blank: false
-              requires :end_time, type: DateTime, allow_blank: false
+              requires :starts_on, type: Date, allow_blank: false
+              requires :ends_on, type: Date, allow_blank: false
             end
             post do
               authorize @project, :project_manager?
@@ -44,8 +44,8 @@ class V1::SprintAPI < Grape::API
               desc "update sprint's information"
               params do
                 requires :name, type: String, allow_blank: false
-                requires :start_time, type: DateTime, allow_blank: false
-                requires :end_time, type: DateTime, allow_blank: false
+                requires :starts_on, type: Date, allow_blank: false
+                requires :ends_on, type: Date, allow_blank: false
               end
               patch do
                 authorize @project, :project_manager?

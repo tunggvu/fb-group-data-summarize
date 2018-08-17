@@ -219,7 +219,7 @@ describe "Organization API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
           }
         }
 
@@ -228,7 +228,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -330,7 +330,7 @@ describe "Organization API" do
         examples "application/json" => {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
             }
           }
 
@@ -347,7 +347,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -401,7 +401,7 @@ describe "Organization API" do
         examples "application/json" => {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
             }
           }
 
@@ -411,7 +411,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -619,13 +619,13 @@ describe "Organization API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.employee_not_in_organization", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
           }
         }
 
         let(:employee_id) { 0 }
         run_test! do |response|
-          message = I18n.t("api_error.invalid_id", model: "Employee", id: employee_id)
+          message = I18n.t("api_error.invalid_id", model: Employee.name, id: employee_id)
           expect(response.body).to include message
         end
       end
@@ -634,7 +634,7 @@ describe "Organization API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Organization", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
           }
         }
 
@@ -643,7 +643,7 @@ describe "Organization API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Organization", id: id)
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -654,14 +654,14 @@ describe "Organization API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.employee_not_in_organization", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
           }
         }
 
         let(:"Authorization") { "Bearer #{admin_token.token}" }
         let(:id) { section2.id }
         run_test! do |response|
-          message = I18n.t("api_error.invalid_id", model: "Employee", id: employee_id)
+          message = I18n.t("api_error.invalid_id", model: Employee.name, id: employee_id)
           expect(response.body).to include message
         end
       end

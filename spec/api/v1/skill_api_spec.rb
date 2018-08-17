@@ -293,14 +293,14 @@ describe "Skill API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Skill", id: id)
+            message: I18n.t("api_error.invalid_id", model: Skill.name, id: 0)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Skill", id: id)
+              message: I18n.t("api_error.invalid_id", model: Skill.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json

@@ -10,5 +10,9 @@ class ImageUploader < CarrierWave::Uploader::Base
   def extension_whitelist
     %w(jpg jpeg gif png)
   end
+
+  def default_url
+    "/uploads/avatar.png"
+  end
   # TODO config image upload
 end

@@ -41,14 +41,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Project", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Project.name, id: 0)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Project", id: project_id)
+              message: I18n.t("api_error.invalid_id", model: Project.name, id: project_id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -60,14 +60,14 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+            message: I18n.t("api_error.invalid_id", model: Phase.name, id: 0)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Phase with 'id'=#{phase_id} [WHERE \"phases\".\"project_id\" = $1]"
+              message: I18n.t("api_error.invalid_id", model: Phase.name, id: phase_id)
             }
           }
           expect(response.body).to eq expected.to_json

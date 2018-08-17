@@ -291,14 +291,14 @@ describe "Project API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Project", id: id)
+            message: I18n.t("api_error.invalid_id", model: Project.name, id: 0)
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Project", id: id)
+              message: I18n.t("api_error.invalid_id", model: Project.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json

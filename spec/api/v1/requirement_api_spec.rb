@@ -29,14 +29,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Phase", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Phase.name, id: 0)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Phase", id: phase_id)
+              message: I18n.t("api_error.invalid_id", model: Phase.name, id: phase_id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -270,13 +270,13 @@ describe "Requirement API" do
 
         examples "application/json" => {
           error_code: Settings.error_formatter.http_code.record_not_found,
-          errors: "Couldn't find Requirement with 'id'=0 [WHERE \"requirements\".\"phase_id\" = $1]"
+          errors: I18n.t("api_error.invalid_id", model: Requirement.name, id: 0)
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: "Couldn't find Requirement with 'id'=0 [WHERE \"requirements\".\"phase_id\" = $1]"
+              message: I18n.t("api_error.invalid_id", model: Requirement.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -472,14 +472,14 @@ describe "Requirement API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.must_exist", model: "Level")
+            message: I18n.t("api_error.must_exist", model: Level.name)
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.must_exist", model: "Level")
+              message: I18n.t("api_error.must_exist", model: Level.name)
             }
           }
           expect(response.body).to eq expected.to_json

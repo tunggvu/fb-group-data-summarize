@@ -37,7 +37,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Sprint with 'id'=0 [WHERE \"sprints\".\"project_id\" = $1]"
+                  "message": "Couldn't find Sprint with 'id'=0"
                 }
               }
             }
@@ -435,7 +435,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Employee with 'id'=./spec/api/v1/employee_api_spec.rb[1:2:1:2]"
+                  "message": "Couldn't find Employee with 'id'=0"
                 }
               }
             }
@@ -892,7 +892,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Organization with 'id'=./spec/api/v1/organization_api_spec.rb[1:2:1:2]"
+                  "message": "Couldn't find Organization with 'id'=0"
                 }
               }
             }
@@ -987,7 +987,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Organization with 'id'=./spec/api/v1/organization_api_spec.rb[1:2:2:4]"
+                  "message": "Couldn't find Organization with 'id'=0"
                 }
               }
             }
@@ -1034,7 +1034,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Organization with 'id'=./spec/api/v1/organization_api_spec.rb[1:2:3:3]"
+                  "message": "Couldn't find Organization with 'id'=0"
                 }
               }
             }
@@ -1152,7 +1152,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Employee with 'id'=0 [WHERE \"employees\".\"organization_id\" = $1]"
+                  "message": "Couldn't find Employee with 'id'=0"
                 }
               }
             }
@@ -1318,7 +1318,7 @@
             "examples": {
               "application/json": {
                 "error_code": 603,
-                "errors": "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+                "errors": "Couldn't find Phase with 'id'=0"
               }
             }
           },
@@ -1793,7 +1793,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Project with 'id'=./spec/api/v1/project_api_spec.rb[1:2:1:2]"
+                  "message": "Couldn't find Project with 'id'=0"
                 }
               }
             }
@@ -2029,7 +2029,7 @@
             "examples": {
               "application/json": {
                 "error_code": 404,
-                "errors": "Couldn't find Requirement with 'id'=0 [WHERE \"requirements\".\"phase_id\" = $1]"
+                "errors": "Couldn't find Requirement with 'id'=0"
               }
             }
           },
@@ -2503,7 +2503,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Skill with 'id'=./spec/api/v1/skill_api_spec.rb[1:2:1:1]"
+                  "message": "Couldn't find Skill with 'id'=0"
                 }
               }
             }
@@ -2626,7 +2626,7 @@
               "application/json": {
                 "error": {
                   "code": 404,
-                  "message": "Couldn't find Phase with 'id'=0 [WHERE \"phases\".\"project_id\" = $1]"
+                  "message": "Couldn't find Phase with 'id'=0"
                 }
               }
             }

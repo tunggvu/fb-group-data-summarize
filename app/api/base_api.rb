@@ -29,7 +29,7 @@ module BaseAPI
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
-      message = { error: { code: Settings.error_formatter.http_code.record_not_found, message: e.as_json } }
+      message = { error: { code: Settings.error_formatter.http_code.record_not_found, message: I18n.t("api_error.invalid_id", model: e.model, id: e.id) } }
       error! message, Settings.error_formatter.http_code.record_not_found
     end
 

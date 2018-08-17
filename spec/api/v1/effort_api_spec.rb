@@ -42,7 +42,7 @@ describe "Effort API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Project", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Project.name, id: 0)
           }
         }
 
@@ -50,7 +50,7 @@ describe "Effort API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Project", id: project_id)
+              message: I18n.t("api_error.invalid_id", model: Project.name, id: project_id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -63,7 +63,7 @@ describe "Effort API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_sprint_id", model: "Sprint", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Sprint.name, id: 0)
           }
         }
 
@@ -71,7 +71,7 @@ describe "Effort API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_sprint_id", model: "Sprint", id: sprint_id)
+              message: I18n.t("api_error.invalid_id", model: Sprint.name, id: sprint_id)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -347,14 +347,14 @@ describe "Effort API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.must_exist", model: "Employee level")
+            message: I18n.t("api_error.must_exist", model: EmployeeLevel.name.underscore.humanize)
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.must_exist", model: "Employee level")
+              message: I18n.t("api_error.must_exist", model: EmployeeLevel.name.underscore.humanize)
             }
           }
           expect(response.body).to eq expected.to_json

@@ -75,4 +75,6 @@ Rails.application.configure do
       resource "/api/v1/*", headers: :any, methods: [:get, :post, :options, :delete, :put, :patch]
     end
   end
+
+  config.asset_host = "http://localhost:3000"
 end

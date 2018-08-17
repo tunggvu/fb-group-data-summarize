@@ -4,7 +4,7 @@ module Entities
   class Employee < Grape::Entity
     expose :id, :organization_id, :name, :employee_code, :email, :birthday, :phone
     expose :avatar do |employee|
-      employee.avatar.url
+      ActionController::Base.helpers.image_url(employee.avatar.url)
     end
   end
 end

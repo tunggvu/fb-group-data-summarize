@@ -15,4 +15,28 @@ RSpec.describe Project, type: :model do
   describe "#validates" do
     it { should validate_presence_of(:name) }
   end
+
+  describe "current_sprint" do
+    let(:project) { FactoryBot.create :project }
+
+    context "when project does not have sprint" do
+      it "should return nil" do
+        expect(project.current_sprint).to eq nil
+      end
+    end
+
+    context "when project does not have current sprint" do
+      let!(:sprint) { FactoryBot.create :sprint, project_id: project.id, starts_on: 1.day.from_now, ends_on: 2.days.from_now }
+      it "should return nil" do
+        expect(project.current_sprint).to eq nil
+      end
+    end
+
+    context "when project has current sprint" do
+      let!(:sprint) { FactoryBot.create :sprint, project_id: project.id, starts_on: Date.today, ends_on: 2.days.from_now }
+      it "should return current sprint" do
+        expect(project.current_sprint).to eq sprint
+      end
+    end
+  end
 end

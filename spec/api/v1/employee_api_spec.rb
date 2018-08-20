@@ -3,12 +3,15 @@
 require "swagger_helper"
 
 describe "Employee API" do
-  let!(:employee) { FactoryBot.create :employee }
+  let(:employee) { FactoryBot.create :employee }
+  let(:skill) { FactoryBot.create :skill }
+  let(:level) { FactoryBot.create :level, skill: skill }
+  let!(:employee_level) { FactoryBot.create :employee_level, employee: employee, level: level }
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
   let(:group) { FactoryBot.create(:organization, :clan, name: "Group 1") }
-  let!(:manager) { FactoryBot.create :employee, organization: group }
+  let(:manager) { FactoryBot.create :employee, organization: group }
   let(:manager_token) { FactoryBot.create :employee_token, employee: manager }
-  let!(:admin) { FactoryBot.create :employee, :admin }
+  let(:admin) { FactoryBot.create :employee, :admin }
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
   before do
     group.update_attributes(manager_id: manager.id)
@@ -19,16 +22,19 @@ describe "Employee API" do
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 
     get "Information of all employees" do
+      parameter name: :query, in: :query, type: :string
+      parameter name: :organization_id, in: :query, type: :integer
+      parameter name: :skill_id, in: :query, type: :integer
+      let(:query) {}
+      let(:organization_id) {}
+      let(:skill_id) {}
       consumes "application/json"
 
       response "200", "return employee with correct params" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) {
-          {
-            query: "B12100",
-            organization_id: 1
-          }
-        }
+        let(:query) { employee.name }
+        let(:organization_id) { employee.organization_id }
+        let(:skill_id) { skill.id }
         examples "application/json" =>
           [
             {
@@ -43,20 +49,61 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = [Entities::Employee.represent(employee), Entities::Employee.represent(manager),
-            Entities::Employee.represent(admin)]
+          expected = [Entities::Employee.represent(employee)]
           expect(response.body).to eq expected.to_json
         end
       end
 
-      response "200", "return employee with params nil" do
+      response "200", "return employees with 2 params" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) {
-          {
-            query: "",
-            organization_id: ""
-          }
-        }
+        let(:query) { employee.name }
+        let(:skill_id) { skill.id }
+
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [Entities::Employee.represent(employee)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return employees with 1 param" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:query) { employee.name }
+
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [Entities::Employee.represent(employee)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return employees without any params" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
         examples "application/json" =>
           [
             {
@@ -81,37 +128,30 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = [Entities::Employee.represent(employee), Entities::Employee.represent(manager),
-            Entities::Employee.represent(admin)]
-          expect(response.body).to eq expected.to_json
+          expected = Entities::Employee.represent(Employee.all)
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
 
-      response "200", "return nil employee" do
+      response "200", "return empty employees" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) {
-          {
-            query: "abcdegfh",
-            organization_id: 10000
-          }
-        }
+        let(:query) { employee.name }
+        let(:organization_id) { 0 }
+        let(:skill_id) { 0 }
+
         examples "application/json" =>
           []
         run_test! do |response|
-          expected = [Entities::Employee.represent(employee), Entities::Employee.represent(manager),
-            Entities::Employee.represent(admin)]
+          expected = []
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "401", "unauthorized" do
         let(:"Authorization") { "" }
-        let(:params) {
-          {
-            query: "a",
-            organization_id: 1
-          }
-        }
+        let(:query) { employee.name }
+        let(:organization_id) { employee.organization_id }
+        let(:skill_id) { skill.id }
 
         examples "application/json" => {
           error: {

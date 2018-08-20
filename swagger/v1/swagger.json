@@ -284,12 +284,29 @@
       ],
       "get": {
         "summary": "Information of all employees",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "type": "integer"
+          },
+          {
+            "name": "skill_id",
+            "in": "query",
+            "type": "integer"
+          }
+        ],
         "consumes": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "return nil employee",
+            "description": "return empty employees",
             "examples": {
               "application/json": [
 

@@ -8,10 +8,14 @@ class V1::EmployeeAPI < Grape::API
     params do
       optional :query, type: String
       optional :organization_id, type: Integer
+      optional :skill_id, type: Integer
     end
     get do
-      employees = Employee.ransack(name_or_employee_code_cont: params[:query],
-        organization_id_eq: params[:organization_id]).result
+      employees = Employee.ransack(
+        name_or_employee_code_cont: params[:query],
+        organization_id_eq: params[:organization_id],
+        levels_skill_id_eq: params[:skill_id]
+        ).result(distinct: true)
       present employees, with: Entities::Employee
     end
 

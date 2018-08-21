@@ -278,13 +278,13 @@ describe "Skill API" do
               {
                 id: level.id,
                 name: level.name,
-                logo: level.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level.rank
               },
               {
                 id: level2.id,
                 name: level2.name,
-                logo: level2.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level2.rank
               }
             ]
@@ -316,13 +316,13 @@ describe "Skill API" do
               {
                 id: level.id,
                 name: level.name,
-                logo: level.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level.rank
               },
               {
                 id: level2.id,
                 name: level2.name,
-                logo: level2.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level2.rank
               }
             ]
@@ -355,13 +355,13 @@ describe "Skill API" do
             levels: [
               {
                 id: level.id,
-                logo: level.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level.rank
               },
               {
                 id: level2.id,
                 name: level2.name,
-                logo: level2.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level2.rank
               }
             ]
@@ -394,13 +394,13 @@ describe "Skill API" do
               {
                 id: level.id,
                 name: level.name,
-                logo: level.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level.rank
               },
               {
                 id: level2.id,
                 name: level2.name,
-                logo: level2.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level2.rank
               }
             ]
@@ -433,13 +433,13 @@ describe "Skill API" do
               {
                 id: level.id,
                 name: level.name,
-                logo: level.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level.rank
               },
               {
                 id: level2.id,
                 name: level2.name,
-                logo: level2.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level2.rank
               },
               {
@@ -493,14 +493,14 @@ describe "Skill API" do
               {
                 id: level.id,
                 name: level.name,
-                logo: level.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level.rank,
                 _destroy: 1
               },
               {
                 id: level2.id,
                 name: level2.name,
-                logo: level2.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level2.rank,
                 _destroy: 1
               },
@@ -551,13 +551,13 @@ describe "Skill API" do
               {
                 id: level.id,
                 name: level.name,
-                logo: level.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level.rank
               },
               {
                 id: level2.id,
                 name: level2.name,
-                logo: level2.logo,
+                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                 rank: level2.rank
               }
             ]

@@ -11,4 +11,6 @@ class Level < ApplicationRecord
   validates :skill, presence: true
 
   delegate :name, :logo, to: :skill, prefix: true
+
+  mount_uploader :logo, ImageUploader
 end

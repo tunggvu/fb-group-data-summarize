@@ -1536,13 +1536,13 @@
               }
             }
           },
-          "422": {
+          "400": {
             "description": "phone is wrong format",
             "examples": {
               "application/json": {
                 "error": {
-                  "code": 422,
-                  "message": "Validation failed: Phone is invalid"
+                  "code": 400,
+                  "message": "phone is invalid"
                 }
               }
             }

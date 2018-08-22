@@ -110,11 +110,11 @@ describe "Profile API" do
         end
       end
 
-      response "422", "phone is wrong format" do
+      response "400", "phone is wrong format" do
         examples "application/json" => {
           error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_params", params: "Phone")
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.invalid", params: "phone")
           }
         }
         let(:profile) {
@@ -125,8 +125,8 @@ describe "Profile API" do
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.invalid_params", params: "Phone")
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.invalid", params: "phone")
             }
           }
           expect(response.body).to eq expected.to_json

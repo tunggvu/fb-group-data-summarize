@@ -11,7 +11,7 @@ class V1::ProfileAPI < Grape::API
 
     desc "Update current user profile"
     params do
-      optional :phone, type: String
+      optional :phone, type: String, regexp: Settings.validations.phone_regex
       optional :avatar, type: String
     end
     patch do

@@ -2,7 +2,24 @@
 
 class Phase < ApplicationRecord
   belongs_to :project
-  has_many :sprints, dependent: :destroy
-  has_many :requirements
+  has_many :sprints, -> { order(starts_on: :desc) }, dependent: :destroy
+  has_many :requirements, dependent: :destroy
   validates :name, presence: true
+
+  class << self
+    def includes_detail
+      includes(
+        {
+          requirements: { level: :skill }
+        },
+        {
+          sprints: {
+            efforts: {
+              employee_level: [{ level: :skill }, :employee]
+            }
+          }
+        }
+      )
+    end
+  end
 end

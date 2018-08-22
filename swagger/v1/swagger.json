@@ -1405,23 +1405,12 @@
             }
           },
           "400": {
-            "description": "missing params",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 400,
-                  "message": "name is missing"
-                }
-              }
-            }
-          },
-          "422": {
             "description": "empty params",
             "examples": {
               "application/json": {
                 "error": {
-                  "code": 422,
-                  "message": "Validation failed: Name can't be blank"
+                  "code": 400,
+                  "message": "name is empty"
                 }
               }
             }

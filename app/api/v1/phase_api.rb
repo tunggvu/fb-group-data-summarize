@@ -11,7 +11,7 @@ class V1::PhaseAPI < Grape::API
         desc "return all phases in project"
         get do
           authorize @project, :view?
-          present @project.phases.includes(:requirements, :sprints), with: Entities::Phase
+          present @project.phases.includes_detail, with: Entities::Phase
         end
 
         desc "create phase in project"
@@ -24,28 +24,29 @@ class V1::PhaseAPI < Grape::API
         end
 
         route_param :id do
-          before { @phase = @project.phases.find params[:id] }
-
           desc "return a phase"
           get do
             authorize @project, :view?
-            present @phase, with: Entities::Phase
+            phase = @project.phases.includes_detail.find params[:id]
+            present phase, with: Entities::Phase
           end
+
+          before { authorize @project, :project_manager? }
 
           desc "update a phase"
           params do
-            requires :name, type: String
+            requires :name, type: String, allow_blank: false
           end
           patch do
-            authorize @project, :project_manager?
-            @phase.update_attributes!(declared(params).to_h)
-            present @phase, with: Entities::Phase
+            phase = @project.phases.includes_detail.find params[:id]
+            phase.update_attributes!(declared(params).to_h)
+            present phase, with: Entities::Phase
           end
 
           desc "delete a phase"
           delete do
-            authorize @project, :project_manager?
-            @phase.destroy!
+            phase = @project.phases.includes(sprints: :efforts).find params[:id]
+            phase.destroy!
             { message: I18n.t("delete_success") }
           end
         end

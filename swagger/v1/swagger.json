@@ -299,6 +299,11 @@
             "name": "skill_id",
             "in": "query",
             "type": "integer"
+          },
+          {
+            "name": "organization_not_in",
+            "in": "query",
+            "type": "integer"
           }
         ],
         "consumes": [
@@ -311,6 +316,17 @@
               "application/json": [
 
               ]
+            }
+          },
+          "404": {
+            "description": "return error when pass organization not exited to params organization_not_in ",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Organization with 'id'=0"
+                }
+              }
             }
           },
           "401": {

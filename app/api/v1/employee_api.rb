@@ -10,13 +10,15 @@ class V1::EmployeeAPI < Grape::API
       optional :query, type: String
       optional :organization_id, type: Integer
       optional :skill_id, type: Integer
+      optional :organization_not_in, type: Integer
     end
 
     get do
       employees = Employee.ransack(
         name_or_employee_code_cont: params[:query],
         organization_id_eq: params[:organization_id],
-        levels_skill_id_eq: params[:skill_id]
+        levels_skill_id_eq: params[:skill_id],
+        organization_id_not_in: (Organization.subtree_of(params[:organization_not_in]).ids if params[:organization_not_in])
         ).result(distinct: true)
       present paginate(employees), with: Entities::Employee
     end

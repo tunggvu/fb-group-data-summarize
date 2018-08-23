@@ -25,9 +25,11 @@ describe "Employee API" do
       parameter name: :query, in: :query, type: :string
       parameter name: :organization_id, in: :query, type: :integer
       parameter name: :skill_id, in: :query, type: :integer
+      parameter name: :organization_not_in, in: :query, type: :integer
       let(:query) {}
       let(:organization_id) {}
       let(:skill_id) {}
+      let(:organization_not_in) {}
       consumes "application/json"
 
       response "200", "return employee with correct params" do
@@ -130,6 +132,59 @@ describe "Employee API" do
         run_test! do |response|
           expected = Entities::Employee.represent(Employee.all)
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return employees with params organization_not_in" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:organization_not_in) { section.id }
+        let(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
+        let(:section) { FactoryBot.create(:organization, :section, parent: division) }
+        let(:section2) { FactoryBot.create(:organization, :section, parent: division) }
+        let(:clan1) { FactoryBot.create :organization, :clan, parent: section }
+        let!(:employee1) { FactoryBot.create :employee, organization: section }
+        let!(:employee2) { FactoryBot.create :employee, organization: section2 }
+        let!(:employee3) { FactoryBot.create :employee, organization: clan1 }
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [
+            Entities::Employee.represent(employee),
+            Entities::Employee.represent(manager),
+            Entities::Employee.represent(employee2),
+           ]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "404", "return error when pass organization not exited to params organization_not_in " do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:organization_not_in) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: "Organization", id: 0)
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: "Organization", id: 0)
+            }
+          }
+          expect(response.body).to eq expected.to_json
         end
       end
 

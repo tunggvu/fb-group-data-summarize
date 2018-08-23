@@ -8,9 +8,11 @@ class V1::RequirementAPI < Grape::API
 
       resource :requirements do
         desc "Get all requirements"
+        paginate per_page: Settings.paginate.per_page.requirement
+
         get do
           authorize @phase.project, :view?
-          present @phase.requirements.includes(level: :skill), with: Entities::Requirement
+          present paginate(@phase.requirements.includes(level: :skill)), with: Entities::Requirement
         end
 
         desc "Create requirements"

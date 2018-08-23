@@ -13,9 +13,11 @@ class V1::SprintAPI < Grape::API
 
           resource :sprints do
             desc "return all sprints"
+            paginate per_page: Settings.paginate.per_page.sprint
+
             get do
               authorize @project, :view?
-              present @phase.sprints, with: Entities::Sprint
+              present paginate(@phase.sprints), with: Entities::Sprint
             end
 
             desc "Create new sprint"

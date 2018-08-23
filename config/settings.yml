@@ -43,3 +43,12 @@ members_backend_id: ["2998532", "2847146", "2273997", "3127986", "1385477", "728
 members_frontend_id: ["1803370", "2310110", "1385477", "728173", "2047101", "2161732", "2261546"]
 leader_backend_id: "2310316"
 leader_frontend_id: "1509321"
+
+paginate:
+  per_page:
+    effort: 10
+    employee: 8
+    project: 9
+    requirement: 5
+    skill: 6
+    sprint: 5

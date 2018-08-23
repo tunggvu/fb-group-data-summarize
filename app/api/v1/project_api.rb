@@ -5,9 +5,11 @@ class V1::ProjectAPI < Grape::API
     before { authenticate! }
 
     desc "Return all projects"
+    paginate per_page: Settings.paginate.per_page.project
+
     get do
       projects = Project.includes(:product_owner)
-      present projects, with: Entities::Project
+      present paginate(projects), with: Entities::Project
     end
 
     desc "Creates a project"

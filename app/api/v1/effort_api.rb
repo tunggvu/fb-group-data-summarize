@@ -13,9 +13,11 @@ class V1::EffortAPI < Grape::API
 
           resource :efforts do
             desc "return all effort members of a sprint"
+            paginate per_page: Settings.paginate.per_page.effort
+
             get do
               # TODO authenticate_member_in_project
-              present @sprint.efforts.includes(employee_level: [:employee, level: :skill]), with: Entities::Effort
+              present paginate(@sprint.efforts.includes(employee_level: [:employee, level: :skill])), with: Entities::Effort
             end
 
             desc "create an effort"

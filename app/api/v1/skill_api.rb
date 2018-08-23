@@ -8,8 +8,10 @@ class V1::SkillAPI < Grape::API
     end
 
     desc "Show all skill available"
+    paginate per_page: Settings.paginate.per_page.skill
+
     get do
-      present Skill.includes(:levels).all, with: Entities::Skill
+      present paginate(Skill.includes(:levels)), with: Entities::Skill
     end
 
     desc "Create new skill"

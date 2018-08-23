@@ -2262,12 +2262,12 @@
         ],
         "responses": {
           "400": {
-            "description": "new password is wrong format ",
+            "description": "Wrong current password",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "new_password is invalid"
+                  "message": "wrong current password"
                 }
               }
             }
@@ -2283,19 +2283,8 @@
               }
             }
           },
-          "422": {
-            "description": "Wrong current password",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 422,
-                  "message": "wrong current password"
-                }
-              }
-            }
-          },
           "200": {
-            "description": "Change Password success with valid new_password",
+            "description": "Change Password success with valid new password",
             "examples": {
               "application/json": {
                 "message": "Success"

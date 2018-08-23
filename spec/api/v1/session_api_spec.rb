@@ -134,7 +134,7 @@ RSpec.describe "Sessions" do
         end
       end
 
-      response "422", "Wrong current password" do
+      response "400", "Wrong current password" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
@@ -144,14 +144,14 @@ RSpec.describe "Sessions" do
         }
         examples "application/json" => {
           error: {
-            code: Settings.error_formatter.http_code.wrong_current_password,
+            code: Settings.error_formatter.http_code.validation_errors,
             message: I18n.t("api_error.wrong_current_password")
           }
         }
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.wrong_current_password,
+              code: Settings.error_formatter.http_code.validation_errors,
               message: I18n.t("api_error.wrong_current_password")
             }
           }
@@ -159,7 +159,7 @@ RSpec.describe "Sessions" do
         end
       end
 
-      response "200", "Change Password success with valid new_password" do
+      response "200", "Change Password success with valid new password" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {

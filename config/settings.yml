@@ -19,7 +19,7 @@ error_formatter:
     validation_errors: 400
     # TODO: wrong email, password should return 401
     wrong_email_password: 400
-    wrong_current_password: 422
+    wrong_current_password: 400
     unauthenticated: 401
     decode_error: 401
     verification_error: 401

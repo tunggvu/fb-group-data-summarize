@@ -16,7 +16,7 @@ class V1::EffortAPI < Grape::API
             paginate per_page: Settings.paginate.per_page.effort
 
             get do
-              # TODO authenticate_member_in_project
+              authorize @project, :view?
               present paginate(@sprint.efforts.includes(employee_level: [:employee, level: :skill])), with: Entities::Effort
             end
 

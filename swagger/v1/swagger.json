@@ -43,7 +43,7 @@
             }
           },
           "401": {
-            "description": "user hasn't logged in cannot view effort",
+            "description": "members not in project cannot view effort",
             "examples": {
               "application/json": {
                 "error": {

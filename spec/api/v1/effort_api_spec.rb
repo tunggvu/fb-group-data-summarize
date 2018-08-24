@@ -6,20 +6,23 @@ describe "Effort API" do
   let(:div2) { create :organization, :division }
   let(:div2_manager) { create :employee, organization: div2 }
   let(:div2_manager_token) { create :employee_token, employee: div2_manager }
-  let!(:section) { create :organization, :section }
-  let!(:group) { create :organization, :clan, parent: section }
-  let!(:group_leader) { create :employee, organization: group }
-  let!(:section_manager) { create :employee, organization: section }
+  let(:section) { create :organization, :section }
+  let(:group) { create :organization, :clan, parent: section }
+  let(:group_leader) { create :employee, organization: group }
+  let(:section_manager) { create :employee, organization: section }
   let(:section_manager_token) { create :employee_token, employee: section_manager }
-  let!(:group_leader_token) { create :employee_token, employee: group_leader }
+  let(:group_leader_token) { create :employee_token, employee: group_leader }
   let(:employee) { create :employee }
   let(:employee_token) { create :employee_token, employee: employee }
-  let!(:project) { create :project, product_owner: group_leader }
-  let!(:sprint) { create :sprint, project: project }
+  let(:member_project) { create :employee }
+  let(:member_token) { create :employee_token, employee: member_project }
+  let(:project) { create :project, product_owner: group_leader }
+  let(:sprint) { create :sprint, project: project }
   let!(:effort) { create :effort, sprint: sprint }
-  let!(:another_effort) { create :effort, sprint: sprint }
   let!(:employee_level) { create :employee_level }
-  let!(:admin) { FactoryBot.create :employee, :admin, organization: nil }
+  let(:employee_level_member_project) { create :employee_level, employee: member_project }
+  let!(:another_effort) { create :effort, sprint: sprint, employee_level: employee_level_member_project }
+  let(:admin) { FactoryBot.create :employee, :admin, organization: nil }
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
 
   before { section.update_attributes! manager_id: section_manager.id }
@@ -94,6 +97,110 @@ describe "Effort API" do
               message: I18n.t("api_error.unauthorized")
             }
           }
+        end
+      end
+
+      response "200", "members in project can view effort" do
+        let(:"Authorization") { "Bearer #{member_token.token}" }
+
+        examples "application/json" => [
+          {
+            id: 10284,
+            effort: 75,
+            name: "Lexie Yost V",
+            skill: {
+              id: 1,
+              name: "Ruby",
+              logo: "#",
+              level: {
+                id: 1,
+                name: "Junior",
+                rank: 1,
+                logo: "#"
+              }
+            }
+          },
+          {
+            id: 10521,
+            effort: 50,
+            name: "Administator",
+            skill: {
+              id: 1,
+              name: "Ruby",
+              logo: "#",
+              level: {
+                id: 3,
+                name: "Senior",
+                rank: 3,
+                logo: "#"
+              }
+            }
+          }
+        ]
+
+        run_test! do |response|
+          expected = [Entities::Effort.represent(effort),
+            Entities::Effort.represent(another_effort)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "members not in project cannot view effort" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "PO can view effort" do
+        let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+
+        examples "application/json" => [
+          {
+            id: 7318,
+            effort: 60,
+            name: "Jimmy Graham",
+            skill_level: {
+              level_id: 2,
+              level_name: "Middle",
+              logo: "#",
+              rank: 2,
+              skill_id: 1,
+              skill_name: "Ruby"
+            }
+          },
+          {
+            id: 10284,
+            effort: 75,
+            name: "Lexie Yost V",
+            skill_level: {
+              level_id: 1,
+              level_name: "Junior",
+              logo: "#",
+              rank: 1,
+              skill_id: 1,
+              skill_name: "Ruby"
+            }
+          }
+        ]
+
+        run_test! do |response|
+          expected = [Entities::Effort.represent(effort),
+            Entities::Effort.represent(another_effort)]
+          expect(response.body).to eq expected.to_json
         end
       end
 

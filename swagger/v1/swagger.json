@@ -1592,7 +1592,7 @@
             }
           },
           "200": {
-            "description": "return all projects",
+            "description": "Employee can see all projects",
             "examples": {
               "application/json": [
                 {
@@ -1721,7 +1721,7 @@
         ],
         "responses": {
           "200": {
-            "description": "return a project",
+            "description": "Employee can see project that employee belongs to",
             "examples": {
               "application/json": {
                 "name": "Project 1",
@@ -1809,6 +1809,17 @@
               }
             }
           },
+          "401": {
+            "description": "Employee cannot see project that employee does not belongs to",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
           "404": {
             "description": "project not found",
             "examples": {
@@ -1868,9 +1879,6 @@
               "application/json": {
                 "id": 1,
                 "name": "Project 1",
-                "description": "Project description",
-                "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
-                "started_at": "2018-08-10T05:36:15.959Z",
                 "product_owner": {
                   "id": 1,
                   "organization_id": 1,
@@ -1880,6 +1888,55 @@
                   "birthday": "1/1/2018",
                   "phone": "0123456789",
                   "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl"
+                },
+                "description": "Project description",
+                "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
+                "started_at": "2018-08-10T05:36:15.959Z"
+              }
+            }
+          },
+          "401": {
+            "description": "Employee cannot update",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete project",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "manager delete successfully",
+            "examples": {
+              "application/json": {
+                "message": "Delete successfully"
+              }
+            }
+          },
+          "401": {
+            "description": "employee cannot delete project",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
                 }
               }
             }

@@ -27,8 +27,9 @@ class V1::ProjectAPI < Grape::API
 
       desc "Get specific project's information"
       get do
-        project = Project.includes(phases: [sprints: [efforts: [employee_level: [:employee, :level]]], requirements: [level: :skill]]).find params[:id]
+        project = Project.find params[:id]
         authorize project, :view?
+        project = Project.includes(phases: [sprints: [efforts: [employee_level: [:employee, :level]]], requirements: [level: :skill]]).find params[:id]
         present project, with: Entities::ProjectDetail
       end
 

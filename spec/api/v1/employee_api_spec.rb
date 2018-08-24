@@ -9,12 +9,13 @@ describe "Employee API" do
   let!(:employee_level) { FactoryBot.create :employee_level, employee: employee, level: level }
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
   let(:group) { FactoryBot.create(:organization, :clan, name: "Group 1") }
+  let(:division) { FactoryBot.create(:organization, :division, name: "Division1") }
   let(:manager) { FactoryBot.create :employee, organization: group }
   let(:manager_token) { FactoryBot.create :employee_token, employee: manager }
   let(:admin) { FactoryBot.create :employee, :admin }
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
   before do
-    group.update_attributes(manager_id: manager.id)
+    group.update_attributes(manager_id: manager.id, parent: division)
   end
 
   path "/api/v1/employees" do
@@ -138,7 +139,6 @@ describe "Employee API" do
       response "200", "return employees with params organization_not_in" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_not_in) { section.id }
-        let(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
         let(:section) { FactoryBot.create(:organization, :section, parent: division) }
         let(:section2) { FactoryBot.create(:organization, :section, parent: division) }
         let(:clan1) { FactoryBot.create :organization, :clan, parent: section }
@@ -168,20 +168,64 @@ describe "Employee API" do
         end
       end
 
-      response "404", "return error when pass organization not exited to params organization_not_in " do
+      response "200", "return employees with params organization_id" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:organization_not_in) { 0 }
+        let(:organization_id) { division.id }
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [
+            Entities::Employee.represent(manager)
+           ]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "return error when pass organization not existed to params organization_id " do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:organization_id) { 0 }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: "Organization", id: 0)
+            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: "Organization", id: 0)
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "return error when pass organization not existed to params organization_not_in " do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:organization_not_in) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -191,7 +235,6 @@ describe "Employee API" do
       response "200", "return empty employees" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
-        let(:organization_id) { 0 }
         let(:skill_id) { 0 }
 
         examples "application/json" =>

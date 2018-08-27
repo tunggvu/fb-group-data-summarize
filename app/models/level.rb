@@ -12,5 +12,5 @@ class Level < ApplicationRecord
 
   delegate :name, :logo, to: :skill, prefix: true
 
-  mount_uploader :logo, ImageUploader
+  mount_base64_uploader :logo, ImageUploader
 end

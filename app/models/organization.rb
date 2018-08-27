@@ -13,7 +13,7 @@ class Organization < ApplicationRecord
   validates :name, presence: true
   validates :level, presence: true
 
-  mount_uploader :logo, ImageUploader
+  mount_base64_uploader :logo, ImageUploader
 
   def full_name
     path.pluck(:name).join(" / ")

@@ -6,11 +6,10 @@ module Entities
       expose :skill_id, as: :id
       expose :skill_name, as: :name
       unexpose :id, :name, :rank, :logo
-      expose :logo do |level_member|
-        level_member.skill_logo.url
-      end
+      expose :skill_logo, format_with: :full_url, as: :logo
       expose :level do
-        expose :id, :name, :rank, :logo
+        expose :id, :name, :rank
+        expose :logo, format_with: :full_url
       end
     end
   end

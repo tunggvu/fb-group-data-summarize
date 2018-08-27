@@ -6,5 +6,5 @@ class Skill < ApplicationRecord
 
   accepts_nested_attributes_for :levels, allow_destroy: true
 
-  mount_uploader :logo, ImageUploader
+  mount_base64_uploader :logo, ImageUploader
 end

@@ -17,7 +17,7 @@ class Employee < ApplicationRecord
 
   has_secure_password validations: false
 
-  mount_uploader :avatar, ImageUploader
+  mount_base64_uploader :avatar, ImageUploader
 
   def is_manager?(organization)
     organization.level_before_type_cast > 1 && organization.path.pluck(:manager_id).include?(self.id)

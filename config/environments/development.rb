@@ -76,5 +76,5 @@ Rails.application.configure do
     end
   end
 
-  config.asset_host = "http://localhost:3000"
+  config.asset_host = ENV["BACKEND_HOST"]
 end

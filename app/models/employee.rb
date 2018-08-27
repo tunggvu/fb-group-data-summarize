@@ -6,6 +6,7 @@ class Employee < ApplicationRecord
   has_many :employee_levels, dependent: :destroy
   has_many :projects, dependent: :nullify, foreign_key: :product_owner_id
   has_many :levels, through: :employee_levels
+  has_many :total_efforts
   has_one :employee_token, dependent: :destroy
 
   validates :name, presence: true

@@ -10,7 +10,7 @@ Project.all.each do |project|
         sprint.phase_id = phase.id
         sprint.starts_on = start_date
         sprint.ends_on = start_date + 2.days
-        start_date += 2.days
+        start_date += 3.days
       end
     end
   end

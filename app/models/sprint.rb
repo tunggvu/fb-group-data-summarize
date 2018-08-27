@@ -9,8 +9,7 @@ class Sprint < ApplicationRecord
 
   private
   def validate_ends_on_after_starts_on
-    if starts_on.present? && ends_on.present? && starts_on > ends_on
-      errors.add :ends_on, "must be after the starts on"
-    end
+    return unless starts_on && ends_on && starts_on >= ends_on
+    errors.add :ends_on, "must be after the starts on"
   end
 end

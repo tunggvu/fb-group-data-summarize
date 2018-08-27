@@ -483,7 +483,7 @@ describe "SprintAPI" do
       end
 
       response "200", "PO can update sprint" do
-        let(:params) { { name: "sprint 3", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
+        let(:params) { { name: "sprint 3", starts_on: "2018-07-19", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           id: 1,
@@ -495,7 +495,7 @@ describe "SprintAPI" do
           expected = {
             id: sprint1.id,
             name: "sprint 3",
-            starts_on: "2018-07-20",
+            starts_on: "2018-07-19",
             ends_on: "2018-07-20"
           }
           expect(response.body).to eq expected.to_json
@@ -503,7 +503,7 @@ describe "SprintAPI" do
       end
 
       response "400", "missing params" do
-        let(:params) { { starts_on: "2018-07-20", ends_on: "2018-07-20" } }
+        let(:params) { { starts_on: "2018-07-19", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           error: {

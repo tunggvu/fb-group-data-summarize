@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_17_013039) do
+ActiveRecord::Schema.define(version: 2018_08_23_024809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,6 +149,16 @@ ActiveRecord::Schema.define(version: 2018_08_17_013039) do
     t.index ["project_id"], name: "index_sprints_on_project_id"
   end
 
+  create_table "total_efforts", force: :cascade do |t|
+    t.bigint "employee_id", null: false
+    t.date "start_time"
+    t.date "end_time"
+    t.integer "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employee_id"], name: "index_total_efforts_on_employee_id"
+  end
+
   add_foreign_key "efforts", "employee_levels"
   add_foreign_key "efforts", "sprints"
   add_foreign_key "employee_levels", "employees"
@@ -165,4 +175,5 @@ ActiveRecord::Schema.define(version: 2018_08_17_013039) do
   add_foreign_key "roles", "employees"
   add_foreign_key "sprints", "phases"
   add_foreign_key "sprints", "projects"
+  add_foreign_key "total_efforts", "employees"
 end

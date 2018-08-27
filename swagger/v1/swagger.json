@@ -334,6 +334,15 @@
             "name": "organization_not_in",
             "in": "query",
             "type": "integer"
+          },
+          {
+            "name": "level_ids[]",
+            "in": "query",
+            "type": "array",
+            "collectionFormat": "multi",
+            "items": {
+              "type": "integer"
+            }
           }
         ],
         "consumes": [

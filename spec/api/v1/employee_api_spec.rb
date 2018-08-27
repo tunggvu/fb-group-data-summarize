@@ -6,6 +6,7 @@ describe "Employee API" do
   let(:employee) { FactoryBot.create :employee }
   let(:skill) { FactoryBot.create :skill }
   let(:level) { FactoryBot.create :level, skill: skill }
+  let(:level2) { FactoryBot.create :level, skill: skill }
   let!(:employee_level) { FactoryBot.create :employee_level, employee: employee, level: level }
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
   let(:group) { FactoryBot.create(:organization, :clan, name: "Group 1") }
@@ -27,10 +28,14 @@ describe "Employee API" do
       parameter name: :organization_id, in: :query, type: :integer
       parameter name: :skill_id, in: :query, type: :integer
       parameter name: :organization_not_in, in: :query, type: :integer
+      parameter name: "level_ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }
+
       let(:query) {}
       let(:organization_id) {}
       let(:skill_id) {}
       let(:organization_not_in) {}
+      let("level_ids[]") { [] }
+
       consumes "application/json"
 
       response "200", "return employee with correct params" do
@@ -38,6 +43,33 @@ describe "Employee API" do
         let(:query) { employee.name }
         let(:organization_id) { employee.organization_id }
         let(:skill_id) { skill.id }
+        let("level_ids[]") { [level.id, level2.id] }
+
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [Entities::Employee.represent(employee)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return employees with 3 params" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:query) { employee.name }
+        let(:skill_id) { skill.id }
+        let("level_ids[]") { [level.id, level2.id] }
+
         examples "application/json" =>
           [
             {
@@ -236,6 +268,7 @@ describe "Employee API" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
         let(:skill_id) { 0 }
+        let("level_ids[]") { [0] }
 
         examples "application/json" =>
           []
@@ -250,6 +283,7 @@ describe "Employee API" do
         let(:query) { employee.name }
         let(:organization_id) { employee.organization_id }
         let(:skill_id) { skill.id }
+        let("level_ids[]") { [level.id, level2.id] }
 
         examples "application/json" => {
           error: {

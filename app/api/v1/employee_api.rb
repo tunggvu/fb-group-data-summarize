@@ -11,12 +11,14 @@ class V1::EmployeeAPI < Grape::API
       optional :organization_id, type: Integer
       optional :skill_id, type: Integer
       optional :organization_not_in, type: Integer
+      optional :level_ids, type: Array[Integer]
     end
 
     get do
       search_params = {
         name_or_employee_code_cont: params[:query],
-        levels_skill_id_eq: params[:skill_id]
+        levels_skill_id_eq: params[:skill_id],
+        levels_id_in: params[:level_ids]
       }
       search_params[:organization_id_not_in] =
         Organization.subtree_of(Organization.find(params[:organization_not_in])).ids if params[:organization_not_in]

@@ -31,3 +31,6 @@ config/environments/*.local.yml
 
 *.vim
 *tags
+
+.rbenv-gemsets
+/.gems

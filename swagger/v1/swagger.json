@@ -106,36 +106,33 @@
             "schema": {
               "type": "object",
               "properties": {
-                "effort": {
-                  "type": "integer"
-                },
-                "employee_level_id": {
-                  "type": "integer"
-                }
-              }
+                "efforts": [
+                  {
+                    "employee_id": {
+                      "type": "integer"
+                    },
+                    "level_id": {
+                      "type": "integer"
+                    },
+                    "effort": {
+                      "type": "integer"
+                    }
+                  }
+                ]
+              },
+              "required": [
+                "efforts"
+              ]
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "manager of PO can create effort",
+            "description": "skip creating effort which has invalid emp_id/level_id",
             "examples": {
-              "application/json": {
-                "id": 1,
-                "employee_level_id": 1,
-                "effort": 100
-              }
-            }
-          },
-          "400": {
-            "description": "missing params",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 400,
-                  "message": "effort is empty"
-                }
-              }
+              "application/json": [
+
+              ]
             }
           },
           "401": {
@@ -146,16 +143,33 @@
                   "code": 401,
                   "message": "unauthorized"
                 }
+              },
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "one of efforts missing params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "efforts[0][employee_id] is missing"
+                }
               }
             }
           },
           "422": {
-            "description": "effort is less than 0",
+            "description": "duped effort",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: Effort must be greater than or equal to 0"
+                  "message": "Validation failed: Employee level has already been taken"
                 }
               }
             }
@@ -2945,7 +2959,7 @@
             }
           },
           "422": {
-            "description": "start time before end time",
+            "description": "start time is later than end time",
             "examples": {
               "application/json": {
                 "error": {

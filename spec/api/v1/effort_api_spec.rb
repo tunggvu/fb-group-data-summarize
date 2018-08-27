@@ -19,7 +19,7 @@ describe "Effort API" do
   let(:project) { create :project, product_owner: group_leader }
   let(:sprint) { create :sprint, project: project }
   let!(:effort) { create :effort, sprint: sprint }
-  let!(:employee_level) { create :employee_level }
+  let(:employee_level) { create :employee_level }
   let(:employee_level_member_project) { create :employee_level, employee: member_project }
   let!(:another_effort) { create :effort, sprint: sprint, employee_level: employee_level_member_project }
   let(:admin) { FactoryBot.create :employee, :admin, organization: nil }
@@ -32,7 +32,7 @@ describe "Effort API" do
     parameter name: "Authorization", in: :header, type: :string
     parameter name: :project_id, in: :path, type: :integer
     parameter name: :sprint_id, in: :path, type: :integer
-    let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+    let(:Authorization) { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:sprint_id) { sprint.id }
 
@@ -256,125 +256,148 @@ describe "Effort API" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          effort: {type: :integer},
-          employee_level_id: {type: :integer}
-        }
+          efforts: [
+            employee_id: { type: :integer },
+            level_id: { type: :integer },
+            effort: { type: :integer }
+          ]
+        },
+        required: [:efforts]
       }
 
-      response "201", "Admin can create effort" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
-        let(:params) {
-          {
-            effort: rand(1..100),
-            employee_level_id: employee_level.id
-          }
+      let(:params) do
+        {
+          efforts: [
+            {
+              employee_id: employee_level.employee_id,
+              level_id: employee_level.level_id,
+              effort: rand(1..100)
+            }
+          ]
         }
+      end
 
-        examples "application/json" => {
-          id: 1,
-          employee_level_id: 1,
-          effort: 100
-        }
+      response "201", "Admin can create effort" do
+        let(:Authorization) { "Bearer #{admin_token.token}" }
+
+        examples "application/json": [
+          {
+            id: 10539,
+            effort: 70,
+            employee_level: {
+              name: "Karl White",
+              id: 227,
+              skill: {
+                id: 1,
+                name: "Ruby",
+                logo: "/uploads/avatar.png",
+                level: {
+                  id: 3,
+                  name: "Senior",
+                  rank: 3,
+                  logo: {
+                    url: "/uploads/level/logo/3/%23"
+                  }
+                }
+              }
+            }
+          }
+        ]
 
         run_test! do |response|
-          expected = Entities::Effort.represent Effort.last
+          expected = [Entities::Effort.represent(Effort.last)]
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "201", "PO can create effort" do
-        let(:params) {
+        examples "application/json": [
           {
-            effort: rand(1..100),
-            employee_level_id: employee_level.id
+            id: 10539,
+            effort: 70,
+            employee_level: {
+              name: "Karl White",
+              id: 227,
+              skill: {
+                id: 1,
+                name: "Ruby",
+                logo: "/uploads/avatar.png",
+                level: {
+                  id: 3,
+                  name: "Senior",
+                  rank: 3,
+                  logo: {
+                    url: "/uploads/level/logo/3/%23"
+                  }
+                }
+              }
+            }
           }
-        }
-
-        examples "application/json" => {
-          id: 1,
-          employee_level_id: 1,
-          effort: 100
-        }
+        ]
 
         run_test! do |response|
-          expected = Entities::Effort.represent Effort.last
+          expected = [Entities::Effort.represent(Effort.last)]
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "201", "manager of PO can create effort" do
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) {
+        let(:Authorization) { "Bearer #{section_manager_token.token}" }
+
+        examples "application/json": [
           {
-            effort: rand(1..100),
-            employee_level_id: employee_level.id
+            id: 10539,
+            effort: 70,
+            employee_level: {
+              name: "Karl White",
+              id: 227,
+              skill: {
+                id: 1,
+                name: "Ruby",
+                logo: "/uploads/avatar.png",
+                level: {
+                  id: 3,
+                  name: "Senior",
+                  rank: 3,
+                  logo: {
+                    url: "/uploads/level/logo/3/%23"
+                  }
+                }
+              }
+            }
           }
-        }
+        ]
 
-
-        examples "application/json" => {
-          employee_level_id: 1,
-          effort: 100
-        }
         run_test! do |response|
-          expected = Entities::Effort.represent Effort.last
+          expected = [Entities::Effort.represent(Effort.last)]
           expect(response.body).to eq expected.to_json
         end
       end
 
-      response "400", "missing params" do
-        let(:params) { {employee_level_id: 1} }
+      response "201", "empty efforts array" do
+        before { params[:efforts] = [] }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "effort")
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.validation_errors,
-              message: I18n.t("api_error.missing_params", params: "effort")
-            }
-          }
+        examples "application/json": []
+
+        run_test! do |response|
+          expected = []
           expect(response.body).to eq expected.to_json
         end
       end
 
-      response "400", "missing params" do
-        let(:params) {
-          {
-            effort: "",
-            employee_level_id: 1
-          }
-        }
+      response "201", "skip creating effort which has invalid emp_id/level_id" do
+        before { params[:efforts][0][:employee_id] = 0 }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "effort")
-          }
-        }
+        examples "application/json": []
+
         run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.validation_errors,
-              message: I18n.t("api_error.empty_params", params: "effort")
-            }
-          }
+          expected = []
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "401", "user hasn't logged in cannot create effort" do
-        let(:"Authorization") {}
-        let(:params) {
-          {
-            effort: rand(1..100),
-            employee_level_id: 1
-          }
-        }
+        let(:Authorization) { "" }
 
         examples "application/json" => {
           error: {
@@ -382,56 +405,7 @@ describe "Effort API" do
             message: I18n.t("api_error.unauthorized")
           }
         }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-        end
-      end
 
-      response "401", "employee cannot create effort" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) {
-          {
-            effort: rand(1..100),
-            employee_level_id: 1
-          }
-        }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-        end
-      end
-
-      response "401", "manager in other division cannot create effort" do
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) {
-          {
-            effort: rand(1..100),
-            employee_level_id: 1
-          }
-        }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -443,25 +417,84 @@ describe "Effort API" do
         end
       end
 
-      response "422", "invalid employee level id" do
-        let(:params) {
-          {
-            effort: rand(1..100),
-            employee_level_id: 0
+      response "401", "employee cannot create effort" do
+        let(:Authorization) { "Bearer #{employee_token.token}" }
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.must_exist", model: EmployeeLevel.name.underscore.humanize)
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.must_exist", model: EmployeeLevel.name.underscore.humanize)
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "manager in other division cannot create effort" do
+        let(:Authorization) { "Bearer #{div2_manager_token.token}" }
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "missing params" do
+        before { params.delete(:efforts) }
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.missing_params", params: :efforts)
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.missing_params", params: :efforts)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "one of efforts missing params" do
+        before { params[:efforts][0].delete(:employee_id) }
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.missing_params", params: "efforts[0][employee_id]")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.missing_params", params: "efforts[0][employee_id]")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -469,19 +502,15 @@ describe "Effort API" do
       end
 
       response "422", "effort is greater than 100" do
-        let(:params) {
-          {
-            effort: 101,
-            employee_level_id: employee_level.id
-          }
-        }
+        before { params[:efforts][0][:effort] = 101 }
 
-        examples "application/json" => {
+        examples "application/json": {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
             message: I18n.t("api_error.effort_greater")
           }
         }
+
         run_test! do |response|
           expected = {
             error: {
@@ -494,24 +523,49 @@ describe "Effort API" do
       end
 
       response "422", "effort is less than 0" do
-        let(:params) {
-          {
-            effort: -1,
-            employee_level_id: employee_level.id
-          }
-        }
+        before { params[:efforts][0][:effort] = -1 }
 
-        examples "application/json" => {
+        examples "application/json": {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
             message: I18n.t("api_error.effort_less_than_zero")
           }
         }
+
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
               message: I18n.t("api_error.effort_less_than_zero")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "duped effort" do
+        let(:duped_effort_params) do
+          {
+            employee_id: employee_level.employee_id,
+            level_id: employee_level.level_id,
+            effort: rand(1..100)
+          }
+        end
+
+        before { params[:efforts].push(duped_effort_params) }
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: I18n.t("api_error.taken_params", params: EmployeeLevel.name.underscore.humanize)
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.taken_params", params: EmployeeLevel.name.underscore.humanize)
             }
           }
           expect(response.body).to eq expected.to_json

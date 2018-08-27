@@ -408,11 +408,18 @@ describe "SprintAPI" do
 
       let(:id) { sprint1.id }
 
+      let(:params) do
+        {
+          name: "sprint 3",
+          starts_on: Date.current,
+          ends_on: 1.day.from_now
+        }
+      end
+
       response "401", "employee cannot update sprint" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let(:Authorization) { "Bearer #{employee_token.token}" }
-        let(:params) { { name: "sprint 3", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
 
         examples "application/json" => {
           error: {
@@ -436,7 +443,6 @@ describe "SprintAPI" do
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let(:Authorization) { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { name: "sprint 3", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -461,7 +467,6 @@ describe "SprintAPI" do
         let!(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:Authorization) { "Bearer #{section_manager_token.token}" }
-        let(:params) { { name: "sprint 3", starts_on: "2018-07-19", ends_on: "2018-07-20" } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -472,19 +477,12 @@ describe "SprintAPI" do
           ends_on: "2018-07-20"
         }
         run_test! do
-          expected = {
-            id: sprint1.id,
-            name: "sprint 3",
-            starts_on: "2018-07-19",
-            ends_on: "2018-07-20"
-          }
+          expected = Entities::Sprint.represent sprint1.reload
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "200", "PO can update sprint" do
-        let(:params) { { name: "sprint 3", starts_on: "2018-07-19", ends_on: "2018-07-20" } }
-
         examples "application/json" => {
           id: 1,
           name: "sprint 3",
@@ -492,18 +490,13 @@ describe "SprintAPI" do
           ends_on: "2018-07-20"
         }
         run_test! do
-          expected = {
-            id: sprint1.id,
-            name: "sprint 3",
-            starts_on: "2018-07-19",
-            ends_on: "2018-07-20"
-          }
+          expected = Entities::Sprint.represent sprint1.reload
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "400", "missing params" do
-        let(:params) { { starts_on: "2018-07-19", ends_on: "2018-07-20" } }
+        before { params.delete(:name) }
 
         examples "application/json" => {
           error: {
@@ -523,7 +516,7 @@ describe "SprintAPI" do
       end
 
       response "400", "invalid date params" do
-        let(:params) { { name: "sprint 4", starts_on: "2018-02-30", ends_on: "2018-07-20" } }
+        before { params[:starts_on] = "2018-02-30" }
 
         examples "application/json" => {
           error: {
@@ -543,7 +536,7 @@ describe "SprintAPI" do
       end
 
       response "400", "empty params name" do
-        let(:params) { { name: "", starts_on: "2018-07-20", ends_on: "2018-07-20" } }
+        before { params[:name] = "" }
 
         examples "application/json" => {
           error: {
@@ -562,8 +555,8 @@ describe "SprintAPI" do
         end
       end
 
-      response "422", "start time before end time" do
-        let(:params) { { name: "sprint 4", starts_on: "2018-07-28", ends_on: "2018-07-20" } }
+      response "422", "start time is later than end time" do
+        before { params.merge!({ starts_on: 2.days.from_now, ends_on: 1.day.from_now }) }
 
         examples "application/json" => {
           error: {

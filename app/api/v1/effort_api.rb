@@ -22,12 +22,29 @@ class V1::EffortAPI < Grape::API
 
             desc "create an effort"
             params do
-              requires :effort, type: Integer, allow_blank: false
-              requires :employee_level_id, type: Integer, allow_blank: false
+              requires :efforts, type: Array do
+                requires :employee_id, type: Integer, allow_blank: false
+                requires :level_id, type: Integer, allow_blank: false
+                requires :effort, type: Integer, allow_blank: false
+              end
             end
             post do
               authorize @project, :project_manager?
-              present @sprint.efforts.create!(declared(params).to_h), with: Entities::Effort
+              ActiveRecord::Base.transaction do
+                efforts = params[:efforts].map do |effort_params|
+                  employee_level = EmployeeLevel.find_by(
+                    employee_id: effort_params[:employee_id],
+                    level_id: effort_params[:level_id]
+                  )
+                  next if employee_level.nil?
+                  Effort.create!(
+                    employee_level: employee_level,
+                    effort: effort_params[:effort],
+                    sprint: @sprint
+                  )
+                end
+                present efforts.compact, with: Entities::Effort
+              end
             end
 
             route_param :id do

@@ -34,6 +34,10 @@ describe "Project API" do
     parameter name: "Authorization", in: :header, type: :string
 
     get "All projects" do
+      parameter name: :name, in: :query, type: :string
+      parameter name: :organization_id, in: :query, type: :integer
+      let(:name) {}
+      let(:organization_id) {}
       consumes "application/json"
 
       response "401", "unauthorized" do
@@ -96,7 +100,7 @@ describe "Project API" do
         run_test! do |response|
           expected = [Entities::Project.represent(project),
             Entities::Project.represent(other_project)]
-          expect(response.body).to eq expected.to_json
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
 
@@ -141,7 +145,7 @@ describe "Project API" do
         run_test! do |response|
           expected = [Entities::Project.represent(project),
             Entities::Project.represent(other_project)]
-          expect(response.body).to eq expected.to_json
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
 
@@ -186,6 +190,168 @@ describe "Project API" do
         run_test! do |response|
           expected = [Entities::Project.represent(project),
             Entities::Project.represent(other_project)]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return all projects without params" do
+        examples "application/json" => [
+          {
+            id: 1,
+            name: "Project 1",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            started_at: "2018-08-08T09:32:40.649+07:00",
+            description: "Description of project 1",
+            product_owner: {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+            }
+          },
+          {
+            id: 2,
+            name: "Project 2",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            started_at: "2018-08-08T09:32:45.649+07:00",
+            description: "Description of project 2",
+            product_owner: {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+            }
+          }
+        ]
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        run_test! do |response|
+          expected = [Entities::Project.represent(project),
+            Entities::Project.represent(other_project)]
+            expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return projects match with params name" do
+        examples "application/json" => [
+          {
+            id: 1,
+            name: "Project 1",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            started_at: "2018-08-08T09:32:40.649+07:00",
+            description: "Description of project 1",
+            product_owner: {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+            }
+          }
+        ]
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:name) { project.name }
+        run_test! do |response|
+          expected = [Entities::Project.represent(project)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return projects have PO's org in organization_id + child" do
+        examples "application/json" => [
+          {
+            id: 1,
+            name: "Project 1",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            started_at: "2018-08-08T09:32:40.649+07:00",
+            description: "Description of project 1",
+            product_owner: {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+            }
+          }
+        ]
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:organization_id) { section.id }
+        run_test! do |response|
+          expected = [Entities::Project.represent(other_project)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return nill when any project match name" do
+        examples "application/json" => []
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:name) { "123 project_name 123" }
+        let(:organization_id) { group.id }
+        run_test! do |response|
+          expected = []
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "return error when any project match organization_id + child" do
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
+          }
+        }
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:name) { project.name }
+        let(:organization_id) { 0 }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return projects match with params name and organization_id + child" do
+        examples "application/json" => [
+          {
+            id: 1,
+            name: "Project 1",
+            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+            started_at: "2018-08-08T09:32:40.649+07:00",
+            description: "Description of project 1",
+            product_owner: {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+            }
+          }
+        ]
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:name) { other_project.name }
+        let(:organization_id) { group.id }
+        run_test! do |response|
+          expected = [Entities::Project.represent(other_project)]
           expect(response.body).to eq expected.to_json
         end
       end

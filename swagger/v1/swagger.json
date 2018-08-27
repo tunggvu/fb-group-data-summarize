@@ -319,7 +319,7 @@
             }
           },
           "404": {
-            "description": "return error when pass organization not exited to params organization_not_in ",
+            "description": "return error when pass organization not existed to params organization_not_in ",
             "examples": {
               "application/json": {
                 "error": {
@@ -1576,6 +1576,18 @@
       ],
       "get": {
         "summary": "All projects",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "type": "integer"
+          }
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1592,13 +1604,13 @@
             }
           },
           "200": {
-            "description": "Employee can see all projects",
+            "description": "return projects match with params name and organization_id + child",
             "examples": {
               "application/json": [
                 {
                   "id": 1,
                   "name": "Project 1",
-                  "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHg",
+                  "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
                   "started_at": "2018-08-08T09:32:40.649+07:00",
                   "description": "Description of project 1",
                   "product_owner": {
@@ -1609,27 +1621,21 @@
                     "email": "employee@framgia.com",
                     "birthday": "1/1/2018",
                     "phone": "0123456789",
-                    "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHh"
-                  }
-                },
-                {
-                  "id": 2,
-                  "name": "Project 2",
-                  "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHi",
-                  "started_at": "2018-08-08T09:32:45.649+07:00",
-                  "description": "Description of project 2",
-                  "product_owner": {
-                    "id": 1,
-                    "organization_id": 1,
-                    "name": "Employee",
-                    "employee_code": "B120000",
-                    "email": "employee@framgia.com",
-                    "birthday": "1/1/2018",
-                    "phone": "0123456789",
-                    "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl"
+                    "avatar": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
                   }
                 }
               ]
+            }
+          },
+          "404": {
+            "description": "return error when any project match organization_id + child",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Organization with 'id'=0"
+                }
+              }
             }
           }
         }

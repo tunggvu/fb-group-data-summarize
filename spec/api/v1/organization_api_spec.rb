@@ -70,7 +70,7 @@ describe "Organization API" do
             Entities::BaseOrganization.represent(division),
             Entities::BaseOrganization.represent(division2)
           ]
-          expect(response.body).to eq expected.to_json
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
 

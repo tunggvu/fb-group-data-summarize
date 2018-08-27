@@ -218,7 +218,10 @@
                 "effort": {
                   "type": "integer"
                 },
-                "employee_level_id": {
+                "employee_id": {
+                  "type": "integer"
+                },
+                "level_id": {
                   "type": "integer"
                 }
               }
@@ -231,8 +234,10 @@
             "examples": {
               "application/json": {
                 "id": 1,
-                "employee_level_id": 1,
-                "effort": 100
+                "employee_id": 1,
+                "effort": 100,
+                "level_id": 1,
+                "employee_level_id": 1
               }
             }
           },
@@ -254,6 +259,17 @@
                 "error": {
                   "code": 401,
                   "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "when employee level nil",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Employee level must exist"
                 }
               }
             }

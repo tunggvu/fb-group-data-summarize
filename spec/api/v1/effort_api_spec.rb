@@ -591,7 +591,8 @@ describe "Effort API" do
         type: :object,
         properties: {
           effort: {type: :integer},
-          employee_level_id: {type: :integer}
+          employee_id: {type: :integer},
+          level_id: {type: :integer}
         }
       }
 
@@ -600,19 +601,21 @@ describe "Effort API" do
         let(:params) {
           {
             effort: 50,
-            employee_level_id: employee_level.id
+            employee_id: employee_level.employee.id,
+            level_id:  employee_level.level.id
           }
         }
 
         examples "application/json" => {
           id: 1,
-          employee_level_id: 1,
-          effort: 50
+          employee_id: 1,
+          effort: 50,
+          level_id: 1
         }
         run_test! do |response|
-          expected = Entities::Effort.represent effort.reload
+          expected = Entities::Effort.represent sprint.efforts
           expect(response.body).to eq expected.to_json
-          expect(effort.effort).to eq 50
+          expect(effort.reload.effort).to eq 50
         end
       end
 
@@ -621,7 +624,8 @@ describe "Effort API" do
         let(:params) {
           {
             effort: 50,
-            employee_level_id: employee_level.id
+            employee_id: employee_level.employee.id,
+            level_id:  employee_level.level.id
           }
         }
 
@@ -631,9 +635,9 @@ describe "Effort API" do
           effort: 50
         }
         run_test! do |response|
-          expected = Entities::Effort.represent effort.reload
+          expected = Entities::Effort.represent sprint.efforts
           expect(response.body).to eq expected.to_json
-          expect(effort.effort).to eq 50
+          expect(effort.reload.effort).to eq 50
         end
       end
 
@@ -641,7 +645,8 @@ describe "Effort API" do
         let(:params) {
           {
             effort: 50,
-            employee_level_id: employee_level.id
+            employee_id: employee_level.employee.id,
+            level_id:  employee_level.level.id
           }
         }
 
@@ -651,9 +656,9 @@ describe "Effort API" do
           effort: 100
         }
         run_test! do |response|
-          expected = Entities::Effort.represent effort.reload
+          expected = Entities::Effort.represent sprint.efforts
           expect(response.body).to eq expected.to_json
-          expect(effort.effort).to eq 50
+          expect(effort.reload.effort).to eq 50
         end
       end
 
@@ -661,7 +666,8 @@ describe "Effort API" do
         let(:params) {
           {
             effort: "" ,
-            employee_level_id: 1
+            employee_id: employee_level.employee.id,
+            level_id:  employee_level.level.id
           }
         }
 
@@ -687,7 +693,8 @@ describe "Effort API" do
         let(:params) {
           {
             effort: rand(1..100),
-            employee_level_id: 1
+            employee_id: employee_level.employee.id,
+            level_id:  employee_level.level.id
           }
         }
 
@@ -712,7 +719,8 @@ describe "Effort API" do
         let(:params) {
           {
             effort: rand(1..100),
-            employee_level_id: 1
+            employee_id: employee_level.employee.id,
+            level_id:  employee_level.level.id
           }
         }
 
@@ -729,6 +737,35 @@ describe "Effort API" do
               message: I18n.t("api_error.unauthorized")
             }
           }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "when employee level nil" do
+        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let(:params) {
+          {
+            effort: rand(1..100),
+            employee_id: 0,
+            level_id:  0
+          }
+        }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: I18n.t("api_error.must_exist", model: EmployeeLevel.name.underscore.humanize)
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.must_exist", model: EmployeeLevel.name.underscore.humanize)
+            }
+          }
+
+
           expect(response.body).to eq expected.to_json
         end
       end

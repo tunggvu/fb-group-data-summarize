@@ -56,11 +56,14 @@ class V1::EffortAPI < Grape::API
               desc "update an effort"
               params do
                 requires :effort, type: Integer, allow_blank: false
-                requires :employee_level_id, type: Integer, allow_blank: false
+                requires :level_id, type: Integer, allow_blank: false
+                requires :employee_id, type: Integer, allow_blank: false
               end
               patch do
-                @effort.update_attributes!(declared(params).to_h)
-                present @effort, with: Entities::Effort
+                employee_level = EmployeeLevel.find_by level_id: params[:level_id],
+                  employee_id: params[:employee_id]
+                @effort.update_attributes! employee_level: employee_level, effort: params[:effort]
+                present @sprint.efforts.includes(employee_level: [:employee, level: :skill]), with: Entities::Effort
               end
 
               desc "delete an effort"

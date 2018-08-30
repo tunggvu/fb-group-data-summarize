@@ -66,7 +66,7 @@ describe "Project API" do
             id: 1,
             name: "Project 1",
             logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHg",
-            started_at: "2018-08-08T09:32:40.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 1",
             product_owner: {
               id: 1,
@@ -83,7 +83,7 @@ describe "Project API" do
             id: 2,
             name: "Project 2",
             logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHi",
-            started_at: "2018-08-08T09:32:45.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 2",
             product_owner: {
               id: 1,
@@ -111,7 +111,7 @@ describe "Project API" do
             id: 1,
             name: "Project 1",
             logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHg",
-            started_at: "2018-08-08T09:32:40.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 1",
             product_owner: {
               id: 1,
@@ -128,7 +128,7 @@ describe "Project API" do
             id: 2,
             name: "Project 2",
             logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHi",
-            started_at: "2018-08-08T09:32:45.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 2",
             product_owner: {
               id: 1,
@@ -156,7 +156,7 @@ describe "Project API" do
             id: 1,
             name: "Project 1",
             logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHg",
-            started_at: "2018-08-08T09:32:40.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 1",
             product_owner: {
               id: 1,
@@ -173,7 +173,7 @@ describe "Project API" do
             id: 2,
             name: "Project 2",
             logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHi",
-            started_at: "2018-08-08T09:32:45.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 2",
             product_owner: {
               id: 1,
@@ -200,7 +200,7 @@ describe "Project API" do
             id: 1,
             name: "Project 1",
             logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            started_at: "2018-08-08T09:32:40.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 1",
             product_owner: {
               id: 1,
@@ -217,7 +217,7 @@ describe "Project API" do
             id: 2,
             name: "Project 2",
             logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            started_at: "2018-08-08T09:32:45.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 2",
             product_owner: {
               id: 1,
@@ -245,7 +245,7 @@ describe "Project API" do
             id: 1,
             name: "Project 1",
             logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            started_at: "2018-08-08T09:32:40.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 1",
             product_owner: {
               id: 1,
@@ -273,7 +273,7 @@ describe "Project API" do
             id: 1,
             name: "Project 1",
             logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            started_at: "2018-08-08T09:32:40.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 1",
             product_owner: {
               id: 1,
@@ -333,7 +333,7 @@ describe "Project API" do
             id: 1,
             name: "Project 1",
             logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            started_at: "2018-08-08T09:32:40.649+07:00",
+            starts_on: "2018-08-08",
             description: "Description of project 1",
             product_owner: {
               id: 1,
@@ -364,22 +364,36 @@ describe "Project API" do
         type: :object,
         properties: {
           name: { type: :string, description: "Project name" },
-          product_owner_id: { type: :integer, description: "Product owner" }
-          },
+          product_owner_id: { type: :integer, description: "Product owner" },
+          starts_on: { type: :date, description: "Project start time" }
+        },
         required: [:name, :product_owner_id]
       }
 
       response "201", "Admin can create" do
         let(:"Authorization") { "Bearer #{admin_token.token}" }
-        examples "application/json" => {
-          id: 2,
+        examples "application/json": {
+          id: 11,
           name: "Project 1",
-          product_owner_id: 2
+          description: "Description of project 1",
+          starts_on: "2018-07-12",
+          logo: "/uploads/avatar.png",
+          product_owner: {
+            id: 1,
+            organization_id: 1,
+            name: "Administator",
+            employee_code: "B1210000",
+            email: "admin@framgia.com",
+            birthday: "1/1/2018",
+            phone: "0987654321",
+            avatar: "/uploads/avatar.png"
+          }
         }
 
         let(:params) { {
           name: "Project 1",
-          product_owner_id: admin.id
+          product_owner_id: admin.id,
+          starts_on: 3.days.ago
         } }
 
         run_test! do |response|
@@ -391,15 +405,28 @@ describe "Project API" do
       response "201", "Manager can create a project" do
         let(:"Authorization") { "Bearer #{group_leader_token.token}" }
 
-        examples "application/json" => {
-          id: 2,
+        examples "application/json": {
+          id: 11,
           name: "Project 1",
-          product_owner_id: 2
+          description: "Description of project 1",
+          starts_on: "2018-07-12",
+          logo: "/uploads/avatar.png",
+          product_owner: {
+            id: 1,
+            organization_id: 1,
+            name: "Administator",
+            employee_code: "B1210000",
+            email: "admin@framgia.com",
+            birthday: "1/1/2018",
+            phone: "0987654321",
+            avatar: "/uploads/avatar.png"
+          }
         }
 
         let(:params) { {
           name: "Project 1",
-          product_owner_id: admin.id
+          product_owner_id: admin.id,
+          starts_on: 3.days.ago
         } }
 
         run_test! do |response|
@@ -414,7 +441,8 @@ describe "Project API" do
         let(:params) {
           {
             name: "Project 1",
-            product_owner_id: admin.id
+            product_owner_id: admin.id,
+            starts_on: 3.days.ago
           }
         }
         examples "application/json" => {
@@ -472,7 +500,7 @@ describe "Project API" do
           name: "Project 1",
           logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
           description: "Description",
-          creation_time: "2018-08-10T12:36:15.959+07:00",
+          starts_on: "2018-08-10",
           product_owner: {
             id: 1,
             organization_id: 1,
@@ -566,7 +594,7 @@ describe "Project API" do
           name: "Project 1",
           logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
           description: "Description",
-          creation_time: "2018-08-10T12:36:15.959+07:00",
+          starts_on: "2018-08-10",
           product_owner: {
             id: 1,
             organization_id: 1,
@@ -663,7 +691,7 @@ describe "Project API" do
           name: "Project 1",
           logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
           description: "Description",
-          creation_time: "2018-08-10T12:36:15.959+07:00",
+          starts_on: "2018-08-10",
           product_owner: {
             id: 1,
             organization_id: 1,
@@ -800,26 +828,31 @@ describe "Project API" do
         properties: {
           name: { type: :string, description: "Project name" },
           description: { type: :string, description: "Project description" },
-          product_owner_id: { type: :integer, description: "Product owner" }
-          },
-        required: [:name, :description, :product_owner_id]
+          product_owner_id: { type: :integer, description: "Product owner" },
+          starts_on: { type: :date, description: "Project start time" }
+        }
       }
       parameter name: :id, in: :path, type: :integer
 
       response "200", "product owner can update project that product owner created" do
         let(:"Authorization") { "Bearer #{group_leader_token.token}" }
         let(:id) { other_project.id }
-        examples "application/json" => {
-          id: 1,
+
+        examples "application/json": {
+          id: 11,
           name: "Project 1",
+          description: "Description of project 1",
+          starts_on: "2018-07-12",
+          logo: "/uploads/avatar.png",
           product_owner: {
             id: 1,
             organization_id: 1,
-            name: "Employee",
-            employee_code: "B120000",
-            email: "employee@framgia.com",
+            name: "Administator",
+            employee_code: "B1210000",
+            email: "admin@framgia.com",
             birthday: "1/1/2018",
-            phone: "0123456789"
+            phone: "0987654321",
+            avatar: "/uploads/avatar.png"
           }
         }
 
@@ -838,17 +871,22 @@ describe "Project API" do
       response "200", "manager of product owner can update project that product owner created" do
         let(:"Authorization") { "Bearer #{section_manager_token.token}" }
         let(:id) { other_project.id }
-        examples "application/json" => {
-          id: 1,
+
+        examples "application/json": {
+          id: 11,
           name: "Project 1",
+          description: "Description of project 1",
+          starts_on: "2018-07-12",
+          logo: "/uploads/avatar.png",
           product_owner: {
             id: 1,
             organization_id: 1,
-            name: "Employee",
-            employee_code: "B120000",
-            email: "employee@framgia.com",
+            name: "Administator",
+            employee_code: "B1210000",
+            email: "admin@framgia.com",
             birthday: "1/1/2018",
-            phone: "0123456789"
+            phone: "0987654321",
+            avatar: "/uploads/avatar.png"
           }
         }
 
@@ -896,7 +934,7 @@ describe "Project API" do
           name: "Project 1",
           description: "Project description",
           logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
-          started_at: "2018-08-10T05:36:15.959Z",
+          starts_on: "2018-08-10",
           product_owner: {
             id: 1,
             organization_id: 1,

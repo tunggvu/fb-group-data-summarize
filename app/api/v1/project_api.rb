@@ -23,6 +23,7 @@ class V1::ProjectAPI < Grape::API
     params do
       requires :name, type: String, allow_blank: false
       requires :product_owner_id, type: Integer, allow_blank: false
+      optional :starts_on, type: Date
     end
     post do
       authorize :project, :executive?
@@ -45,6 +46,7 @@ class V1::ProjectAPI < Grape::API
         optional :name, type: String
         optional :description, type: String
         optional :product_owner_id, type: Integer
+        optional :starts_on, type: Date
       end
       patch do
         project = Project.find params[:id]

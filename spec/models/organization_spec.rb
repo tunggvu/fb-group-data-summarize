@@ -13,10 +13,10 @@ RSpec.describe Organization, type: :model do
   end
 
   describe "#full_name" do
-    let!(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
-    let!(:section) { FactoryBot.create(:organization, :section, parent: division, name: "Section 1") }
-    let!(:group) { FactoryBot.create(:organization, :clan, parent: section, name: "Group 1") }
-    let!(:team) { FactoryBot.create(:organization, :team, parent: group, name: "Team 1") }
+    let(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
+    let(:section) { FactoryBot.create(:organization, :section, parent: division, name: "Section 1") }
+    let(:group) { FactoryBot.create(:organization, :clan, parent: section, name: "Group 1") }
+    let(:team) { FactoryBot.create(:organization, :team, parent: group, name: "Team 1") }
 
     it "should return divistion's full name" do
       expect(division.full_name).to eq "Division 1"
@@ -36,10 +36,10 @@ RSpec.describe Organization, type: :model do
   end
 
   describe "#employee_ids" do
-    let!(:division) { FactoryBot.create(:organization, :division) }
-    let!(:section) { FactoryBot.create(:organization, :section, parent: division) }
-    let!(:group) { FactoryBot.create(:organization, :clan, parent: section) }
-    let!(:team) { FactoryBot.create(:organization, :team, parent: group) }
+    let(:division) { FactoryBot.create(:organization, :division) }
+    let(:section) { FactoryBot.create(:organization, :section, parent: division) }
+    let(:group) { FactoryBot.create(:organization, :clan, parent: section) }
+    let(:team) { FactoryBot.create(:organization, :team, parent: group) }
 
     let!(:team_member_1) { FactoryBot.create :employee, organization: team }
     let!(:team_member_2) { FactoryBot.create :employee, organization: team }

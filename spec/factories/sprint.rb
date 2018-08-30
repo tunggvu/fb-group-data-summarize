@@ -5,7 +5,7 @@ FactoryBot.define do
     association :project
     association :phase
     name { Faker::Name.name }
-    starts_on { Time.zone.now }
+    starts_on { Date.current }
     ends_on { 10.days.from_now }
   end
 end

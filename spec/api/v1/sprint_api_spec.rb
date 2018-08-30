@@ -16,13 +16,14 @@ describe "SprintAPI" do
   let!(:section_manager) { create :employee, organization: section }
   let(:section_manager_token) { create :employee_token, employee: section_manager }
 
-  let!(:employee) { create :employee }
+  let(:employee) { create :employee }
   let(:employee_token) { create :employee_token, employee: employee }
 
-  let!(:project) { create :project, product_owner: group_leader }
-  let!(:phase) { create :phase, project: project }
-  let!(:sprint1) { create :sprint, project: project, phase: phase }
-  let!(:sprint2) { create :sprint, project: project, phase: phase }
+  let(:project) { create :project, product_owner: group_leader }
+  let(:phase) { create :phase, project: project }
+  let!(:sprint1) { create :sprint, project: project, phase: phase, starts_on: Date.current, ends_on: 3.days.from_now }
+  let!(:sprint2) { create :sprint, project: project, phase: phase, starts_on: 4.days.from_now, ends_on: 8.days.from_now }
+  let!(:sprint3) { create :sprint, project: project, phase: phase, starts_on: 9.days.from_now, ends_on: 12.days.from_now }
 
   path "/api/v1/projects/{project_id}/phases/{phase_id}/sprints" do
     parameter name: "Authorization", in: :header, type: :string
@@ -91,7 +92,7 @@ describe "SprintAPI" do
             }
           ]
         run_test! do
-          expected = [Entities::Sprint.represent(sprint1), Entities::Sprint.represent(sprint2)]
+          expected = Entities::Sprint.represent(phase.sprints)
           expect(response.body).to eq expected.to_json
         end
       end
@@ -153,8 +154,8 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            starts_on: Time.now,
-            ends_on: 7.days.from_now
+            starts_on: 13.days.from_now,
+            ends_on: 15.days.from_now
           }
         }
 
@@ -175,8 +176,8 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            starts_on: Time.now,
-            ends_on: 7.days.from_now
+            starts_on: 13.days.from_now,
+            ends_on: 15.days.from_now
           }
         }
 
@@ -300,7 +301,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "422", "invalid end time" do
+      response "422", "invalid ends time" do
         let(:params) {
           {
             name: "Sprint 1",
@@ -312,14 +313,40 @@ describe "SprintAPI" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.validate_time")
+            message: I18n.t("api_error.invalid_starts_on_ends_on")
           }
         }
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.validate_time")
+              message: I18n.t("api_error.invalid_starts_on_ends_on")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "invalid starts time" do
+        let(:params) {
+          {
+            name: "Sprint 1",
+            starts_on: 10.days.from_now,
+            ends_on: 12.days.from_now
+          }
+        }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: I18n.t("api_error.invalid_starts_on")
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.invalid_starts_on")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -336,7 +363,7 @@ describe "SprintAPI" do
     let(:Authorization) { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:phase_id) { phase.id }
-    let(:id) { sprint1.id }
+    let(:id) { sprint2.id }
 
     get "get information specific sprint" do
       consumes "application/json"
@@ -406,7 +433,7 @@ describe "SprintAPI" do
         required: [:name, :starts_on, :ends_on]
       }
 
-      let(:id) { sprint1.id }
+      let(:id) { sprint2.id }
 
       let(:params) do
         {
@@ -464,10 +491,8 @@ describe "SprintAPI" do
       end
 
       response "200", "manager of PO can update sprint" do
-        let!(:section_manager) { FactoryBot.create :employee, organization: section }
-        let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:Authorization) { "Bearer #{section_manager_token.token}" }
-
+        let(:params) { { name: "sprint 3", starts_on: 4.days.from_now, ends_on: 8.days.from_now } }
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
@@ -477,12 +502,13 @@ describe "SprintAPI" do
           ends_on: "2018-07-20"
         }
         run_test! do
-          expected = Entities::Sprint.represent sprint1.reload
+          expected = Entities::Sprint.represent sprint2.reload
           expect(response.body).to eq expected.to_json
         end
       end
 
       response "200", "PO can update sprint" do
+        let(:params) { { name: "sprint 3", starts_on: 4.days.from_now, ends_on: 8.days.from_now } }
         examples "application/json" => {
           id: 1,
           name: "sprint 3",
@@ -490,7 +516,7 @@ describe "SprintAPI" do
           ends_on: "2018-07-20"
         }
         run_test! do
-          expected = Entities::Sprint.represent sprint1.reload
+          expected = Entities::Sprint.represent sprint2.reload
           expect(response.body).to eq expected.to_json
         end
       end
@@ -555,13 +581,13 @@ describe "SprintAPI" do
         end
       end
 
-      response "422", "start time is later than end time" do
-        before { params.merge!({ starts_on: 2.days.from_now, ends_on: 1.day.from_now }) }
+      response "422", "invalid starts on after ends on" do
+        let(:params) { { name: "sprint 4", starts_on: 8.days.from_now, ends_on: 5.days.from_now } }
 
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.validate_time")
+            message: I18n.t("api_error.invalid_starts_on_ends_on")
           }
         }
 
@@ -569,12 +595,55 @@ describe "SprintAPI" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.validate_time")
+              message: I18n.t("api_error.invalid_starts_on_ends_on")
             }
           }
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "422", "invalid starts on before ends on of previous sprint" do
+        let(:params) { { name: "sprint 4", starts_on: 2.days.from_now, ends_on: 8.days.from_now } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: I18n.t("api_error.invalid_starts_on")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.invalid_starts_on")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "invalid ends on after starts on of next sprint" do
+        let(:params) { { name: "sprint 4", starts_on: 4.days.from_now, ends_on: 10.days.from_now } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: I18n.t("api_error.invalid_ends_on")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.invalid_ends_on")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
     end
 
     delete "Delete sprint" do

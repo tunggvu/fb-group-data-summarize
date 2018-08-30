@@ -2848,12 +2848,12 @@
             }
           },
           "422": {
-            "description": "invalid end time",
+            "description": "invalid starts time",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: Ends on must be after the starts on"
+                  "message": "Validation failed: Starts on must be after ends on previous sprint"
                 }
               }
             }
@@ -2993,12 +2993,12 @@
             }
           },
           "422": {
-            "description": "start time is later than end time",
+            "description": "invalid ends on after starts on of next sprint",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: Ends on must be after the starts on"
+                  "message": "Validation failed: Ends on must be after starts on next sprint"
                 }
               }
             }

@@ -14,11 +14,20 @@ en:
     empty_params: "%{params} is empty"
     blank_params: "Validation failed: %{params} can't be blank"
     must_exist: "Validation failed: %{model} must exist"
-    validate_time: "Validation failed: Ends on must be after the starts on"
+    # Update ends on to start time
+    validate_time: "Validation failed: Ends on must be after the starts on, Starts on must be after ends on previous sprint"
+    invalid_starts_on_ends_on: "Validation failed: Ends on must be after the starts on"
+    invalid_starts_on: "Validation failed: Starts on must be after ends on previous sprint"
+    invalid_ends_on: "Validation failed: Ends on must be after starts on next sprint"
     effort_greater: "Validation failed: Effort must be less than or equal to 100"
     effort_less_than_zero: "Validation failed: Effort must be greater than or equal to 0"
     invalid: "%{params} is invalid"
     wrong_current_password: "wrong current password"
+  models:
+    sprint:
+      invalid_starts_on_ends_on: "must be after the starts on"
+      invalid_starts_on: "must be after ends on previous sprint"
+      invalid_ends_on: "must be after starts on next sprint"
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
   success: "Success"

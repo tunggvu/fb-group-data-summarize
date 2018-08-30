@@ -14,9 +14,9 @@ RSpec.describe Phase, type: :model do
 
   describe "#sprints" do
     let(:phase) { FactoryBot.create(:phase) }
-    let(:sprint1) { FactoryBot.create(:sprint, phase: phase, starts_on: 1.day.ago) }
-    let(:sprint2) { FactoryBot.create(:sprint, phase: phase) }
-    let(:sprint3) { FactoryBot.create(:sprint, phase: phase, starts_on: 1.day.from_now) }
+    let(:sprint1) { FactoryBot.create :sprint, phase: phase, starts_on: 10.days.ago, ends_on: 9.days.ago }
+    let(:sprint2) { FactoryBot.create :sprint, phase: phase }
+    let(:sprint3) { FactoryBot.create :sprint, phase: phase, starts_on: 11.days.from_now, ends_on: 12.days.from_now }
 
     it "should return sprints sorted by start time descending" do
       expected = [sprint3, sprint2, sprint1]

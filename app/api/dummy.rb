@@ -962,4 +962,112 @@ module Dummy
     "rank": -53831858,
     "skill_id": -5550850
   }
+
+  FILTER_EMPLOYEE_BY_EFFORT = [
+    {
+      employee_id: 1,
+      employee_name: "Nguyen Van A",
+      total_efforts: [
+        {
+          start_time: "2/3/2018",
+          end_time: "9/3/2018",
+          value: 100
+        },
+        {
+          start_time: "10/3/2018",
+          end_time: "20/3/2018",
+          value: 50
+        },
+        {
+          start_time: "21/3/2018",
+          end_time: "27/3/2018",
+          value: 80
+        }
+      ]
+    },
+    {
+      employee_id: 2,
+      employee_name: "Nguyen Van B",
+      total_efforts: [
+        {
+          start_time: "2/3/2018",
+          end_time: "9/3/2018",
+          value: 100
+        },
+        {
+          start_time: "10/3/2018",
+          end_time: "20/3/2018",
+          value: 50
+        },
+        {
+          start_time: "21/3/2018",
+          end_time: "25/3/2018",
+          value: 80
+        }
+      ]
+    }
+  ]
+
+  DETAIL_EFFORT_BY_EMPLOYEE_HOVER = [
+    {
+      project_name: "Emres",
+      effort: 50,
+      skills: "Ruby"
+    },
+    {
+      project_name: "BB",
+      effort: 30,
+      skills: "PHP"
+    }
+  ]
+
+  DETAIL_EFFORT_BY_EMPLOYEE_CLICK = [
+    {
+      employee_id: 1,
+      start_time: "2/3/2018",
+      end_time: "7/3/2018",
+      effort: 50,
+      sprint_id: 1,
+      employee_level_id: 1
+    },
+    {
+      employee_id: 1,
+      start_time: "8/3/2018",
+      end_time: "13/3/2018",
+      effort: 50,
+      sprint_id: 2,
+      employee_level_id: 1
+    },
+    {
+      employee_id: 1,
+      start_time: "14/3/2018",
+      end_time: "19/3/2018",
+      effort: 50,
+      sprint_id: 3,
+      employee_level_id: 1
+    },
+    {
+      employee_id: 1,
+      start_time: "20/3/2018",
+      end_time: "25/3/2018",
+      effort: 50,
+      sprint_id: 4,
+      employee_level_id: 1
+    }, {
+      employee_id: 1,
+      start_time: "2/3/2018",
+      end_time: "9/3/2018",
+      effort: 50,
+      sprint_id: 21,
+      employee_level_id: 1
+    },
+    {
+      employee_id: 1,
+      start_time: "21/3/2018",
+      end_time: "25/3/2018",
+      effort: 30,
+      sprint_id: 31,
+      employee_level_id: 1
+    }
+  ]
 end

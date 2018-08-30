@@ -29,12 +29,14 @@ describe "Employee API" do
       parameter name: :skill_id, in: :query, type: :integer
       parameter name: :organization_not_in, in: :query, type: :integer
       parameter name: "level_ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }
+      parameter name: "ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }
 
       let(:query) {}
       let(:organization_id) {}
       let(:skill_id) {}
       let(:organization_not_in) {}
       let("level_ids[]") { [] }
+      let("ids[]") { [] }
 
       consumes "application/json"
 
@@ -200,6 +202,31 @@ describe "Employee API" do
         end
       end
 
+      response "200", "return employees with params ids" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("ids[]") { [employee.id, manager.id] }
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [
+            Entities::Employee.represent(employee),
+            Entities::Employee.represent(manager)
+           ]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
       response "200", "return employees with params organization_id" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_id) { division.id }
@@ -269,6 +296,7 @@ describe "Employee API" do
         let(:query) { employee.name }
         let(:skill_id) { 0 }
         let("level_ids[]") { [0] }
+        let("ids[]") { [0] }
 
         examples "application/json" =>
           []

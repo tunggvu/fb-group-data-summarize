@@ -77,4 +77,19 @@ class V1::EffortAPI < Grape::API
       end
     end
   end
+
+  resource :efforts do
+    before { authenticate! }
+
+    desc "Get detail employee's effort durring start and end time"
+    params do
+      requires :employee_id, type: Integer
+      requires :start_time, type: Date
+      requires :end_time, type: Date
+    end
+
+    get do
+      Dummy::DETAIL_EFFORT_BY_EMPLOYEE_CLICK
+    end
+  end
 end

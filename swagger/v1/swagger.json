@@ -343,6 +343,15 @@
             "items": {
               "type": "integer"
             }
+          },
+          {
+            "name": "ids[]",
+            "in": "query",
+            "type": "array",
+            "collectionFormat": "multi",
+            "items": {
+              "type": "integer"
+            }
           }
         ],
         "consumes": [

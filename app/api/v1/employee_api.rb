@@ -12,13 +12,21 @@ class V1::EmployeeAPI < Grape::API
       optional :skill_id, type: Integer
       optional :organization_not_in, type: Integer
       optional :level_ids, type: Array[Integer]
+      optional :project_id, type: Integer
+      optional :start_time, type: Date
+      optional :end_time, type: Date
+      optional :total_effort_gt, type: Integer
+      optional :ids, type: Array[Integer]
+      all_or_none_of :start_time, :end_time, :total_effort_gt
     end
 
     get do
+      #TODO: filter employees by project_id
       search_params = {
         name_or_employee_code_cont: params[:query],
         levels_skill_id_eq: params[:skill_id],
-        levels_id_in: params[:level_ids]
+        levels_id_in: params[:level_ids],
+        id_in: params[:ids]
       }
       search_params[:organization_id_not_in] =
         Organization.subtree_of(Organization.find(params[:organization_not_in])).ids if params[:organization_not_in]
@@ -26,7 +34,12 @@ class V1::EmployeeAPI < Grape::API
         Organization.subtree_of(Organization.find(params[:organization_id])).ids if params[:organization_id]
 
       employees = Employee.ransack(search_params).result(distinct: true)
-      present paginate(employees), with: Entities::Employee
+
+      if params[:total_effort_gt]
+        Dummy::FILTER_EMPLOYEE_BY_EFFORT
+      else
+        present paginate(employees), with: Entities::Employee
+      end
     end
 
     desc "Create employee"
@@ -47,6 +60,16 @@ class V1::EmployeeAPI < Grape::API
     route_param :id do
       before do
         @employee = Employee.find params[:id]
+      end
+
+      resource :efforts do
+        params do
+          requires :start_time, type: Date
+          requires :end_time, type: Date
+        end
+        get do
+          Dummy::DETAIL_EFFORT_BY_EMPLOYEE_HOVER
+        end
       end
 
       desc "Get employee's information"

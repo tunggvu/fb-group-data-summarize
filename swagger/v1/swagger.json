@@ -2837,8 +2837,26 @@
                 },
                 "ends_on": {
                   "type": "date"
-                }
-              }
+                },
+                "efforts": [
+                  {
+                    "effort": {
+                      "type": "integer"
+                    },
+                    "employee_id": {
+                      "type": "integer"
+                    },
+                    "level_id": {
+                      "type": "integer"
+                    }
+                  }
+                ]
+              },
+              "required": [
+                "name",
+                "starts_on",
+                "ends_on"
+              ]
             }
           }
         ],
@@ -2850,7 +2868,48 @@
                 "id": 1,
                 "name": "Sprint 1",
                 "starts_on": "2018-07-25",
-                "ends_on": "2018-08-04"
+                "ends_on": "2018-08-04",
+                "members": [
+                  {
+                    "effort": 100,
+                    "name": "Administator",
+                    "id": 1,
+                    "skill": {
+                      "id": 1,
+                      "name": "Ruby",
+                      "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+                      "level": {
+                        "id": 3,
+                        "name": "Senior",
+                        "rank": 3,
+                        "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "missing params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "name is missing",
+                  "error_code": 400
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid starts time",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Starts on must be after ends on previous sprint"
+                }
               }
             }
           },
@@ -2863,29 +2922,6 @@
                 "error": {
                   "code": 401,
                   "message": "unauthorized"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "missing params",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "error_code": 400,
-                  "message": "name is missing",
-                  "code": 400
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "invalid starts time",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 422,
-                  "message": "Validation failed: Starts on must be after ends on previous sprint"
                 }
               }
             }

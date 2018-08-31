@@ -25,11 +25,18 @@ class V1::SprintAPI < Grape::API
               requires :name, type: String, allow_blank: false
               requires :starts_on, type: Date, allow_blank: false
               requires :ends_on, type: Date, allow_blank: false
+              optional :efforts, type: Array do
+                requires :effort, type: Integer, allow_blank: false
+                requires :employee_id, type: Integer, allow_blank: false
+                requires :level_id, type: Integer, allow_blank: false
+              end
             end
             post do
               authorize @project, :project_manager?
-              present @project.sprints.create!(declared(params).merge(phase_id: @phase.id)),
-                with: Entities::Sprint
+              save_params = declared(params)
+              create_efforts_attributes_params(save_params) if save_params[:efforts].present?
+              save_params[:phase_id] = @phase.id
+              present @project.sprints.create!(save_params), with: Entities::SprintMember
             end
 
             route_param :id do
@@ -65,6 +72,23 @@ class V1::SprintAPI < Grape::API
           end
         end
       end
+    end
+  end
+
+  helpers do
+    def create_efforts_attributes_params(params)
+      employee_levels = EmployeeLevel.find_by_employee_and_level(params[:efforts])
+      if (not_found_employee = params[:efforts].pluck(:employee_id) - employee_levels.pluck(:employee_id)).present?
+        raise ActiveRecord::RecordNotFound.new(nil, Employee.name, nil, not_found_employee)
+      end
+      params[:efforts_attributes] =
+        employee_levels.size.times.map do |i|
+          {
+            employee_level_id: employee_levels[i].id,
+            effort: params[:efforts][i][:effort]
+          }
+        end
+      params.delete(:efforts)
     end
   end
 end

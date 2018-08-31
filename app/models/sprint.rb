@@ -22,6 +22,8 @@ class Sprint < ApplicationRecord
     phase.sprints.where("starts_on > ?", starts_on).last
   end
 
+  accepts_nested_attributes_for :efforts
+
   private
 
   def validate_ends_on_after_starts_on

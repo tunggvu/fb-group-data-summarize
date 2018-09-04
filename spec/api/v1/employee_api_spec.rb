@@ -24,6 +24,7 @@ describe "Employee API" do
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 
     get "Information of all employees" do
+      tags "Employees"
       parameter name: :query, in: :query, type: :string
       parameter name: :organization_id, in: :query, type: :integer
       parameter name: :skill_id, in: :query, type: :integer
@@ -332,16 +333,17 @@ describe "Employee API" do
     end
 
     post "Create employee" do
+      tags "Employees"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          name: {type: :string},
-          employee_code: {type: :string},
-          email: {type: :string},
-          organization_id: {type: :integer},
-          password: {type: :string}
+          name: { type: :string },
+          employee_code: { type: :string },
+          email: { type: :string },
+          organization_id: { type: :integer },
+          password: { type: :string }
         }
       }
 
@@ -521,6 +523,7 @@ describe "Employee API" do
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 
     get "Get information of specific employee" do
+      tags "Employees"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer
 
@@ -565,6 +568,7 @@ describe "Employee API" do
     end
 
     delete "delete employee" do
+      tags "Employees"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer
 

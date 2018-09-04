@@ -34,6 +34,7 @@ describe "Project API" do
     parameter name: "Authorization", in: :header, type: :string
 
     get "All projects" do
+      tags "Projects"
       parameter name: :name, in: :query, type: :string
       parameter name: :organization_id, in: :query, type: :integer
       let(:name) {}
@@ -358,6 +359,7 @@ describe "Project API" do
     end
 
     post "Create a project" do
+      tags "Projects"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -492,6 +494,7 @@ describe "Project API" do
     parameter name: "Authorization", in: :header, type: :string
 
     get "Get information of specific project" do
+      tags "Projects"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer
       response "200", "Admin can see any project" do
@@ -822,6 +825,7 @@ describe "Project API" do
     end
 
     patch "Update an project" do
+      tags "Projects"
       consumes "application/json"
       parameter name: :params, in: :body, schema: {
         type: :object,
@@ -985,6 +989,7 @@ describe "Project API" do
     end
 
     delete "Delete project" do
+      tags "Projects"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer
 

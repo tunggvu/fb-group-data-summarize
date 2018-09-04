@@ -21,6 +21,7 @@ describe "Requirement API" do
     let(:phase_id) { phase1.id }
 
     get "All requirement in phases of project" do
+      tags "Requirements"
       consumes "application/json"
 
       response "404", "Phase not found" do
@@ -113,6 +114,7 @@ describe "Requirement API" do
     end
 
     post "Create new requirement" do
+      tags "Requirements"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -263,6 +265,7 @@ describe "Requirement API" do
     let(:phase_id) { phase1.id }
 
     get "specific requirement in phase" do
+      tags "Requirements"
       consumes "application/json"
 
       response "404", "requirement not found" do
@@ -345,6 +348,7 @@ describe "Requirement API" do
     end
 
     patch "update requirement" do
+      tags"Requirements"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -488,6 +492,7 @@ describe "Requirement API" do
     end
 
     delete "delete requirement" do
+      tags "Requirements"
       consumes "application/json"
 
       let(:id) { requirement.id }

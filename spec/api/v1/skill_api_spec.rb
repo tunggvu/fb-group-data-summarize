@@ -19,8 +19,8 @@ describe "Skill API" do
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
     get "Get all skills" do
+      tags "Skills"
       consumes "application/json"
-
 
       response "401", "unauthenticated user" do
         let(:"Authorization") { "" }
@@ -109,6 +109,7 @@ describe "Skill API" do
     end
 
     post "Create skill" do
+      tags "Skills"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -251,6 +252,7 @@ describe "Skill API" do
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
     patch "Update skill" do
+      tags "Skills"
       consumes "application/json"
 
       parameter name: :id, in: :path, type: :integer
@@ -460,20 +462,22 @@ describe "Skill API" do
               id: 15785576,
               name: "al",
               logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              level: 92878607,
+              rank: 92878607,
               skill_id: 60261939
             },
             {
               id: 4155938,
               name: "volupta",
               logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              level: -27562324,
+              rank: 27562324,
               skill_id: 63219058
             },
             {
+              id: 41538221,
               name: "level name",
               logo: "#",
-              rank: 20
+              rank: 20,
+              skill_id: 63219033
             }
           ]
         }
@@ -522,14 +526,14 @@ describe "Skill API" do
               id: 15785576,
               name: "al",
               logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              level: 92878607,
+              rank: 92878607,
               skill_id: 60261939
             },
             {
               id: 4155938,
               name: "volupta",
               logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              level: -27562324,
+              rank: -27562324,
               skill_id: 63219058
             }
           ]
@@ -573,14 +577,14 @@ describe "Skill API" do
               id: 15785576,
               name: "al",
               logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              level: 92878607,
+              rank: 92878607,
               skill_id: 60261939
             },
             {
               id: 4155938,
               name: "volupta",
               logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              level: -27562324,
+              rank: -27562324,
               skill_id: 63219058
             }
           ]
@@ -593,6 +597,7 @@ describe "Skill API" do
     end
 
     delete "Delete skill" do
+      tags "Skills"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer
 

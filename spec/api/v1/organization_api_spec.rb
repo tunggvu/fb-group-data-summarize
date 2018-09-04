@@ -24,6 +24,7 @@ describe "Organization API" do
   path "/api/v1/organizations" do
     parameter name: "Authorization", in: :header, type: :string
     get "organization tree" do
+      tags "Organizations"
       consumes "application/json"
       response "200", "return application tree" do
         examples "application/json" => [{
@@ -97,6 +98,7 @@ describe "Organization API" do
     end
 
     post "Create an organization" do
+      tags "Organizations"
       consumes "application/json"
       parameter name: :organization, in: :body, schema: {
         type: :object,
@@ -189,23 +191,52 @@ describe "Organization API" do
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
     get "Information of an organization" do
+      tags "Organizations"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
       response "200", "returns the organization information" do
         examples "application/json" => {
-            id: 3,
-            name: "Group 1",
-            parent_id: 2,
-            manager_id: 4,
-            level: "clan",
-            children: [{
-              id: 4,
-              name: "Team 1",
-              parent_id: 3,
-              manager_id: 5,
-              level: "team",
-              children: []
-            }]
+            id: 1,
+            parent_id: nil,
+            manager_id: 2,
+            level: "division",
+            name: "Division 1",
+            children: [
+              {
+                id: 2,
+                parent_id: 1,
+                manager_id: 3,
+                level: "section",
+                name: "Section 1",
+                children: [
+                  {
+                    id: 3,
+                    parent_id: 2,
+                    manager_id: 4,
+                    level: "clan",
+                    name: "Clan 1",
+                    children: [
+                      {
+                        id: 4,
+                        parent_id: 3,
+                        manager_id: 5,
+                        level: "team",
+                        name: "Team 1",
+                        children: []
+                      },
+                      {
+                        id: 5,
+                        parent_id: 3,
+                        manager_id: 6,
+                        level: "team",
+                        name: "Team 2",
+                        children: []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
 
         let(:id) { division2.id }
@@ -237,6 +268,7 @@ describe "Organization API" do
     end
 
     patch "Update an organization" do
+      tags "Organizations"
       consumes "application/json"
       parameter name: :organization, in: :body, schema: {
         type: :object,
@@ -356,6 +388,7 @@ describe "Organization API" do
     end
 
     delete "Deletes an organization" do
+      tags "Organizations"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
@@ -425,6 +458,7 @@ describe "Organization API" do
     let(:id) { division2.id }
 
     patch "Update an organization for employees" do
+      tags "Organizations"
       consumes "application/json"
 
       parameter name: :employees, in: :body, schema: {
@@ -585,6 +619,7 @@ describe "Organization API" do
     let(:employee_id) { employee.id }
 
     delete "Deletes an organization employee" do
+      tags "Organizations"
       consumes "application/json"
 
       response "200", "admin can delete employee" do

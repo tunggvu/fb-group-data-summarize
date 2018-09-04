@@ -20,6 +20,7 @@ describe "Level API" do
     let(:skill_id) { skill.id }
 
     post "Create a new level" do
+      tags "Levels"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -178,6 +179,7 @@ describe "Level API" do
     let(:skill_id) { skill.id }
 
     patch "update a level" do
+      tags "Levels"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -307,6 +309,7 @@ describe "Level API" do
     end
 
     delete "delete level" do
+      tags "Levels"
       consumes "application/json"
       let(:id) { level3.id }
 

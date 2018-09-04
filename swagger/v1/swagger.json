@@ -27,6 +27,9 @@
       ],
       "get": {
         "summary": "get effort of employee in a sprint",
+        "tags": [
+          "Efforts"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -96,6 +99,9 @@
       },
       "post": {
         "summary": "create an effort",
+        "tags": [
+          "Efforts"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -106,19 +112,22 @@
             "schema": {
               "type": "object",
               "properties": {
-                "efforts": [
-                  {
-                    "employee_id": {
-                      "type": "integer"
-                    },
-                    "level_id": {
-                      "type": "integer"
-                    },
-                    "effort": {
-                      "type": "integer"
+                "efforts": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "employee_id": {
+                        "type": "integer"
+                      },
+                      "level_id": {
+                        "type": "integer"
+                      },
+                      "effort": {
+                        "type": "integer"
+                      }
                     }
                   }
-                ]
+                }
               },
               "required": [
                 "efforts"
@@ -205,6 +214,9 @@
       ],
       "patch": {
         "summary": "update effort",
+        "tags": [
+          "Efforts"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -278,6 +290,9 @@
       },
       "delete": {
         "summary": "delete effort",
+        "tags": [
+          "Efforts"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -314,6 +329,9 @@
       ],
       "get": {
         "summary": "Information of all employees",
+        "tags": [
+          "Employees"
+        ],
         "parameters": [
           {
             "name": "query",
@@ -392,6 +410,9 @@
       },
       "post": {
         "summary": "Create employee",
+        "tags": [
+          "Employees"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -483,6 +504,9 @@
       ],
       "get": {
         "summary": "Get information of specific employee",
+        "tags": [
+          "Employees"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -525,6 +549,9 @@
       },
       "delete": {
         "summary": "delete employee",
+        "tags": [
+          "Employees"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -575,6 +602,9 @@
       ],
       "post": {
         "summary": "Create a new level",
+        "tags": [
+          "Levels"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -673,6 +703,9 @@
       ],
       "patch": {
         "summary": "update a level",
+        "tags": [
+          "Levels"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -739,6 +772,9 @@
       },
       "delete": {
         "summary": "delete level",
+        "tags": [
+          "Levels"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -775,6 +811,9 @@
       ],
       "get": {
         "summary": "organization tree",
+        "tags": [
+          "Organizations"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -848,6 +887,9 @@
       },
       "post": {
         "summary": "Create an organization",
+        "tags": [
+          "Organizations"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -930,6 +972,9 @@
       ],
       "get": {
         "summary": "Information of an organization",
+        "tags": [
+          "Organizations"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -947,20 +992,48 @@
             "description": "returns the organization information",
             "examples": {
               "application/json": {
-                "id": 3,
-                "name": "Group 1",
-                "parent_id": 2,
-                "manager_id": 4,
-                "level": "clan",
+                "id": 1,
+                "parent_id": null,
+                "manager_id": 2,
+                "level": "division",
+                "name": "Division 1",
                 "children": [
                   {
-                    "id": 4,
-                    "name": "Team 1",
-                    "parent_id": 3,
-                    "manager_id": 5,
-                    "level": "team",
+                    "id": 2,
+                    "parent_id": 1,
+                    "manager_id": 3,
+                    "level": "section",
+                    "name": "Section 1",
                     "children": [
+                      {
+                        "id": 3,
+                        "parent_id": 2,
+                        "manager_id": 4,
+                        "level": "clan",
+                        "name": "Clan 1",
+                        "children": [
+                          {
+                            "id": 4,
+                            "parent_id": 3,
+                            "manager_id": 5,
+                            "level": "team",
+                            "name": "Team 1",
+                            "children": [
 
+                            ]
+                          },
+                          {
+                            "id": 5,
+                            "parent_id": 3,
+                            "manager_id": 6,
+                            "level": "team",
+                            "name": "Team 2",
+                            "children": [
+
+                            ]
+                          }
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -982,6 +1055,9 @@
       },
       "patch": {
         "summary": "Update an organization",
+        "tags": [
+          "Organizations"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1077,6 +1153,9 @@
       },
       "delete": {
         "summary": "Deletes an organization",
+        "tags": [
+          "Organizations"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1133,6 +1212,9 @@
       ],
       "patch": {
         "summary": "Update an organization for employees",
+        "tags": [
+          "Organizations"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1215,6 +1297,9 @@
       ],
       "delete": {
         "summary": "Deletes an organization employee",
+        "tags": [
+          "Organizations"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1268,6 +1353,9 @@
       ],
       "get": {
         "summary": "All phases in project",
+        "tags": [
+          "Phases"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1313,6 +1401,9 @@
       },
       "post": {
         "summary": "Create new phase",
+        "tags": [
+          "Phases"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1390,6 +1481,9 @@
       ],
       "get": {
         "summary": "specific phase in project",
+        "tags": [
+          "Phases"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1427,6 +1521,9 @@
       },
       "patch": {
         "summary": "update phase",
+        "tags": [
+          "Phases"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1483,6 +1580,9 @@
       },
       "delete": {
         "summary": "delete phase",
+        "tags": [
+          "Phases"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1519,6 +1619,9 @@
       ],
       "get": {
         "summary": "Get profile information",
+        "tags": [
+          "Profiles"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1553,6 +1656,9 @@
       },
       "patch": {
         "summary": "Update current user profile",
+        "tags": [
+          "Profiles"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1624,6 +1730,9 @@
       ],
       "get": {
         "summary": "All projects",
+        "tags": [
+          "Projects"
+        ],
         "parameters": [
           {
             "name": "name",
@@ -1690,6 +1799,9 @@
       },
       "post": {
         "summary": "Create a project",
+        "tags": [
+          "Projects"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1778,6 +1890,9 @@
       ],
       "get": {
         "summary": "Get information of specific project",
+        "tags": [
+          "Projects"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1905,6 +2020,9 @@
       },
       "patch": {
         "summary": "Update an project",
+        "tags": [
+          "Projects"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -1996,6 +2114,9 @@
       },
       "delete": {
         "summary": "Delete project",
+        "tags": [
+          "Projects"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2046,6 +2167,9 @@
       ],
       "get": {
         "summary": "All requirement in phases of project",
+        "tags": [
+          "Requirements"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2097,6 +2221,9 @@
       },
       "post": {
         "summary": "Create new requirement",
+        "tags": [
+          "Requirements"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2185,6 +2312,9 @@
       ],
       "get": {
         "summary": "specific requirement in phase",
+        "tags": [
+          "Requirements"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2225,6 +2355,9 @@
       },
       "patch": {
         "summary": "update requirement",
+        "tags": [
+          "Requirements"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2300,6 +2433,9 @@
       },
       "delete": {
         "summary": "delete requirement",
+        "tags": [
+          "Requirements"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2329,6 +2465,9 @@
     "/api/v1/session": {
       "post": {
         "summary": "Login API",
+        "tags": [
+          "Session"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2364,6 +2503,9 @@
       },
       "delete": {
         "summary": "logout api",
+        "tags": [
+          "Session"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2390,6 +2532,9 @@
       },
       "patch": {
         "summary": "Change Password API",
+        "tags": [
+          "Session"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2463,6 +2608,9 @@
       ],
       "get": {
         "summary": "Get all skills",
+        "tags": [
+          "Skills"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2524,6 +2672,9 @@
       },
       "post": {
         "summary": "Create skill",
+        "tags": [
+          "Skills"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2608,6 +2759,9 @@
       ],
       "patch": {
         "summary": "Update skill",
+        "tags": [
+          "Skills"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2696,14 +2850,14 @@
                     "id": 15785576,
                     "name": "al",
                     "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                    "level": 92878607,
+                    "rank": 92878607,
                     "skill_id": 60261939
                   },
                   {
                     "id": 4155938,
                     "name": "volupta",
                     "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                    "level": -27562324,
+                    "rank": -27562324,
                     "skill_id": 63219058
                   }
                 ]
@@ -2714,6 +2868,9 @@
       },
       "delete": {
         "summary": "Delete skill",
+        "tags": [
+          "Skills"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2770,6 +2927,9 @@
       ],
       "get": {
         "summary": "All sprint in phase",
+        "tags": [
+          "Sprints"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2819,6 +2979,9 @@
       },
       "post": {
         "summary": "Create new sprint",
+        "tags": [
+          "Sprints"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2957,6 +3120,9 @@
       ],
       "get": {
         "summary": "get information specific sprint",
+        "tags": [
+          "Sprints"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -2998,6 +3164,9 @@
       },
       "patch": {
         "summary": "update sprint",
+        "tags": [
+          "Sprints"
+        ],
         "consumes": [
           "application/json"
         ],
@@ -3075,6 +3244,9 @@
       },
       "delete": {
         "summary": "Delete sprint",
+        "tags": [
+          "Sprints"
+        ],
         "consumes": [
           "application/json"
         ],

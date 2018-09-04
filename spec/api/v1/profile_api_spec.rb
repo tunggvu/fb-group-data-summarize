@@ -11,6 +11,7 @@ describe "Profile API" do
     let(:"Authorization") { "Bearer #{user_token.token}" }
 
     get "Get profile information" do
+      tags "Profiles"
       consumes "application/json"
 
       response "200", "Return profile of current user" do
@@ -52,6 +53,7 @@ describe "Profile API" do
 
 
     patch "Update current user profile" do
+      tags "Profiles"
       consumes "application/json"
 
       parameter name: :profile, in: :body, schema: {

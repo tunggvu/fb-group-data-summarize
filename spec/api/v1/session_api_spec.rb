@@ -11,6 +11,7 @@ RSpec.describe "Sessions" do
 
   path "/api/v1/session" do
     post "Login API" do
+      tags "Session"
       consumes "application/json"
       parameter name: :params, in: :body, schema: {
         type: :object,
@@ -50,6 +51,7 @@ RSpec.describe "Sessions" do
     end
 
     delete "logout api" do
+      tags "Session"
       consumes "application/json"
       parameter name: "Authorization", in: :header, type: :string
 
@@ -73,6 +75,7 @@ RSpec.describe "Sessions" do
     end
 
     patch "Change Password API" do
+      tags "Session"
       consumes "application/json"
       parameter name: "Authorization", in: :header, type: :string
       parameter name: :params, in: :body, schema: {

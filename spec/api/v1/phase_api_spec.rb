@@ -20,6 +20,7 @@ describe "Phase API" do
     let(:project_id) { project.id }
 
     get "All phases in project" do
+      tags "Phases"
       consumes "application/json"
 
       response "404", "project not found" do
@@ -84,6 +85,7 @@ describe "Phase API" do
     end
 
     post "Create new phase" do
+      tags "Phases"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -224,6 +226,7 @@ describe "Phase API" do
     let(:project_id) { project.id }
 
     get "specific phase in project" do
+      tags "Phases"
       consumes "application/json"
 
       response "404", "phase not found" do
@@ -276,6 +279,7 @@ describe "Phase API" do
     end
 
     patch "update phase" do
+      tags "Phases"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -410,6 +414,7 @@ describe "Phase API" do
     end
 
     delete "delete phase" do
+      tags "Phases"
       consumes "application/json"
 
       let(:id) { phase1.id }

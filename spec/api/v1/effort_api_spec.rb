@@ -37,6 +37,7 @@ describe "Effort API" do
     let(:sprint_id) { sprint.id }
 
     get "get effort of employee in a sprint" do
+      tags "Efforts"
       consumes "application/json"
 
       response "404", "cannot find project id" do
@@ -251,16 +252,22 @@ describe "Effort API" do
     end
 
     post "create an effort" do
+      tags "Efforts"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          efforts: [
-            employee_id: { type: :integer },
-            level_id: { type: :integer },
-            effort: { type: :integer }
-          ]
+          efforts: {
+            type: :array,
+            items: {
+              properties: {
+                employee_id: { type: :integer },
+                level_id: { type: :integer },
+                effort: { type: :integer }
+              }
+            }
+          }
         },
         required: [:efforts]
       }
@@ -585,6 +592,7 @@ describe "Effort API" do
     let(:id) { effort.id }
 
     patch "update effort" do
+      tags "Efforts"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -772,6 +780,7 @@ describe "Effort API" do
     end
 
     delete "delete effort" do
+      tags "Efforts"
       consumes "application/json"
       let(:id) { effort.id }
 

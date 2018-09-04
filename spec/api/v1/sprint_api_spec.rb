@@ -35,6 +35,7 @@ describe "SprintAPI" do
     let(:phase_id) { phase.id }
 
     get "All sprint in phase" do
+      tags "Sprints"
       consumes "application/json"
 
       response "404", "project not found" do
@@ -139,7 +140,9 @@ describe "SprintAPI" do
         end
       end
     end
+
     post "Create new sprint" do
+      tags "Sprints"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -475,6 +478,7 @@ describe "SprintAPI" do
     let(:id) { sprint2.id }
 
     get "get information specific sprint" do
+      tags "Sprints"
       consumes "application/json"
 
       response "404", "sprint not found" do
@@ -530,6 +534,7 @@ describe "SprintAPI" do
     end
 
     patch "update sprint" do
+      tags "Sprints"
       consumes "application/json"
 
       parameter name: :params, in: :body, schema: {
@@ -756,7 +761,9 @@ describe "SprintAPI" do
     end
 
     delete "Delete sprint" do
+      tags "Sprints"
       consumes "application/json"
+
       parameter name: :id, in: :path, type: :integer
 
       response "200", "delete successfully" do

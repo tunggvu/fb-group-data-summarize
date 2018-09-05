@@ -21,12 +21,12 @@ class V1::EmployeeAPI < Grape::API
     end
 
     get do
-      #TODO: filter employees by project_id
       search_params = {
         name_or_employee_code_cont: params[:query],
         levels_skill_id_eq: params[:skill_id],
         levels_id_in: params[:level_ids],
-        id_in: params[:ids]
+        id_in: params[:ids],
+        efforts_sprint_project_id_eq: params[:project_id]
       }
       search_params[:organization_id_not_in] =
         Organization.subtree_of(Organization.find(params[:organization_not_in])).ids if params[:organization_not_in]

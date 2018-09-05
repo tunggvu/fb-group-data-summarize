@@ -15,6 +15,11 @@ describe "Employee API" do
   let(:manager_token) { FactoryBot.create :employee_token, employee: manager }
   let(:admin) { FactoryBot.create :employee, :admin }
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
+  let(:project) { FactoryBot.create :project, product_owner: employee }
+  let(:phase) { FactoryBot.create :phase, project: project }
+  let(:sprint) { FactoryBot.create :sprint, phase: phase, project: project, starts_on: project.starts_on }
+  let!(:effort) { FactoryBot.create :effort, sprint: sprint, employee_level: employee_level }
+
   before do
     group.update_attributes(manager_id: manager.id, parent: division)
   end
@@ -31,6 +36,7 @@ describe "Employee API" do
       parameter name: :organization_not_in, in: :query, type: :integer
       parameter name: "level_ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }
       parameter name: "ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }
+      parameter name: :project_id, in: :query, type: :integer
 
       let(:query) {}
       let(:organization_id) {}
@@ -38,6 +44,7 @@ describe "Employee API" do
       let(:organization_not_in) {}
       let("level_ids[]") { [] }
       let("ids[]") { [] }
+      let(:project_id) {}
 
       consumes "application/json"
 
@@ -47,6 +54,7 @@ describe "Employee API" do
         let(:organization_id) { employee.organization_id }
         let(:skill_id) { skill.id }
         let("level_ids[]") { [level.id, level2.id] }
+        let(:project_id) { project.id }
 
         examples "application/json" =>
           [
@@ -197,7 +205,7 @@ describe "Employee API" do
           expected = [
             Entities::Employee.represent(employee),
             Entities::Employee.represent(manager),
-            Entities::Employee.represent(employee2),
+            Entities::Employee.represent(employee2)
            ]
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
@@ -252,6 +260,27 @@ describe "Employee API" do
         end
       end
 
+      response "200", "return employees with params project_id" do
+        let(:project_id) { project.id }
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = [Entities::Employee.represent(employee)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
       response "404", "return error when pass organization not existed to params organization_id " do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_id) { 0 }
@@ -298,6 +327,7 @@ describe "Employee API" do
         let(:skill_id) { 0 }
         let("level_ids[]") { [0] }
         let("ids[]") { [0] }
+        let(:project_id) { 0 }
 
         examples "application/json" =>
           []
@@ -593,10 +623,11 @@ describe "Employee API" do
         end
       end
 
+      let(:employee2) { FactoryBot.create :employee, organization: group }
       response "200", "manager can delete" do
         let(:"Authorization") { "Bearer #{manager_token.token}" }
 
-        let(:id) { employee.id }
+        let(:id) { employee2.id }
         examples "application/json" => {
           message: "Delete successfully"
         }
@@ -611,7 +642,7 @@ describe "Employee API" do
       response "200", "admin can delete" do
         let(:"Authorization") { "Bearer #{admin_token.token}" }
 
-        let(:id) { employee.id }
+        let(:id) { employee2.id }
         examples "application/json" => {
           message: "Delete successfully"
         }

@@ -370,6 +370,11 @@
             "items": {
               "type": "integer"
             }
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "type": "integer"
           }
         ],
         "consumes": [

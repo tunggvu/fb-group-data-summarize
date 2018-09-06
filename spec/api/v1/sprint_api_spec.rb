@@ -718,7 +718,6 @@ describe "SprintAPI" do
 
       response "422", "invalid starts on before ends on of previous sprint" do
         let(:params) { { name: "sprint 4", starts_on: 2.days.from_now, ends_on: 8.days.from_now } }
-
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
@@ -731,6 +730,28 @@ describe "SprintAPI" do
             error: {
               code: Settings.error_formatter.http_code.data_operation,
               message: I18n.t("api_error.invalid_starts_on")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "time sprint not in time phase" do
+        let(:id) { sprint3.id }
+        before { params.merge!({ starts_on: 9.days.from_now, ends_on: 23.days.from_now }) }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.data_operation,
+            message: I18n.t("api_error.invalid_time_sprint")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.invalid_time_sprint")
             }
           }
           expect(response.body).to eq expected.to_json

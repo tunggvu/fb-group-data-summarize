@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 Project.all.each do |project|
-  start_date = 1.day.ago
   project.phases.each do |phase|
+    start_date = phase.starts_on
     5.times do |n|
       Sprint.seed do |sprint|
         sprint.name = "sprint #{n+1}"

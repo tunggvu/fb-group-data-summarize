@@ -17,6 +17,8 @@ class V1::PhaseAPI < Grape::API
         desc "create phase in project"
         params do
           requires :name, type: String, allow_blank: false
+          requires :starts_on, type: Date, allow_blank: false
+          requires :ends_on, type: Date, allow_blank: false
         end
         post do
           authorize @project, :project_manager?
@@ -36,6 +38,8 @@ class V1::PhaseAPI < Grape::API
           desc "update a phase"
           params do
             requires :name, type: String, allow_blank: false
+            optional :starts_on, type: Date, allow_blank: false
+            optional :ends_on, type: Date, allow_blank: false
           end
           patch do
             phase = @project.phases.includes_detail.find params[:id]

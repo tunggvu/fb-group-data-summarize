@@ -24,9 +24,10 @@ RSpec.describe Sprint, type: :model do
     it { expect(subject.ends_on > subject.starts_on).to eq true }
   end
 
-  describe "#validate_ends_on_after_starts_on" do
+  describe "#ends_on_must_after_starts_on" do
+    let(:phase) { FactoryBot.create :phase }
     context "when start time after end time" do
-      let(:sprint) { FactoryBot.build :sprint, starts_on: Time.zone.now, ends_on: 3.days.ago }
+      let(:sprint) { FactoryBot.build :sprint, phase: phase, starts_on: Time.zone.now, ends_on: 3.days.ago }
 
       it "should be invalid" do
         expect(sprint).to be_invalid
@@ -90,7 +91,6 @@ RSpec.describe Sprint, type: :model do
   end
 
   describe "#previous_sprint" do
-
     it "return previous sprint" do
       expect(sprint2.previous_sprint).to eq sprint1
     end
@@ -107,6 +107,49 @@ RSpec.describe Sprint, type: :model do
 
     it "return nil" do
       expect(sprint2.next_sprint).to be_nil
+    end
+  end
+
+  describe "#validate_time_in_phases" do
+    let(:phase) { FactoryBot.create :phase }
+
+    context "starts on before starts on of phase" do
+      let(:sprint) { FactoryBot.build :sprint, starts_on: 11.days.ago }
+
+      it "return invalid" do
+        expect(sprint).to be_invalid
+      end
+
+      it "return erros invalid sprint time" do
+        sprint.save
+        expect(sprint.errors.full_messages).to include I18n.t("models.sprint.invalid_sprint_time")
+      end
+    end
+
+    context "end on after ends on of phase" do
+      let(:sprint) { FactoryBot.build :sprint, ends_on: 21.days.from_now }
+
+      it "return invalid" do
+        expect(sprint).to be_invalid
+      end
+
+      it "return erros invalid sprint time" do
+        sprint.save
+        expect(sprint.errors.full_messages).to include I18n.t("models.sprint.invalid_sprint_time")
+      end
+    end
+
+    context "starts on after starts on of phase" do
+      let(:sprint) { FactoryBot.build :sprint, starts_on: 2.days.ago, ends_on: 9.days.from_now }
+
+      it "return valid" do
+        expect(sprint).to be_valid
+      end
+
+      it "save to DB" do
+        sprint.save
+        expect(Sprint.count).to eq 3
+      end
     end
   end
 end

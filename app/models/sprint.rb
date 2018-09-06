@@ -9,6 +9,7 @@ class Sprint < ApplicationRecord
   validates :name, :starts_on, :ends_on, presence: true
 
   validate :validate_ends_on_after_starts_on
+  validate :validate_time_in_phases
   validate :validate_starts_on_after_ends_on_previous_sprint
   validate :validate_ends_on_after_starts_on_next_sprint
 
@@ -39,5 +40,11 @@ class Sprint < ApplicationRecord
   def validate_ends_on_after_starts_on_next_sprint
     return unless next_sprint && next_sprint.starts_on <= ends_on
     errors.add :ends_on, I18n.t("models.sprint.invalid_ends_on")
+  end
+
+  def validate_time_in_phases
+    return unless starts_on && ends_on
+    return if phase.starts_on <= starts_on && phase.ends_on >= ends_on
+    errors.add :base, I18n.t("models.sprint.invalid_sprint_time")
   end
 end

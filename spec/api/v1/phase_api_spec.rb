@@ -3,11 +3,11 @@
 require "swagger_helper"
 
 describe "Phase API" do
-  let!(:section) { FactoryBot.create :organization, :section }
-  let!(:group) { FactoryBot.create :organization, :clan, parent: section }
-  let!(:group_leader) { FactoryBot.create :employee, organization: group }
-  let!(:group_leader_token) { FactoryBot.create :employee_token, employee: group_leader }
-  let!(:project) { FactoryBot.create :project, product_owner: group_leader }
+  let(:section) { FactoryBot.create :organization, :section }
+  let(:group) { FactoryBot.create :organization, :clan, parent: section }
+  let(:group_leader) { FactoryBot.create :employee, organization: group }
+  let(:group_leader_token) { FactoryBot.create :employee_token, employee: group_leader }
+  let(:project) { FactoryBot.create :project, product_owner: group_leader }
   let!(:phase1) { FactoryBot.create :phase, project: project }
   let!(:phase2) { FactoryBot.create :phase, project: project }
 
@@ -70,15 +70,19 @@ describe "Phase API" do
           [
             {
                 id: 1,
-                name: "Phase 1"
+                name: "Phase 1",
+                starts_on: "2018-08-1",
+                ends_on: "2018-08-31",
             },
             {
                 id: 2,
-                name: "Phase 2"
+                name: "Phase 2",
+                starts_on: "2018-09-1",
+                ends_on: "2018-09-30",
             }
           ]
         run_test! do
-          expected = [Entities::Phase.represent(phase1), Entities::Phase.represent(phase2)]
+          expected = Entities::Phase.represent(project.phases)
           expect(response.body).to eq expected.to_json
         end
       end
@@ -92,6 +96,8 @@ describe "Phase API" do
         type: :object,
         properties: {
           name: { type: :string },
+          starts_on: { type: :date },
+          ends_on: { type: :date},
         },
         required: [:name]
       }
@@ -100,7 +106,7 @@ describe "Phase API" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { { name: "phase 1" } }
+        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         examples "application/json" => {
           error: {
@@ -124,7 +130,7 @@ describe "Phase API" do
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { name: "phase 1" } }
+        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -146,16 +152,18 @@ describe "Phase API" do
       end
 
       response "201", "manager of PO can create phase" do
-        let!(:section_manager) { FactoryBot.create :employee, organization: section }
+        let(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:"Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { name: "phase 1" } }
+        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
           id: 1,
-          name: "phase 1"
+          name: "phase 1",
+          starts_on: "2018-08-1",
+          ends_on: "2018-08-31"
         }
         run_test! do
           expected = Entities::Phase.represent Phase.last
@@ -164,11 +172,13 @@ describe "Phase API" do
       end
 
       response "201", "PO can create phase" do
-        let(:params) { { name: "phase 1" } }
+        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         examples "application/json" => {
           id: 1,
-          name: "phase 1"
+          name: "phase 1",
+          starts_on: "2018-08-1",
+          ends_on: "2018-08-31"
         }
         run_test! do
           expected = Entities::Phase.represent Phase.last
@@ -215,6 +225,46 @@ describe "Phase API" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "400", "empty params starts_on" do
+        let(:params) { { name: "Phases1", starts_on: "", ends_on: "2018-08-19" } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.empty_params", params: :starts_on)
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: :starts_on)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "empty params ends_on" do
+        let(:params) { { name: "Phases1", starts_on: "2018-08-19", ends_on: "" } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.empty_params", params: :ends_on)
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: :ends_on)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
   end
 
@@ -245,7 +295,9 @@ describe "Phase API" do
         let(:id) { phase1.id }
         examples "application/json" => {
           id: 1,
-          name: "Phase 1"
+          name: "Phase 1",
+          starts_on: "2018-08-1",
+          ends_on: "2018-08-31"
         }
         run_test! do
           expected = Entities::Phase.represent phase1
@@ -286,6 +338,8 @@ describe "Phase API" do
         type: :object,
         properties: {
           name: { type: :string },
+          start_date: { type: :date },
+          end_date: { type: :date },
         },
         required: [:name]
       }
@@ -342,16 +396,18 @@ describe "Phase API" do
       end
 
       response "200", "manager of PO can update phase" do
-        let!(:section_manager) { FactoryBot.create :employee, organization: section }
+        let(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:"Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { name: "phase 3" } }
+        let(:params) { { name: "phase 3", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
           id: 1,
-          name: "phase 3"
+          name: "phase 3",
+          starts_on: "2018-08-1",
+          ends_on: "2018-08-31"
         }
         run_test! do
           expected = Entities::Phase.represent phase1.reload
@@ -360,11 +416,13 @@ describe "Phase API" do
       end
 
       response "200", "PO can update phase" do
-        let(:params) { { name: "phase 4" } }
+        let(:params) { { name: "phase 4", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         examples "application/json" => {
           id: 1,
-          name: "phase 4"
+          name: "phase 4",
+          starts_on: "2018-08-1",
+          ends_on: "2018-08-31"
         }
         run_test! do
           expected = Entities::Phase.represent phase1.reload
@@ -392,7 +450,7 @@ describe "Phase API" do
         end
       end
 
-      response "400", "empty params" do
+      response "400", "empty params name" do
         let(:params) { { name: "" } }
 
         examples "application/json" => {
@@ -406,6 +464,46 @@ describe "Phase API" do
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
               message: I18n.t("api_error.empty_params", params: :name)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "empty params starts_on" do
+        let(:params) { { name: "Phases1", starts_on: "", ends_on: "2018-08-19" } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.empty_params", params: :starts_on)
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: :starts_on)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "empty params ends_on" do
+        let(:params) { { name: "Phases1", starts_on: "2018-08-19", ends_on: "" } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.empty_params", params: :ends_on)
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: :ends_on)
             }
           }
           expect(response.body).to eq expected.to_json
@@ -469,7 +567,7 @@ describe "Phase API" do
       end
 
       response "200", "manager of PO can delete phase" do
-        let!(:section_manager) { FactoryBot.create :employee, organization: section }
+        let(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let(:"Authorization") { "Bearer #{section_manager_token.token}" }
 

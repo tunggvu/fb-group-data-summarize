@@ -1528,11 +1528,15 @@
               "application/json": [
                 {
                   "id": 1,
-                  "name": "Phase 1"
+                  "name": "Phase 1",
+                  "starts_on": "2018-08-1",
+                  "ends_on": "2018-08-31"
                 },
                 {
                   "id": 2,
-                  "name": "Phase 2"
+                  "name": "Phase 2",
+                  "starts_on": "2018-09-1",
+                  "ends_on": "2018-09-30"
                 }
               ]
             }
@@ -1556,6 +1560,12 @@
               "properties": {
                 "name": {
                   "type": "string"
+                },
+                "starts_on": {
+                  "type": "date"
+                },
+                "ends_on": {
+                  "type": "date"
                 }
               },
               "required": [
@@ -1581,17 +1591,19 @@
             "examples": {
               "application/json": {
                 "id": 1,
-                "name": "phase 1"
+                "name": "phase 1",
+                "starts_on": "2018-08-1",
+                "ends_on": "2018-08-31"
               }
             }
           },
           "400": {
-            "description": "empty params name",
+            "description": "empty params ends_on",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "name is empty"
+                  "message": "ends_on is empty"
                 }
               }
             }
@@ -1645,7 +1657,9 @@
             "examples": {
               "application/json": {
                 "id": 1,
-                "name": "Phase 1"
+                "name": "Phase 1",
+                "starts_on": "2018-08-1",
+                "ends_on": "2018-08-31"
               }
             }
           },
@@ -1679,6 +1693,12 @@
               "properties": {
                 "name": {
                   "type": "string"
+                },
+                "start_date": {
+                  "type": "date"
+                },
+                "end_date": {
+                  "type": "date"
                 }
               },
               "required": [
@@ -1704,17 +1724,19 @@
             "examples": {
               "application/json": {
                 "id": 1,
-                "name": "phase 4"
+                "name": "phase 4",
+                "starts_on": "2018-08-1",
+                "ends_on": "2018-08-31"
               }
             }
           },
           "400": {
-            "description": "empty params",
+            "description": "empty params ends_on",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "name is empty"
+                  "message": "ends_on is empty"
                 }
               }
             }

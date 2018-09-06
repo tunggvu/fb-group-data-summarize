@@ -35,11 +35,13 @@ en:
     effort_less_than_zero: "Validation failed: Effort must be greater than or equal to 0"
     invalid: "%{params} is invalid"
     wrong_current_password: "wrong current password"
+    invalid_time_sprint: "Validation failed: Sprint time must be in phase time"
   models:
     sprint:
       invalid_starts_on_ends_on: "must be after the starts on"
       invalid_starts_on: "must be after ends on previous sprint"
       invalid_ends_on: "must be after starts on next sprint"
+      invalid_sprint_time: "Sprint time must be in phase time"
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
   success: "Success"

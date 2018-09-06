@@ -94,6 +94,8 @@ ActiveRecord::Schema.define(version: 2018_08_29_011925) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "starts_on", null: false
+    t.date "ends_on", null: false
     t.index ["project_id"], name: "index_phases_on_project_id"
   end
 

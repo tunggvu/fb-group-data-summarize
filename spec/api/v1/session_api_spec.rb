@@ -16,8 +16,8 @@ RSpec.describe "Sessions" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          email: { type: :string },
-          password: { type: :string }
+          email: { type: :string, description: "Email" },
+          password: { type: :string, description: "Password" }
         },
         required: ["email", "password"]
       }
@@ -53,7 +53,7 @@ RSpec.describe "Sessions" do
     delete "logout api" do
       tags "Session"
       consumes "application/json"
-      parameter name: "Authorization", in: :header, type: :string
+      parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
 
       response "200", "with valid token" do
         examples "application/json" => {
@@ -77,12 +77,12 @@ RSpec.describe "Sessions" do
     patch "Change Password API" do
       tags "Session"
       consumes "application/json"
-      parameter name: "Authorization", in: :header, type: :string
+      parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          current_password: { type: :string },
-          new_password: { type: :string }
+          current_password: { type: :string, description: "Current password" },
+          new_password: { type: :string, description: "New password" }
         },
         required: ["current_password", "new_password"]
       }

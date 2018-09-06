@@ -15,8 +15,8 @@ describe "Requirement API" do
   let!(:level2) { FactoryBot.create :level }
   let!(:requirement) { FactoryBot.create :requirement, phase: phase1, level: level1 }
   path "/api/v1/phases/{phase_id}/requirements" do
-    parameter name: "Authorization", in: :header, type: :string
-    parameter name: :phase_id, in: :path, type: :integer
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
     let(:"Authorization") { "Bearer #{group_leader_token.token}" }
     let(:phase_id) { phase1.id }
 
@@ -120,9 +120,9 @@ describe "Requirement API" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          level_id: { type: :integer },
-          phase_id: { type: :integer },
-          quantity: { type: :integer }
+          level_id: { type: :integer, description: "Level ID" },
+          phase_id: { type: :integer, description: "Phase ID" },
+          quantity: { type: :integer, description: "Quanity" }
         },
         required: [:level_id, :phase_id, :quantity]
       }
@@ -258,9 +258,9 @@ describe "Requirement API" do
   end
 
   path "/api/v1/phases/{phase_id}/requirements/{id}" do
-    parameter name: "Authorization", in: :header, type: :string
-    parameter name: :phase_id, in: :path, type: :integer
-    parameter name: :id, in: :path, type: :integer
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
+    parameter name: :id, in: :path, type: :integer, description: "Requirement ID"
     let(:"Authorization") { "Bearer #{group_leader_token.token}" }
     let(:phase_id) { phase1.id }
 
@@ -354,8 +354,8 @@ describe "Requirement API" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          level_id: { type: :integer },
-          quantity: { type: :integer },
+          level_id: { type: :integer, description: "Level ID" },
+          quantity: { type: :integer, description: "Quanity" },
         },
         required: [:phase_id, :level_id, :quantity]
       }

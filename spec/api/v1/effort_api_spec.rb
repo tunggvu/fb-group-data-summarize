@@ -29,9 +29,9 @@ describe "Effort API" do
   before { div2.update_attributes! manager_id: div2_manager.id }
 
   path "/api/v1/projects/{project_id}/sprints/{sprint_id}/efforts" do
-    parameter name: "Authorization", in: :header, type: :string
-    parameter name: :project_id, in: :path, type: :integer
-    parameter name: :sprint_id, in: :path, type: :integer
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
+    parameter name: :sprint_id, in: :path, type: :integer, description: "Sprint ID"
     let(:Authorization) { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:sprint_id) { sprint.id }
@@ -284,39 +284,6 @@ describe "Effort API" do
         }
       end
 
-      response "201", "Admin can create effort" do
-        let(:Authorization) { "Bearer #{admin_token.token}" }
-
-        examples "application/json": [
-          {
-            id: 10539,
-            effort: 70,
-            employee_level: {
-              name: "Karl White",
-              id: 227,
-              skill: {
-                id: 1,
-                name: "Ruby",
-                logo: "/uploads/avatar.png",
-                level: {
-                  id: 3,
-                  name: "Senior",
-                  rank: 3,
-                  logo: {
-                    url: "/uploads/level/logo/3/%23"
-                  }
-                }
-              }
-            }
-          }
-        ]
-
-        run_test! do |response|
-          expected = [Entities::Effort.represent(Effort.last)]
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
       response "201", "PO can create effort" do
         examples "application/json": [
           {
@@ -388,6 +355,39 @@ describe "Effort API" do
 
         run_test! do |response|
           expected = []
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "201", "Admin can create effort" do
+        let(:Authorization) { "Bearer #{admin_token.token}" }
+
+        examples "application/json": [
+          {
+            id: 10539,
+            effort: 70,
+            employee_level: {
+              name: "Karl White",
+              id: 227,
+              skill: {
+                id: 1,
+                name: "Ruby",
+                logo: "/uploads/avatar.png",
+                level: {
+                  id: 3,
+                  name: "Senior",
+                  rank: 3,
+                  logo: {
+                    url: "/uploads/level/logo/3/%23"
+                  }
+                }
+              }
+            }
+          }
+        ]
+
+        run_test! do |response|
+          expected = [Entities::Effort.represent(Effort.last)]
           expect(response.body).to eq expected.to_json
         end
       end
@@ -582,10 +582,10 @@ describe "Effort API" do
   end
 
   path "/api/v1/projects/{project_id}/sprints/{sprint_id}/efforts/{id}" do
-    parameter name: "Authorization", in: :header, type: :string
-    parameter name: :project_id, in: :path, type: :integer
-    parameter name: :sprint_id, in: :path, type: :integer
-    parameter name: :id, in: :path, type: :integer
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
+    parameter name: :sprint_id, in: :path, type: :integer, description: "Sprint ID"
+    parameter name: :id, in: :path, type: :integer, description: "Effort ID"
     let(:"Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:sprint_id) { sprint.id }

@@ -31,12 +31,12 @@ describe "Project API" do
   end
 
   path "/api/v1/projects" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
 
     get "All projects" do
       tags "Projects"
-      parameter name: :name, in: :query, type: :string
-      parameter name: :organization_id, in: :query, type: :integer
+      parameter name: :name, in: :query, type: :string, description: "Project Name"
+      parameter name: :organization_id, in: :query, type: :integer, description: "Organization ID"
       let(:name) {}
       let(:organization_id) {}
       consumes "application/json"
@@ -491,12 +491,12 @@ describe "Project API" do
   end
 
   path "/api/v1/projects/{id}" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
 
     get "Get information of specific project" do
       tags "Projects"
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Project ID"
       response "200", "Admin can see any project" do
         let(:"Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json" => {
@@ -836,7 +836,7 @@ describe "Project API" do
           starts_on: { type: :date, description: "Project start time" }
         }
       }
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Project ID"
 
       response "200", "product owner can update project that product owner created" do
         let(:"Authorization") { "Bearer #{group_leader_token.token}" }
@@ -991,7 +991,7 @@ describe "Project API" do
     delete "Delete project" do
       tags "Projects"
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Project ID"
 
       response "200", "admin delete successfully" do
         let(:id) { project.id }

@@ -15,7 +15,7 @@ describe "Skill API" do
   let!(:level2) { FactoryBot.create :level, skill: skill }
 
   path "/api/v1/skills" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
     get "Get all skills" do
@@ -115,12 +115,12 @@ describe "Skill API" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          name: {type: :string},
-          logo: {type: :string},
+          name: {type: :string, description: "Skill's name"},
+          logo: {type: :string, description: "Logo path"},
           levels: [
-              name: {type: :string},
-              rank: {type: :integer},
-              logo: {type: :string}
+              name: {type: :string, description: "Level's name"},
+              rank: {type: :integer, description: "Rank number"},
+              logo: {type: :string, description: "Logo path"}
           ]
         }
       }
@@ -248,24 +248,24 @@ describe "Skill API" do
   end
 
   path "/api/v1/skills/{id}" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
     patch "Update skill" do
       tags "Skills"
       consumes "application/json"
 
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Skill ID"
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          name: {type: :string},
-          logo: {type: :string},
+          name: {type: :string, description: "Skill's name"},
+          logo: {type: :string, description: "Logo path"},
           levels: [
-            id: {type: :integer},
-            name: {type: :string},
-            rank: {type: :integer},
-            logo: {type: :string}
+            id: {type: :integer, description: "Level ID"},
+            name: {type: :string, description: "Level's name"},
+            rank: {type: :integer, description: "Rank number"},
+            logo: {type: :string, description: "Logo path"}
           ]
         }
       }
@@ -599,7 +599,7 @@ describe "Skill API" do
     delete "Delete skill" do
       tags "Skills"
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Skill ID"
 
       response "422", "unable to delete when having association" do
         let(:id) { skill.id }

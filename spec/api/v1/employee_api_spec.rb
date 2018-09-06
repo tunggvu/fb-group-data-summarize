@@ -25,18 +25,18 @@ describe "Employee API" do
   end
 
   path "/api/v1/employees" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 
     get "Information of all employees" do
       tags "Employees"
-      parameter name: :query, in: :query, type: :string
-      parameter name: :organization_id, in: :query, type: :integer
-      parameter name: :skill_id, in: :query, type: :integer
-      parameter name: :organization_not_in, in: :query, type: :integer
-      parameter name: "level_ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }
-      parameter name: "ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }
-      parameter name: :project_id, in: :query, type: :integer
+      parameter name: :query, in: :query, type: :string, description: "Filter employee with name or employee code"
+      parameter name: :organization_id, in: :query, type: :integer, description: "Filter employees in organization"
+      parameter name: :skill_id, in: :query, type: :integer, description: "Filter employee with skill"
+      parameter name: :organization_not_in, in: :query, type: :integer, description: "Filter employees not in organization"
+      parameter name: "level_ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter employees with multiple levels"
+      parameter name: "ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter employees with ids"
+      parameter name: :project_id, in: :query, type: :integer, description: "Filter employees with project id"
 
       let(:query) {}
       let(:organization_id) {}
@@ -147,38 +147,6 @@ describe "Employee API" do
         end
       end
 
-      response "200", "return employees without any params" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
-
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            },
-            {
-              id: 2,
-              organization_id: 1,
-              name: "Eldora Fay",
-              employee_code: "B1210001",
-              email: "eldora.fay@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0987654321",
-              avatar: "#"
-            }
-          ]
-        run_test! do |response|
-          expected = Entities::Employee.represent(Employee.all)
-          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
-        end
-      end
-
       response "200", "return employees with params organization_not_in" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_not_in) { section.id }
@@ -281,6 +249,77 @@ describe "Employee API" do
         end
       end
 
+      response "200", "return empty employees" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:query) { employee.name }
+        let(:skill_id) { 0 }
+        let("level_ids[]") { [0] }
+        let("ids[]") { [0] }
+        let(:project_id) { 0 }
+        examples "application/json" =>
+         []
+        run_test! do |response|
+          expected = []
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return employees without any params" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            },
+            {
+              id: 2,
+              organization_id: 1,
+              name: "Eldora Fay",
+              employee_code: "B1210001",
+              email: "eldora.fay@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0987654321",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = Entities::Employee.represent(Employee.all)
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "401", "unauthorized" do
+        let(:"Authorization") { "" }
+        let(:query) { employee.name }
+        let(:organization_id) { employee.organization_id }
+        let(:skill_id) { skill.id }
+        let("level_ids[]") { [level.id, level2.id] }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
       response "404", "return error when pass organization not existed to params organization_id " do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_id) { 0 }
@@ -317,22 +356,6 @@ describe "Employee API" do
               message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
             }
           }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "200", "return empty employees" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
-        let(:query) { employee.name }
-        let(:skill_id) { 0 }
-        let("level_ids[]") { [0] }
-        let("ids[]") { [0] }
-        let(:project_id) { 0 }
-
-        examples "application/json" =>
-          []
-        run_test! do |response|
-          expected = []
           expect(response.body).to eq expected.to_json
         end
       end
@@ -549,13 +572,13 @@ describe "Employee API" do
   end
 
   path "/api/v1/employees/{id}" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 
     get "Get information of specific employee" do
       tags "Employees"
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
       response "200", "return one employee" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
@@ -600,7 +623,7 @@ describe "Employee API" do
     delete "delete employee" do
       tags "Employees"
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
       response "401", "member cannot delete" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }

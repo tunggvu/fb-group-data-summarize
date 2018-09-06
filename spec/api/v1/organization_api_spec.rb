@@ -22,7 +22,7 @@ describe "Organization API" do
   end
 
   path "/api/v1/organizations" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     get "organization tree" do
       tags "Organizations"
       consumes "application/json"
@@ -187,7 +187,7 @@ describe "Organization API" do
   end
 
   path "/api/v1/organizations/{id}" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
     get "Information of an organization" do
@@ -454,17 +454,20 @@ describe "Organization API" do
   end
 
   path "/api/v1/organizations/{id}/employees" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:id) { division2.id }
 
     patch "Update an organization for employees" do
       tags "Organizations"
       consumes "application/json"
 
-      parameter name: :employees, in: :body, schema: {
+      parameter name: :employees, in: :body, description: "Employees's ID", schema: {
         type: :object,
         properties: {
-          employees: [{type: :integer}]
+          employees: {
+            type: :array,
+            items: {type: :integer}
+          }
         },
       }
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
@@ -611,7 +614,7 @@ describe "Organization API" do
   end
 
   path "/api/v1/organizations/{id}/employees/{employee_id}" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :id, in: :path, type: :integer, description: "Organization ID"
     parameter name: :employee_id, in: :path, type: :integer, description: "Employee ID"
     let(:"Authorization") { "Bearer #{admin_token.token}" }

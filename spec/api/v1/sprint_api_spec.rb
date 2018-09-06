@@ -27,9 +27,9 @@ describe "SprintAPI" do
   let(:level) { create :level }
 
   path "/api/v1/projects/{project_id}/phases/{phase_id}/sprints" do
-    parameter name: "Authorization", in: :header, type: :string
-    parameter name: :project_id, in: :path, type: :integer
-    parameter name: :phase_id, in: :path, type: :integer
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
+    parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
     let(:Authorization) { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:phase_id) { phase.id }
@@ -148,13 +148,13 @@ describe "SprintAPI" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          name: { type: :string },
-          starts_on: { type: :date },
-          ends_on: { type: :date },
+          name: { type: :string, description: "Sprint's name" },
+          starts_on: { type: :date, description: "Starts on of sprint" },
+          ends_on: { type: :date, description: "Ends on of sprint" },
           efforts: [
-            effort: { type: :integer },
-            employee_id: { type: :integer },
-            level_id: { type: :integer }
+            effort: { type: :integer, description: "Effort number" },
+            employee_id: { type: :integer, description: "Employee ID" },
+            level_id: { type: :integer, description: "Level ID" }
           ]
         },
         required: [:name, :starts_on, :ends_on]
@@ -468,10 +468,10 @@ describe "SprintAPI" do
   end
 
   path "/api/v1/projects/{project_id}/phases/{phase_id}/sprints/{id}" do
-    parameter name: "Authorization", in: :header, type: :string
-    parameter name: :project_id, in: :path, type: :integer
-    parameter name: :phase_id, in: :path, type: :integer
-    parameter name: :id, in: :path, type: :integer
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
+    parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
+    parameter name: :id, in: :path, type: :integer, description: "Sprint ID"
     let(:Authorization) { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:phase_id) { phase.id }
@@ -540,9 +540,9 @@ describe "SprintAPI" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          name: { type: :string },
-          starts_on: { type: :date },
-          ends_on: { type: :date }
+          name: { type: :string, description: "Sprint's name" },
+          starts_on: { type: :date, description: "Starts on of sprint" },
+          ends_on: { type: :date, description: "Ends on of sprint" }
         },
         required: [:name, :starts_on, :ends_on]
       }
@@ -764,7 +764,7 @@ describe "SprintAPI" do
       tags "Sprints"
       consumes "application/json"
 
-      parameter name: :id, in: :path, type: :integer
+      parameter name: :id, in: :path, type: :integer, description: "Sprint ID"
 
       response "200", "delete successfully" do
         examples "appication/json" => {

@@ -10,18 +10,21 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "project_id",
           "in": "path",
           "type": "integer",
+          "description": "Project ID",
           "required": true
         },
         {
           "name": "sprint_id",
           "in": "path",
           "type": "integer",
+          "description": "Sprint ID",
           "required": true
         }
       ],
@@ -191,24 +194,28 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "project_id",
           "in": "path",
           "type": "integer",
+          "description": "Project ID",
           "required": true
         },
         {
           "name": "sprint_id",
           "in": "path",
           "type": "integer",
+          "description": "Sprint ID",
           "required": true
         },
         {
           "name": "id",
           "in": "path",
           "type": "integer",
+          "description": "Effort ID",
           "required": true
         }
       ],
@@ -324,7 +331,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -336,22 +344,26 @@
           {
             "name": "query",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "description": "Filter employee with name or employee code"
           },
           {
             "name": "organization_id",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Filter employees in organization"
           },
           {
             "name": "skill_id",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Filter employee with skill"
           },
           {
             "name": "organization_not_in",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Filter employees not in organization"
           },
           {
             "name": "level_ids[]",
@@ -360,7 +372,8 @@
             "collectionFormat": "multi",
             "items": {
               "type": "integer"
-            }
+            },
+            "description": "Filter employees with multiple levels"
           },
           {
             "name": "ids[]",
@@ -369,12 +382,14 @@
             "collectionFormat": "multi",
             "items": {
               "type": "integer"
-            }
+            },
+            "description": "Filter employees with ids"
           },
           {
             "name": "project_id",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Filter employees with project id"
           }
         ],
         "consumes": [
@@ -382,22 +397,30 @@
         ],
         "responses": {
           "200": {
-            "description": "return empty employees",
+            "description": "return employees without any params",
             "examples": {
               "application/json": [
-
-              ]
-            }
-          },
-          "404": {
-            "description": "return error when pass organization not existed to params organization_not_in ",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 404,
-                  "message": "Couldn't find Organization with 'id'=0"
+                {
+                  "id": 1,
+                  "organization_id": 1,
+                  "name": "Employee",
+                  "employee_code": "B120000",
+                  "email": "employee@framgia.com",
+                  "birthday": "1/1/2018",
+                  "phone": "0123456789",
+                  "avatar": "#"
+                },
+                {
+                  "id": 2,
+                  "organization_id": 1,
+                  "name": "Eldora Fay",
+                  "employee_code": "B1210001",
+                  "email": "eldora.fay@framgia.com",
+                  "birthday": "1/1/2018",
+                  "phone": "0987654321",
+                  "avatar": "#"
                 }
-              }
+              ]
             }
           },
           "401": {
@@ -407,6 +430,17 @@
                 "error": {
                   "code": 401,
                   "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "return error when pass organization not existed to params organization_not_in ",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Organization with 'id'=0"
                 }
               }
             }
@@ -504,7 +538,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -520,6 +555,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Employees ID",
             "required": true
           }
         ],
@@ -565,6 +601,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Employees ID",
             "required": true
           }
         ],
@@ -596,12 +633,14 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "skill_id",
           "in": "path",
           "type": "integer",
+          "description": "Skill ID",
           "required": true
         }
       ],
@@ -691,18 +730,21 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "skill_id",
           "in": "path",
           "type": "integer",
+          "description": "Skill ID",
           "required": true
         },
         {
           "name": "id",
           "in": "path",
           "type": "integer",
+          "description": "Level ID",
           "required": true
         }
       ],
@@ -811,7 +853,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -972,7 +1015,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -1212,7 +1256,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "patch": {
@@ -1227,14 +1272,16 @@
           {
             "name": "employees",
             "in": "body",
+            "description": "Employees's ID",
             "schema": {
               "type": "object",
               "properties": {
-                "employees": [
-                  {
+                "employees": {
+                  "type": "array",
+                  "items": {
                     "type": "integer"
                   }
-                ]
+                }
               }
             }
           },
@@ -1283,7 +1330,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "id",
@@ -1347,12 +1395,14 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "project_id",
           "in": "path",
           "type": "integer",
+          "description": "Project ID",
           "required": true
         }
       ],
@@ -1469,18 +1519,21 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "project_id",
           "in": "path",
           "type": "integer",
+          "description": "Project ID",
           "required": true
         },
         {
           "name": "id",
           "in": "path",
           "type": "integer",
+          "description": "Phase ID",
           "required": true
         }
       ],
@@ -1619,7 +1672,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -1730,7 +1784,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -1742,12 +1797,14 @@
           {
             "name": "name",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "description": "Project Name"
           },
           {
             "name": "organization_id",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Organization ID"
           }
         ],
         "consumes": [
@@ -1890,7 +1947,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -1906,6 +1964,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Project ID",
             "required": true
           }
         ],
@@ -2061,6 +2120,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Project ID",
             "required": true
           }
         ],
@@ -2130,6 +2190,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Project ID",
             "required": true
           }
         ],
@@ -2161,12 +2222,14 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "phase_id",
           "in": "path",
           "type": "integer",
+          "description": "Phase ID",
           "required": true
         }
       ],
@@ -2240,13 +2303,16 @@
               "type": "object",
               "properties": {
                 "level_id": {
-                  "type": "integer"
+                  "type": "integer",
+                  "description": "Level ID"
                 },
                 "phase_id": {
-                  "type": "integer"
+                  "type": "integer",
+                  "description": "Phase ID"
                 },
                 "quantity": {
-                  "type": "integer"
+                  "type": "integer",
+                  "description": "Quanity"
                 }
               },
               "required": [
@@ -2300,18 +2366,21 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "phase_id",
           "in": "path",
           "type": "integer",
+          "description": "Phase ID",
           "required": true
         },
         {
           "name": "id",
           "in": "path",
           "type": "integer",
+          "description": "Requirement ID",
           "required": true
         }
       ],
@@ -2374,10 +2443,12 @@
               "type": "object",
               "properties": {
                 "level_id": {
-                  "type": "integer"
+                  "type": "integer",
+                  "description": "Level ID"
                 },
                 "quantity": {
-                  "type": "integer"
+                  "type": "integer",
+                  "description": "Quanity"
                 }
               },
               "required": [
@@ -2484,10 +2555,12 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Email"
                 },
                 "password": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Password"
                 }
               },
               "required": [
@@ -2518,7 +2591,8 @@
           {
             "name": "Authorization",
             "in": "header",
-            "type": "string"
+            "type": "string",
+            "description": "Token authorization user"
           }
         ],
         "responses": {
@@ -2547,7 +2621,8 @@
           {
             "name": "Authorization",
             "in": "header",
-            "type": "string"
+            "type": "string",
+            "description": "Token authorization user"
           },
           {
             "name": "params",
@@ -2556,10 +2631,12 @@
               "type": "object",
               "properties": {
                 "current_password": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Current password"
                 },
                 "new_password": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "New password"
                 }
               },
               "required": [
@@ -2608,7 +2685,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -2691,21 +2769,26 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Skill's name"
                 },
                 "logo": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Logo path"
                 },
                 "levels": [
                   {
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Level's name"
                     },
                     "rank": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Rank number"
                     },
                     "logo": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Logo path"
                     }
                   }
                 ]
@@ -2759,7 +2842,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "patch": {
@@ -2775,6 +2859,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Skill ID",
             "required": true
           },
           {
@@ -2784,24 +2869,30 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Skill's name"
                 },
                 "logo": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Logo path"
                 },
                 "levels": [
                   {
                     "id": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Level ID"
                     },
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Level's name"
                     },
                     "rank": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Rank number"
                     },
                     "logo": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Logo path"
                     }
                   }
                 ]
@@ -2884,6 +2975,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Skill ID",
             "required": true
           }
         ],
@@ -2915,18 +3007,21 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "project_id",
           "in": "path",
           "type": "integer",
+          "description": "Project ID",
           "required": true
         },
         {
           "name": "phase_id",
           "in": "path",
           "type": "integer",
+          "description": "Phase ID",
           "required": true
         }
       ],
@@ -2998,24 +3093,30 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Sprint's name"
                 },
                 "starts_on": {
-                  "type": "date"
+                  "type": "date",
+                  "description": "Starts on of sprint"
                 },
                 "ends_on": {
-                  "type": "date"
+                  "type": "date",
+                  "description": "Ends on of sprint"
                 },
                 "efforts": [
                   {
                     "effort": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Effort number"
                     },
                     "employee_id": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Employee ID"
                     },
                     "level_id": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Level ID"
                     }
                   }
                 ]
@@ -3102,24 +3203,28 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         },
         {
           "name": "project_id",
           "in": "path",
           "type": "integer",
+          "description": "Project ID",
           "required": true
         },
         {
           "name": "phase_id",
           "in": "path",
           "type": "integer",
+          "description": "Phase ID",
           "required": true
         },
         {
           "name": "id",
           "in": "path",
           "type": "integer",
+          "description": "Sprint ID",
           "required": true
         }
       ],
@@ -3183,13 +3288,16 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Sprint's name"
                 },
                 "starts_on": {
-                  "type": "date"
+                  "type": "date",
+                  "description": "Starts on of sprint"
                 },
                 "ends_on": {
-                  "type": "date"
+                  "type": "date",
+                  "description": "Ends on of sprint"
                 }
               },
               "required": [
@@ -3260,6 +3368,7 @@
             "name": "id",
             "in": "path",
             "type": "integer",
+            "description": "Sprint ID",
             "required": true
           }
         ],

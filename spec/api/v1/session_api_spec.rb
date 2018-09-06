@@ -17,12 +17,18 @@ RSpec.describe "Sessions" do
         type: :object,
         properties: {
           email: { type: :string, description: "Email" },
-          password: { type: :string, description: "Password" }
+          password: { type: :string, description: "Password" },
+          remember: { type: :boolean, description: "Remember me" }
         },
         required: ["email", "password"]
       }
 
       response "200", "Login success with valid email/password" do
+        examples "application/json": {
+          token: "Your token",
+          expired_at: "2018-08-31T14:33:00.048+07:00"
+        }
+
         let(:params) { FactoryBot.attributes_for :login_request }
         before do
           employee.update_attributes email: params[:email], password: params[:password]
@@ -33,17 +39,40 @@ RSpec.describe "Sessions" do
       end
 
       response "400", "Login with invalid format of email" do
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: "#{I18n.t("grape.errors.attributes.email")} #{I18n.t("grape.errors.messages.employee.email.regexp")}"
+          }
+        }
+
         let(:params) { FactoryBot.attributes_for(:login_request, email: Faker::Internet.email, password: "123456789") }
         before do
           employee.update_attributes email: params[:email], password: params[:password]
         end
+
         run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: "#{I18n.t("grape.errors.attributes.email")} #{I18n.t("grape.errors.messages.employee.email.regexp")}"
+            }
+          }
           expect_http_status :bad_request
+          expect(response.body).to eq expected.to_json
         end
       end
 
       response "400", "Login with invalid password" do
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.wrong_email_password,
+            message: I18n.t("api_error.wrong_email_password")
+          }
+        }
+
         let(:params) { FactoryBot.attributes_for(:login_request, password: "Aa@123456777") }
+
         run_test! do |response|
           expect_http_status :bad_request
         end
@@ -98,14 +127,14 @@ RSpec.describe "Sessions" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.invalid", params: "new_password")
+            message: "#{I18n.t("grape.errors.attributes.new_password")} #{I18n.t("grape.errors.messages.employee.password.regexp")}"
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: I18n.t("api_error.invalid", params: "new_password")
+              message: "#{I18n.t("grape.errors.attributes.new_password")} #{I18n.t("grape.errors.messages.employee.password.regexp")}"
             }
           }
           expect(response.body).to eq expected.to_json

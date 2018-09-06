@@ -599,7 +599,7 @@
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "email is missing"
+                  "message": "Email is missing"
                 }
               }
             }
@@ -2646,6 +2646,10 @@
                 "password": {
                   "type": "string",
                   "description": "Password"
+                },
+                "remember": {
+                  "type": "boolean",
+                  "description": "Remember me"
                 }
               },
               "required": [
@@ -2657,10 +2661,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Login success with valid email/password"
+            "description": "Login success with valid email/password",
+            "examples": {
+              "application/json": {
+                "token": "Your token",
+                "expired_at": "2018-08-31T14:33:00.048+07:00"
+              }
+            }
           },
           "400": {
-            "description": "Login with invalid password"
+            "description": "Login with invalid password",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "wrong email password"
+                }
+              }
+            }
           }
         }
       },

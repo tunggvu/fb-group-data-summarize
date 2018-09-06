@@ -15,10 +15,19 @@ module BaseAPI
     end
 
     rescue_from APIError::Base, JWT::VerificationError, JWT::DecodeError, Pundit::NotAuthorizedError do |e|
-      error_key = e.class.name.split("::").drop(1).map(&:underscore).first
+      error_key =
+        if e.is_a? APIError::Base
+          e.class.name.demodulize.underscore
+        else
+          :unauthorized
+        end
       http_code = Settings.error_formatter.http_code.public_send error_key
-      error_content = I18n.t("api_error.unauthorized") unless e.is_a? APIError::Base
-      message = { error: { code: http_code, message: (error_content ? error_content : error_key.gsub("_", " ")) } }
+      message = {
+        error: {
+          code: http_code,
+          message: I18n.t(error_key, scope: "api_error")
+        }
+      }
       error! message, http_code
     end
 

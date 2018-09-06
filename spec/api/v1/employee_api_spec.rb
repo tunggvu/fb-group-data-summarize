@@ -493,14 +493,14 @@ describe "Employee API" do
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "email")
+            message: I18n.t("api_error.missing_params", params: I18n.t("grape.errors.attributes.email"))
           }
         }
         run_test! do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.validation_errors,
-              message: I18n.t("api_error.missing_params", params: "email")
+              message: I18n.t("api_error.missing_params", params: I18n.t("grape.errors.attributes.email"))
             }
           }
           expect(response.body).to eq expected.to_json

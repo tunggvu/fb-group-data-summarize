@@ -7,8 +7,10 @@ class V1::SessionAPI < Grape::API
       Password at least 8 charcters, have 1 number and special character. Email must prefix @framgia"
     end
     params do
-      requires :email, type: String, allow_blank: false, regexp: Settings.validations.email_regex
-      requires :password, type: String, allow_blank: false, regexp: Settings.validations.password_regex
+      requires :email, type: String, allow_blank: false,
+        regexp: { value: Settings.validations.email_regex, message: :"employee.email.regexp" }
+      requires :password, type: String, allow_blank: false,
+        regexp: { value: Settings.validations.password_regex, message: :"employee.password.regexp" }
       optional :remember, type: Boolean
     end
     post do
@@ -27,7 +29,8 @@ class V1::SessionAPI < Grape::API
     desc "Change password for current user"
     params do
       requires :current_password, type: String, allow_blank: false
-      requires :new_password, type: String, allow_blank: false, regexp: Settings.validations.password_regex
+      requires :new_password, type: String, allow_blank: false,
+        regexp: { value: Settings.validations.password_regex, message: :"employee.password.regexp" }
     end
     patch do
       authenticate!

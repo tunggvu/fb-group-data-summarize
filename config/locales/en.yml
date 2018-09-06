@@ -2,10 +2,22 @@ en:
   hello: "Hello world"
   grape:
     errors:
+      format: ! "%{attributes} %{message}"
       messages:
-        required:
+        required: is missing
+        blank: is empty
+        employee:
+          password:
+            regexp: must be at least 8 characters, contains at least 1 special character, 1 number and 1 alphabet character
+          email:
+            regexp: is in an invalid format
+      attributes:
+        password: Password
+        email: Email
+        new_password: New password
+        current_password: Current password
   api_error:
-    wrong_email_password: "Wrong email or password"
+    wrong_email_password: "wrong email password"
     unauthorized: "unauthorized"
     missing_params: "%{params} is missing"
     invalid_params: "Validation failed: %{params} is invalid"

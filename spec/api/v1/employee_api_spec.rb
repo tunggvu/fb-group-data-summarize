@@ -38,6 +38,7 @@ describe "Employee API" do
       parameter name: "ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter employees with ids"
       parameter name: :project_id, in: :query, type: :integer, description: "Filter employees with project id"
 
+      let(:Authorization) { "Bearer #{admin_token.token}" }
       let(:query) {}
       let(:organization_id) {}
       let(:skill_id) {}
@@ -48,7 +49,7 @@ describe "Employee API" do
 
       consumes "application/json"
 
-      response "200", "return employee with correct params" do
+      response "200", "employee can filter by organization" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
         let(:organization_id) { employee.organization_id }
@@ -75,7 +76,7 @@ describe "Employee API" do
         end
       end
 
-      response "200", "return employees with 3 params" do
+      response "200", "will ignore all paramaters which employee cannot use and returns all employees" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
         let(:skill_id) { skill.id }
@@ -95,13 +96,12 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = [Entities::Employee.represent(employee)]
-          expect(response.body).to eq expected.to_json
+          expected = Entities::Employee.represent(Employee.all)
+          expect(response_body).to match_array JSON.parse(expected.to_json)
         end
       end
 
-      response "200", "return employees with 2 params" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+      response "200", "GL or above can filter employees by all parameters" do
         let(:query) { employee.name }
         let(:skill_id) { skill.id }
 
@@ -125,7 +125,6 @@ describe "Employee API" do
       end
 
       response "200", "return employees with 1 param" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
 
         examples "application/json" =>
@@ -148,7 +147,6 @@ describe "Employee API" do
       end
 
       response "200", "return employees with params organization_not_in" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_not_in) { section.id }
         let(:section) { FactoryBot.create(:organization, :section, parent: division) }
         let(:section2) { FactoryBot.create(:organization, :section, parent: division) }
@@ -170,17 +168,12 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = [
-            Entities::Employee.represent(employee),
-            Entities::Employee.represent(manager),
-            Entities::Employee.represent(employee2)
-           ]
-          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+          expected = Entities::Employee.represent [admin, manager, employee, employee2]
+          expect(response_body).to match_array JSON.parse(expected.to_json)
         end
       end
 
       response "200", "return employees with params ids" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
         let("ids[]") { [employee.id, manager.id] }
         examples "application/json" =>
           [
@@ -196,16 +189,12 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = [
-            Entities::Employee.represent(employee),
-            Entities::Employee.represent(manager)
-           ]
-          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+          expected = Entities::Employee.represent [employee, manager]
+          expect(response_body).to match_array JSON.parse(expected.to_json)
         end
       end
 
       response "200", "return employees with params organization_id" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_id) { division.id }
         examples "application/json" =>
           [
@@ -250,7 +239,6 @@ describe "Employee API" do
       end
 
       response "200", "return empty employees" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
         let(:skill_id) { 0 }
         let("level_ids[]") { [0] }
@@ -265,8 +253,6 @@ describe "Employee API" do
       end
 
       response "200", "return employees without any params" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
-
         examples "application/json" =>
           [
             {
@@ -321,7 +307,6 @@ describe "Employee API" do
       end
 
       response "404", "return error when pass organization not existed to params organization_id " do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_id) { 0 }
         examples "application/json" => {
           error: {
@@ -341,7 +326,6 @@ describe "Employee API" do
       end
 
       response "404", "return error when pass organization not existed to params organization_not_in " do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_not_in) { 0 }
         examples "application/json" => {
           error: {

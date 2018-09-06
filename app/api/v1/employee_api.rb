@@ -21,6 +21,9 @@ class V1::EmployeeAPI < Grape::API
     end
 
     get do
+      allowed_keys_for_employee = [:organization_id, :organization_not_in]
+      params.slice!(*allowed_keys_for_employee) unless policy(:employee).executive?
+
       search_params = {
         name_or_employee_code_cont: params[:query],
         levels_skill_id_eq: params[:skill_id],

@@ -326,6 +326,91 @@
         }
       }
     },
+    "/api/v1/efforts": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "summary": "Detail effort of a employee",
+        "tags": [
+          "Efforts"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "employee_id",
+            "in": "query",
+            "type": "integer"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return detail effort with correct params",
+            "examples": {
+              "application/json": [
+                {
+                  "employee_id": 1,
+                  "start_time": "1/1/2018",
+                  "end_time": "2/1/2018",
+                  "effort": 100,
+                  "sprint_id": 1,
+                  "employee_level_id": 1
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "empty params",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "end_time is empty"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "invalid employee id",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Employee with 'id'=0"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "user can't view effort of employee in other project",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/employees": {
       "parameters": [
         {

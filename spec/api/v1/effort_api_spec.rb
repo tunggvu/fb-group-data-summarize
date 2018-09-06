@@ -14,7 +14,7 @@ describe "Effort API" do
   let(:group_leader_token) { create :employee_token, employee: group_leader }
   let(:employee) { create :employee }
   let(:employee_token) { create :employee_token, employee: employee }
-  let(:member_project) { create :employee }
+  let(:member_project) { create :employee, organization: group }
   let(:member_token) { create :employee_token, employee: member_project }
   let(:project) { create :project, product_owner: group_leader }
   let(:sprint) { create :sprint, project: project }
@@ -863,6 +863,122 @@ describe "Effort API" do
 
       response "401", "manager of other division cannot delete an effort" do
         let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
+
+  path "/api/v1/efforts" do
+    parameter name: "Authorization", in: :header, type: :string
+    let(:Authorization) { "Bearer #{section_manager_token.token}" }
+
+    get "Detail effort of a employee" do
+      tags "Efforts"
+      consumes "application/json"
+
+      parameter name: :employee_id, in: :query, type: :integer
+      parameter name: :start_time, in: :query, type: :string
+      parameter name: :end_time, in: :query, type: :string
+
+      let(:employee_id) { member_project.id }
+      let(:start_time) { 5.days.ago }
+      let(:end_time) { 5.days.from_now }
+
+      response "200", "return detail effort with correct params" do
+        examples "application/json" =>
+          [
+            {
+              employee_id: 1,
+              start_time: "1/1/2018",
+              end_time: "2/1/2018",
+              effort: 100,
+              sprint_id: 1,
+              employee_level_id: 1
+            }
+          ]
+        run_test! do |response|
+          expected = [Entities::EffortDetail.represent(another_effort)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "empty params" do
+        let(:end_time) {}
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.empty_params", params: "end_time")
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: "end_time")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "invalid employee id" do
+        let(:employee_id) { 0 }
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: employee_id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "unauthenticated" do
+        let(:Authorization) {}
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthenticated,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "user can't view effort of employee in other project" do
+        let(:Authorization) { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {

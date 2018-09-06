@@ -83,13 +83,16 @@ class V1::EffortAPI < Grape::API
 
     desc "Get detail employee's effort durring start and end time"
     params do
-      requires :employee_id, type: Integer
-      requires :start_time, type: Date
-      requires :end_time, type: Date
+      requires :employee_id, type: Integer, allow_blank: false
+      requires :start_time, type: Date, allow_blank: false
+      requires :end_time, type: Date, allow_blank: false
     end
 
     get do
-      Dummy::DETAIL_EFFORT_BY_EMPLOYEE_CLICK
+      employee = Employee.find params[:employee_id]
+      effort_detail = Effort.find_by_employee_id(employee.id).relate_to_period(params[:start_time], params[:end_time])
+      effort_detail.each { |effort| authorize effort.project, :view? }
+      present effort_detail.includes(:employee_level, :sprint), with: Entities::EffortDetail
     end
   end
 end

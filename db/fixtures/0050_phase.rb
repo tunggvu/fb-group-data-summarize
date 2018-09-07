@@ -7,8 +7,8 @@ Project.all.each do |project|
       p.name = "phase #{n+1}"
       p.project_id = project.id
       p.starts_on = starts_on
-      p.ends_on = starts_on + 20
-      starts_on += 21
+      p.ends_on = starts_on + 20.days
+      starts_on += 21.days
     end
   end
 end

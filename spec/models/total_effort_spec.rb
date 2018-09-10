@@ -27,7 +27,7 @@ RSpec.describe TotalEffort, type: :model do
       it "shoud return error" do
         total_effort.save
         expect(total_effort.errors.full_messages).to include "End time must be after the start time"
-        expect(TotalEffort.count).to eq 0
+        expect(TotalEffort.count).to eq 1
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe TotalEffort, type: :model do
 
       it "save to DB" do
         total_effort.save
-        expect(TotalEffort.count).to eq 1
+        expect(TotalEffort.count).to eq 2
       end
     end
   end

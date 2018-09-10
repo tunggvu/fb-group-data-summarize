@@ -15,9 +15,8 @@ class V1::EmployeeAPI < Grape::API
       optional :project_id, type: Integer
       optional :start_time, type: Date
       optional :end_time, type: Date
-      optional :total_effort_gt, type: Integer
+      optional :total_effort_lt, type: Integer
       optional :ids, type: Array[Integer]
-      all_or_none_of :start_time, :end_time, :total_effort_gt
     end
 
     get do
@@ -38,8 +37,20 @@ class V1::EmployeeAPI < Grape::API
 
       employees = Employee.ransack(search_params).result(distinct: true)
 
-      if params[:total_effort_gt]
-        Dummy::FILTER_EMPLOYEE_BY_EFFORT
+      if params[:start_time] && params[:end_time]
+        employee_efforts = employees.with_total_efforts_in_period(params[:start_time], params[:end_time])
+        employees = if params[:total_effort_lt]
+                      emp_ids = employee_efforts.with_total_efforts_max_values(params[:total_effort_lt]).select(:id)
+                      employee_efforts.where(id: emp_ids)
+                    else
+                      employee_efforts
+                    end
+
+        present paginate(employees.includes(:total_efforts)), with: Entities::EmployeeEffort
+
+      elsif params[:start_time].present? ^ params[:end_time].present?
+        raise_errors I18n.t("api_error.empty_params", params: "input_time"),
+          Settings.error_formatter.http_code.validation_errors
       else
         present paginate(employees), with: Entities::Employee
       end

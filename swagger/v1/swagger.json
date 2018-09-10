@@ -479,12 +479,41 @@
             "in": "query",
             "type": "integer",
             "description": "Filter employees with project id"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "type": "date",
+            "required": false
+          },
+          {
+            "name": "total_effort_lt",
+            "in": "query",
+            "type": "integer",
+            "required": false
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "type": "date",
+            "required": false
           }
         ],
         "consumes": [
           "application/json"
         ],
         "responses": {
+          "400": {
+            "description": "empty start_time",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "input_time is empty"
+                }
+              }
+            }
+          },
           "200": {
             "description": "return employees without any params",
             "examples": {

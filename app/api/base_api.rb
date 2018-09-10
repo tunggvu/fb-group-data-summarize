@@ -64,6 +64,10 @@ module BaseAPI
         language = headers["Accept-Language"].present? ? headers["Accept-Language"] : I18n.default_locale.to_s
         I18n.locale = HTTP::Accept::Languages.parse(language)[0].locale
       end
+
+      def raise_errors(message, code)
+        error!({ error: { code: code, message: message } }, code)
+      end
     end
   end
 end

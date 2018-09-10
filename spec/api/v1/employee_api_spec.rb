@@ -40,6 +40,9 @@ describe "Employee API" do
       parameter name: "level_ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter employees with multiple levels"
       parameter name: "ids[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter employees with ids"
       parameter name: :project_id, in: :query, type: :integer, description: "Filter employees with project id"
+      parameter name: :start_time, in: :query, type: :date, required: false
+      parameter name: :total_effort_lt, in: :query, type: :integer, required: false
+      parameter name: :end_time, in: :query, type: :date, required: false
 
       let(:Authorization) { "Bearer #{admin_token.token}" }
       let(:query) {}
@@ -49,10 +52,153 @@ describe "Employee API" do
       let("level_ids[]") { [] }
       let("ids[]") { [] }
       let(:project_id) {}
+      let(:start_time) {}
+      let(:total_effort_lt) {}
+      let(:end_time) {}
 
       consumes "application/json"
 
-      response "200", "employee can filter by organization" do
+      response "400", "empty start_time" do
+        let(:end_time) { 2.days.ago }
+        let(:total_effort_lt) { 25 }
+
+
+        examples "application/json": {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.empty_params", params: "input_time")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: "input_time")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return employees with start time, end time and nil total_effort_lt" do
+        let(:start_time) { 2.days.ago }
+        let(:end_time) { 2.days.from_now }
+
+        examples "application/json" =>
+          [
+            {
+              "employee_name": "Queenie Harris IV",
+              "employee_id": 2,
+              "total_efforts": [
+                {
+                  "start_time": "2018-08-28",
+                  "end_time": "2018-08-30",
+                  "value": 25
+                }
+              ]
+            }
+          ]
+        run_test! do |response|
+          expected = Entities::EmployeeEffort.represent([employee, manager, admin])
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return empty with start time, end time and total_effort_lt" do
+        let(:start_time) { 15.days.ago }
+        let(:end_time) { 10.days.ago }
+        let(:total_effort_lt) { 50 }
+
+        examples "application/json" =>
+          []
+
+        run_test! do |response|
+          expected = []
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "will ignore all paramaters which employee cannot use and returns all employees" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:start_time) { 2.days.ago }
+        let(:end_time) { 2.days.from_now }
+        let(:total_effort_lt) { 50 }
+
+        examples "application/json" =>
+          [
+            {
+              id: 1,
+              organization_id: 1,
+              name: "Employee",
+              employee_code: "B120000",
+              email: "employee@framgia.com",
+              birthday: "1/1/2018",
+              phone: "0123456789",
+              avatar: "#"
+            }
+          ]
+        run_test! do |response|
+          expected = Entities::Employee.represent(Employee.all)
+          expect(response_body).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return employees with start time, end time and total_effort_lt" do
+
+        let(:start_time) { 2.days.ago }
+        let(:end_time) { 2.days.from_now }
+        let(:total_effort_lt) { 50 }
+
+        examples "application/json" =>
+          [
+            {
+              "employee_name": "Queenie Harris IV",
+              "employee_id": 2,
+              "total_efforts": [
+                {
+                  "start_time": "2018-08-28",
+                  "end_time": "2018-08-30",
+                  "value": 25
+                }
+              ]
+            }
+          ]
+        run_test! do |response|
+          expected = Entities::EmployeeEffort.represent([employee, manager, admin])
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return employee with all params" do
+        let(:query) { employee.name }
+        let(:organization_id) { employee.organization_id }
+        let(:skill_id) { skill.id }
+        let("level_ids[]") { [level.id, level2.id] }
+        let(:start_time) { 2.days.ago }
+        let(:end_time) { 2.days.from_now }
+        let(:total_effort_lt) { 50 }
+
+        examples "application/json" =>
+          [
+            {
+              "employee_name": "Queenie Harris IV",
+              "employee_id": 2,
+              "total_efforts": [
+                {
+                  "start_time": "2018-08-28",
+                  "end_time": "2018-08-30",
+                  "value": 25
+                }
+              ]
+            }
+          ]
+        run_test! do |response|
+          expected = [Entities::EmployeeEffort.represent(employee)]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "can filter by organization, not start_time and end_time" do
         let(:"Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
         let(:organization_id) { employee.organization_id }

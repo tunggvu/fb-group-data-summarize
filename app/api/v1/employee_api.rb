@@ -67,11 +67,13 @@ class V1::EmployeeAPI < Grape::API
 
       resource :efforts do
         params do
-          requires :start_time, type: Date
-          requires :end_time, type: Date
+          requires :start_time, type: Date, allow_blank: false
+          requires :end_time, type: Date, allow_blank: false
         end
         get do
-          Dummy::DETAIL_EFFORT_BY_EMPLOYEE_HOVER
+          effort_detail = @employee.efforts.relate_to_period(params[:start_time], params[:end_time])
+          effort_detail.includes(sprint: :project).each { |effort| authorize effort.project, :view? }
+          present effort_detail.includes(sprint: :project, employee_level: [level: :skill]), with: Entities::EffortDetailWithProject
         end
       end
 

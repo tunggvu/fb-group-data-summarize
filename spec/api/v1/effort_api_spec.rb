@@ -884,16 +884,16 @@ describe "Effort API" do
   end
 
   path "/api/v1/efforts" do
-    parameter name: "Authorization", in: :header, type: :string
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:Authorization) { "Bearer #{section_manager_token.token}" }
 
     get "Detail effort of a employee" do
       tags "Efforts"
       consumes "application/json"
 
-      parameter name: :employee_id, in: :query, type: :integer
-      parameter name: :start_time, in: :query, type: :string
-      parameter name: :end_time, in: :query, type: :string
+      parameter name: :employee_id, in: :query, type: :integer, description: "Id of employee"
+      parameter name: :start_time, in: :query, type: :string, description: "Start time to filter"
+      parameter name: :end_time, in: :query, type: :string, description: "End time to filter"
 
       let(:employee_id) { member_project.id }
       let(:start_time) { 5.days.ago }

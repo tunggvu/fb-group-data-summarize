@@ -331,7 +331,8 @@
         {
           "name": "Authorization",
           "in": "header",
-          "type": "string"
+          "type": "string",
+          "description": "Token authorization user"
         }
       ],
       "get": {
@@ -346,17 +347,20 @@
           {
             "name": "employee_id",
             "in": "query",
-            "type": "integer"
+            "type": "integer",
+            "description": "Id of employee"
           },
           {
             "name": "start_time",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "description": "Start time to filter"
           },
           {
             "name": "end_time",
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "description": "End time to filter"
           }
         ],
         "responses": {
@@ -708,6 +712,96 @@
               "application/json": {
                 "message": "Delete successfully"
               }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/employees/{id}/efforts": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string",
+          "description": "Token authorization user"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "type": "integer",
+          "description": "Id of employee",
+          "required": true
+        },
+        {
+          "name": "start_time",
+          "in": "query",
+          "type": "Date",
+          "description": "Start time to filter"
+        },
+        {
+          "name": "end_time",
+          "in": "query",
+          "type": "Date",
+          "description": "End time to filter"
+        }
+      ],
+      "get": {
+        "summary": "Detail efforts by employee",
+        "tags": [
+          "Employees"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "404": {
+            "description": "invalid employee's id",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Employee with 'id'=0"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "user can't view detail effort of employee in other project",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "params start_time (or end_time) is invalid",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "start_time is invalid"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "return detail effort by employee",
+            "examples": {
+              "application/json": [
+                {
+                  "project_name": "Emres",
+                  "effort_value": 50,
+                  "skill": "Ruby"
+                },
+                {
+                  "project_name": "AABBCC",
+                  "effort_value": 70,
+                  "skill": "PHP"
+                }
+              ]
             }
           }
         }

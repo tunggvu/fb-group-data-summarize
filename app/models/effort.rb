@@ -10,10 +10,7 @@ class Effort < ApplicationRecord
 
   delegate :project, to: :sprint
   delegate :employee, to: :employee_level
-
-  scope :find_by_employee_id, ->(employee_id) do
-    joins(:employee_level).where(employee_levels: { employee_id: employee_id })
-  end
+  delegate :level, to: :employee_level
 
   scope :relate_to_period, ->(start_time, end_time) do
     joins(:sprint).where.not("sprints.starts_on > ? OR sprints.ends_on < ?", end_time, start_time)

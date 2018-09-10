@@ -90,8 +90,8 @@ class V1::EffortAPI < Grape::API
 
     get do
       employee = Employee.find params[:employee_id]
-      effort_detail = Effort.find_by_employee_id(employee.id).relate_to_period(params[:start_time], params[:end_time])
-      effort_detail.each { |effort| authorize effort.project, :view? }
+      effort_detail = employee.efforts.relate_to_period(params[:start_time], params[:end_time])
+      effort_detail.includes(sprint: :project).each { |effort| authorize effort.project, :view? }
       present effort_detail.includes(:employee_level, :sprint), with: Entities::EffortDetail
     end
   end

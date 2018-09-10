@@ -7,7 +7,8 @@ describe "Employee API" do
   let(:skill) { FactoryBot.create :skill }
   let(:level) { FactoryBot.create :level, skill: skill }
   let(:level2) { FactoryBot.create :level, skill: skill }
-  let!(:employee_level) { FactoryBot.create :employee_level, employee: employee, level: level }
+  let(:employee_level) { FactoryBot.create :employee_level, employee: employee, level: level }
+  let(:employee_level2) { FactoryBot.create :employee_level, employee: employee, level: level2 }
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
   let(:group) { FactoryBot.create(:organization, :clan, name: "Group 1") }
   let(:division) { FactoryBot.create(:organization, :division, name: "Division1") }
@@ -17,8 +18,10 @@ describe "Employee API" do
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
   let(:project) { FactoryBot.create :project, product_owner: employee }
   let(:phase) { FactoryBot.create :phase, project: project }
-  let(:sprint) { FactoryBot.create :sprint, phase: phase, project: project, starts_on: project.starts_on }
+  let(:sprint) { FactoryBot.create :sprint, phase: phase, project: project, starts_on: project.starts_on, ends_on: 7.days.from_now }
+  let(:sprint2) { FactoryBot.create :sprint, phase: phase, project: project, starts_on: 8.days.from_now, ends_on: 15.days.from_now }
   let!(:effort) { FactoryBot.create :effort, sprint: sprint, employee_level: employee_level }
+  let!(:effort2) { FactoryBot.create :effort, sprint: sprint2, employee_level: employee_level2 }
 
   before do
     group.update_attributes(manager_id: manager.id, parent: division)
@@ -657,6 +660,168 @@ describe "Employee API" do
           expected = {
             message: I18n.t("delete_success")
           }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
+
+  path "/api/v1/employees/{id}/efforts" do
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Id of employee"
+    parameter name: :start_time, in: :query, type: :Date, description: "Start time to filter"
+    parameter name: :end_time, in: :query, type: :Date, description: "End time to filter"
+
+    let(:"Authorization") { "Bearer #{manager_token.token}" }
+    let(:id) { employee.id }
+    let(:start_time) {}
+    let(:end_time) {}
+
+    get "Detail efforts by employee" do
+      tags "Employees"
+      consumes "application/json"
+
+      response "404", "invalid employee's id" do
+        let(:id) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "unauthenticated" do
+        let(:Authorization) {}
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthenticated,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "user can't view detail effort of employee in other project" do
+        let(:another_employee) { FactoryBot.create :employee }
+        let(:another_employee_token) { FactoryBot.create :employee_token, employee: another_employee }
+        let(:"Authorization") { "Bearer #{another_employee_token.token}" }
+        let(:start_time) { 5.days.from_now }
+        let(:end_time) { 10.days.from_now }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthorized,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthenticated,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "params start_time (or end_time) is empty" do
+        let(:start_time) {}
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.empty_params", params: "start_time")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: "start_time")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "params start_time (or end_time) is invalid" do
+        let(:start_time) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.validation_errors,
+            message: I18n.t("api_error.invalid", params: "start_time")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.invalid", params: "start_time")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return empty array when any record match with params" do
+        let(:start_time) { 20.days.from_now }
+        let(:end_time) { 21.days.from_now }
+
+        examples "application/json" => []
+        run_test! do
+          expected = []
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return empty array when params end_time before start_time" do
+        let(:start_time) { 20.days.from_now }
+        let(:end_time) { Date.current }
+
+        examples "application/json" => []
+        run_test! do
+          expected = []
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return detail effort by employee" do
+        let(:start_time) { 5.days.from_now }
+        let(:end_time) { 10.days.from_now }
+
+        examples "application/json" => [
+          {
+            project_name: "Emres",
+            effort_value: 50,
+            skill: "Ruby"
+          },
+          {
+            project_name: "AABBCC",
+            effort_value: 70,
+            skill: "PHP"
+          }
+        ]
+        run_test! do
+          expected = Entities::EffortDetailWithProject.represent([effort, effort2])
           expect(response.body).to eq expected.to_json
         end
       end

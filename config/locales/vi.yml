@@ -30,6 +30,10 @@ vi:
     effort_less_than_zero: "Xác thực không thành công: Effort phải >= 0"
     invalid: "%{params} không hợp lệ"
     wrong_current_password: "Sai mật khẩu hiện tại"
+    effort_employee_must_be_unique_in_sprint: "Xác thực không thành công: Nhân viên đã tồn tại trong sprint."
+  models:
+    effort:
+      employee_must_be_unique_in_sprint: "Nhân viên đã tồn tại trong sprint."
   delete_success: "Xóa thành công"
   log_out: "Bạn đã đăng xuất!"
   success: "Thành công"

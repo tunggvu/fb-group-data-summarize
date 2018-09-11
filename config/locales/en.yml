@@ -36,12 +36,15 @@ en:
     invalid: "%{params} is invalid"
     wrong_current_password: "wrong current password"
     invalid_time_sprint: "Validation failed: Sprint time must be in phase time"
+    effort_employee_must_be_unique_in_sprint: "Validation failed: Employee has already been found in sprint."
   models:
     sprint:
       invalid_starts_on_ends_on: "must be after the starts on"
       invalid_starts_on: "must be after ends on previous sprint"
       invalid_ends_on: "must be after starts on next sprint"
       invalid_sprint_time: "Sprint time must be in phase time"
+    effort:
+      employee_must_be_unique_in_sprint: "Employee has already been found in sprint."
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
   success: "Success"

@@ -551,10 +551,12 @@ describe "Effort API" do
       end
 
       response "422", "duped effort" do
+        let(:another_employee_level) { FactoryBot.create :employee_level, employee: employee_level.employee }
+
         let(:duped_effort_params) do
           {
-            employee_id: employee_level.employee_id,
-            level_id: employee_level.level_id,
+            employee_id: another_employee_level.employee_id,
+            level_id: another_employee_level.level_id,
             effort: rand(1..100)
           }
         end
@@ -564,7 +566,7 @@ describe "Effort API" do
         examples "application/json": {
           error: {
             code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.taken_params", params: EmployeeLevel.name.underscore.humanize)
+            message: I18n.t("api_error.effort_employee_must_be_unique_in_sprint")
           }
         }
 
@@ -572,7 +574,7 @@ describe "Effort API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.taken_params", params: EmployeeLevel.name.underscore.humanize)
+              message: I18n.t("api_error.effort_employee_must_be_unique_in_sprint")
             }
           }
           expect(response.body).to eq expected.to_json

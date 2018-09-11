@@ -181,7 +181,7 @@
               "application/json": {
                 "error": {
                   "code": 422,
-                  "message": "Validation failed: Employee level has already been taken"
+                  "message": "Validation failed: Employee has already been found in sprint."
                 }
               }
             }

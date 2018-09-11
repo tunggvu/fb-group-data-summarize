@@ -5,6 +5,8 @@ class Sprint < ApplicationRecord
   belongs_to :phase
 
   has_many :efforts, dependent: :destroy
+  has_many :employee_levels, through: :efforts
+  has_many :employees, through: :employee_levels
 
   validates :name, :starts_on, :ends_on, presence: true
 

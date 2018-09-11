@@ -8,6 +8,8 @@ class Employee < ApplicationRecord
   has_many :levels, through: :employee_levels
   has_many :efforts, through: :employee_levels
   has_many :total_efforts, dependent: :destroy
+  has_many :skills, through: :levels
+
   has_one :employee_token, dependent: :destroy
 
   validates :name, presence: true

@@ -836,6 +836,84 @@
         }
       }
     },
+    "/api/v1/employees/{id}/skills": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string",
+          "description": "Token authorization user"
+        }
+      ],
+      "get": {
+        "summary": "get skills of employee",
+        "tags": [
+          "Employees"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "description": "Employees ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return all skill of employee",
+            "examples": {
+              "application/json": {
+                "id": 2,
+                "name": "Zelma Dibbert",
+                "skills": [
+                  {
+                    "id": 2,
+                    "name": "Java",
+                    "levels": [
+                      {
+                        "id": 6,
+                        "name": "Senior",
+                        "rank": 3,
+                        "skill_id": 2,
+                        "logo": "/uploads/avatar.png"
+                      }
+                    ]
+                  },
+                  {
+                    "id": 1,
+                    "name": "Ruby",
+                    "levels": [
+                      {
+                        "id": 2,
+                        "name": "Middle",
+                        "rank": 2,
+                        "skill_id": 1,
+                        "logo": "/uploads/avatar.png"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "invalid id",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Employee with 'id'=0"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/skills/{skill_id}/levels": {
       "parameters": [
         {

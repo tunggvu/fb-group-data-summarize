@@ -13,4 +13,6 @@ class Level < ApplicationRecord
   delegate :name, :logo, to: :skill, prefix: true
 
   mount_base64_uploader :logo, ImageUploader
+
+  scope :levels_by_employee, -> (employee_id, skill_id) { joins(:skill, :employee_levels).distinct.where(skill_id: skill_id, employee_levels: {employee_id: employee_id}) }
 end

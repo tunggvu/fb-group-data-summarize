@@ -88,6 +88,12 @@ class V1::EmployeeAPI < Grape::API
         end
       end
 
+      resource :skills do
+        get do
+          present @employee, with: Entities::EmployeeSkill, employee_id: @employee.id
+        end
+      end
+
       desc "Get employee's information"
       get do
         present @employee, with: Entities::Employee

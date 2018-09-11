@@ -973,4 +973,78 @@ describe "Employee API" do
       end
     end
   end
+
+  path "/api/v1/employees/{id}/skills" do
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    let(:"Authorization") { "Bearer #{employee_token.token}" }
+
+    get "get skills of employee" do
+      tags "Employees"
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :integer, description: "Employees ID"
+
+      response "200", "return all skill of employee" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:id) { employee.id }
+
+        examples "application/json" =>
+          {
+            "id": 2,
+            "name": "Zelma Dibbert",
+            "skills": [
+                {
+                    "id": 2,
+                    "name": "Java",
+                    "levels": [
+                        {
+                            "id": 6,
+                            "name": "Senior",
+                            "rank": 3,
+                            "skill_id": 2,
+                            "logo": "/uploads/avatar.png"
+                        }
+                    ]
+                },
+                {
+                    "id": 1,
+                    "name": "Ruby",
+                    "levels": [
+                        {
+                            "id": 2,
+                            "name": "Middle",
+                            "rank": 2,
+                            "skill_id": 1,
+                            "logo": "/uploads/avatar.png"
+                        }
+                    ]
+                }
+            ]
+        }
+        run_test! do
+          expected = Entities::EmployeeSkill.represent(employee, employee_id: employee.id)
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "invalid id" do
+        let(:id) { 0 }
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+    end
+  end
 end

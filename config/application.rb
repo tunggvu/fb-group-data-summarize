@@ -42,7 +42,10 @@ module Emres
       config.middleware.insert_before 0, Rack::Cors do
         allow do
           origins ENV["FRONTEND_HOST"]
-          resource "/api/v1/*", headers: :any, methods: [:get, :post, :options, :delete, :put, :patch]
+          resource "/api/v1/*",
+            headers: :any,
+            methods: [:get, :post, :options, :delete, :put, :patch],
+            expose: ["X-Page", "X-Per-Page", "X-Total"]
         end
       end
     end

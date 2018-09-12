@@ -75,7 +75,7 @@ RSpec.describe Organization, type: :model do
 
     context "when organization is team" do
       it "should return all id of group employee" do
-        expect(team.employee_ids.sort).to eq Employee.where("organization_id = ?",
+        expect(team.employee_ids).to match_array Employee.where("organization_id = ?",
           team.id).ids
       end
     end

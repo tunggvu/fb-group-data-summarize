@@ -23,7 +23,7 @@ class Employee < ApplicationRecord
   scope :of_organizations, -> (org_ids) { where organization_id: org_ids }
 
   scope :with_total_efforts_in_period, ->(start_time, end_time) do
-    joins(:total_efforts).where("start_time < ? and end_time > ?", end_time, start_time)
+    eager_load(:total_efforts).where("start_time < ? and end_time > ?", end_time, start_time)
   end
 
   scope :with_total_efforts_max_values, ->(total_effort_lt) { group(:id).having('max("value") < ?', total_effort_lt) }

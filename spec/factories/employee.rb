@@ -11,5 +11,15 @@ FactoryBot.define do
     trait :admin do
       is_admin true
     end
+
+    trait :skip_callback do
+      after(:build) do |instance|
+        instance.class.skip_callback(:create, :after, :init_total_effort)
+      end
+
+      after(:create) do |instance|
+        instance.class.set_callback(:create, :after, :init_total_effort)
+      end
+    end
   end
 end

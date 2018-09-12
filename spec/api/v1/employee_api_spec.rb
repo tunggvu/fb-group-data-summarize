@@ -20,8 +20,8 @@ describe "Employee API" do
   let(:phase) { FactoryBot.create :phase, project: project }
   let(:sprint) { FactoryBot.create :sprint, phase: phase, project: project, starts_on: project.starts_on, ends_on: 7.days.from_now }
   let(:sprint2) { FactoryBot.create :sprint, phase: phase, project: project, starts_on: 8.days.from_now, ends_on: 15.days.from_now }
-  let!(:effort) { FactoryBot.create :effort, sprint: sprint, employee_level: employee_level }
-  let!(:effort2) { FactoryBot.create :effort, sprint: sprint2, employee_level: employee_level2 }
+  let!(:effort) { FactoryBot.create :effort, sprint: sprint, employee_level: employee_level, effort: 80 }
+  let!(:effort2) { FactoryBot.create :effort, sprint: sprint2, employee_level: employee_level2, effort: 80 }
 
   before do
     group.update_attributes(manager_id: manager.id, parent: division)
@@ -99,7 +99,7 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = Entities::EmployeeEffort.represent([employee, manager, admin])
+          expected = Entities::EmployeeEffort.represent(Employee.with_total_efforts_in_period(start_time, end_time))
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
@@ -164,7 +164,7 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = Entities::EmployeeEffort.represent([employee, manager, admin])
+          expected = Entities::EmployeeEffort.represent(Employee.with_total_efforts_in_period(start_time, end_time))
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
@@ -193,7 +193,7 @@ describe "Employee API" do
             }
           ]
         run_test! do |response|
-          expected = [Entities::EmployeeEffort.represent(employee)]
+          expected = Entities::EmployeeEffort.represent(Employee.where(id: employee.id).with_total_efforts_in_period(start_time, end_time))
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end

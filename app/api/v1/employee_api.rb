@@ -46,7 +46,7 @@ class V1::EmployeeAPI < Grape::API
                       employee_efforts
                     end
 
-        present paginate(employees.includes(:total_efforts)), with: Entities::EmployeeEffort
+        present paginate(employees), with: Entities::EmployeeEffort
 
       elsif params[:start_time].present? ^ params[:end_time].present?
         raise_errors I18n.t("api_error.empty_params", params: "input_time"),

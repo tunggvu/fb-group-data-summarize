@@ -34,3 +34,6 @@ config/environments/*.local.yml
 
 .rbenv-gemsets
 /.gems
+
+/config/application.yml.*
+!/config/application.yml.example

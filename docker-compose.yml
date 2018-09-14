@@ -35,7 +35,7 @@ services:
       RACK_ENV: staging
 
   server-3:
-    image: emres-server
+    image: emres-server-production
     command: rails server -p 3000 -b '0.0.0.0'
     ports:
       - "3000"
@@ -43,13 +43,13 @@ services:
       - postgres
     restart: unless-stopped
     volumes:
-      - /data/emres-storage:/emres-server/uploads
+      - /data/emres-storage-production:/emres-server/uploads
     environment:
-      RAILS_ENV: staging
-      RACK_ENV: staging
+      RAILS_ENV: production
+      RACK_ENV: production
 
   server-4:
-    image: emres-server
+    image: emres-server-production
     command: rails server -p 3000 -b '0.0.0.0'
     ports:
       - "3000"
@@ -57,10 +57,10 @@ services:
       - postgres
     restart: unless-stopped
     volumes:
-      - /data/emres-storage:/emres-server/uploads
+      - /data/emres-storage-production:/emres-server/uploads
     environment:
-      RAILS_ENV: staging
-      RACK_ENV: staging
+      RAILS_ENV: production
+      RACK_ENV: production
 
   front-1:
     image: emres-front
@@ -77,14 +77,14 @@ services:
       - "80"
 
   front-3:
-    image: emres-front
+    image: emres-front-production
     command: nginx -g 'daemon off;'
     restart: unless-stopped
     ports:
       - "80"
 
   front-4:
-    image: emres-front
+    image: emres-front-production
     command: nginx -g 'daemon off;'
     restart: unless-stopped
     ports:
@@ -108,4 +108,6 @@ services:
       - "8870:8870"
       - "8880:8880"
       - "8890:8890"
+      - "8881:8881"
+      - "8891:8891"
     restart: always

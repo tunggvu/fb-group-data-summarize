@@ -8,7 +8,7 @@ Create Data:
 ### Configure environments
 The default environment file is `config/application.yml`.
 
-There is an example file under the name `config/application.yml.example`. In the
+There is an example file under the name `config/application.yml.sample`. In the
 file, you will find necessary environment variables to configure the
 application.
 
@@ -20,8 +20,8 @@ application.
 #### Create data folder for postgres
 `mkdir -p /data/emres-server/`
 
-#### Create `application.yml`
-`cp config/application.yml.sample config/application.yml`
+#### Create `application.yml.staging`
+`cp config/application.yml.sample config/application.yml.staging`
 
 **You should update the environment variable inside this file to make the
 application run correctly**
@@ -53,6 +53,18 @@ monitoring service is run on `.:8870`
 
 `emres-server` will run on `.:8890`
 
+## Build production server
+#### Create `application.yml.production`
+`cp config/application.yml.sample config/application.yml.production`\
+
+#### Build production image
+`docker build -t emres-server-production -f Dockerfile_production .`
+
+#### Initialize database 
+`docker-compose run --rm server-3 bundle exec rake db:create`
+
+`docker-compose run --rm server-3 bundle exec rake db:migrate`
+
 ## Upgrade server
 To upgrade `emres-server` to the latest version, please checkout to the latest
 version on git, re-build `emres-server` image and run `./upgrade-server.sh`
@@ -68,3 +80,4 @@ irreversible. **BUT** the data for database will remain untouched.
 
 The database's data and configuration files are stored at `/data/emres-server/`,
 delete that directory will cause data loss for the database
+

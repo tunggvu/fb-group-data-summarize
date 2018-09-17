@@ -1070,4 +1070,139 @@ module Dummy
       employee_level_id: 1
     }
   ]
+
+  GET_DEVICE_DETAIL = {
+    name: "Macbook Air 2018",
+    serial_code: "543651725217271",
+    device_type: "mac_book",
+    os_version: "mac_os_10",
+    pic: {
+      id: 2,
+      name: "Framgia Employee A",
+      employee_code: "B1210000",
+      email: "framgia.employee.da@framgia.com",
+      phone: "0123456789"
+    },
+    project: {
+      id: 2,
+      name: "Lionel Ryan",
+      logo: "http://taiga.framgia.vn/v-1529572629992/images/project-logos/project-logo-02.png"
+    },
+    history: [
+      {
+        id: 1,
+        status: "rejected",
+        project: {
+          id: 1,
+          name: "Lionel Ryan 1",
+          logo: "http://taiga.framgia.vn/v-1529572629992/images/project-logos/project-logo-02.png"
+        },
+        request_pic: {
+          id: 1,
+          name: "Framgia Employee A",
+          avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+        },
+        requester: {
+          id: 6,
+          name: "Framgia Po A",
+          avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+        },
+        modified_date: "25/3/2018"
+      },
+      {
+        id: 2,
+        status: "approved",
+        project: {
+          id: 2,
+          name: "Lionel Ryan 1",
+          logo: "http://taiga.framgia.vn/v-1529572629992/images/project-logos/project-logo-02.png"
+        },
+        request_pic: {
+          id: 2,
+          name: "Framgia Employee A",
+          avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+        },
+        requester: {
+          id: 5,
+          name: "Framgia Po B",
+          avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+        },
+        modified_date: "25/4/2018"
+      },
+      {
+        id: 3,
+        status: "pending",
+        project: {
+          id: 3,
+          name: "Lionel Ryan 1",
+          logo: "http://taiga.framgia.vn/v-1529572629992/images/project-logos/project-logo-02.png"
+        },
+        request_pic: {
+          id: 3,
+          name: "Framgia Employee C",
+          avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+        },
+        requester: {
+          id: 4,
+          name: "Framgia Po C",
+          avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+        },
+        modified_date: "25/5/2018"
+      }
+    ]
+  }
+
+  GET_DEVICES = [
+    {
+      id: 1,
+      name: "Macbook Air 2018",
+      serial_code: "543651725217271",
+      device_type: "mac_mini",
+      os_version: "mac_os_10",
+      pic: {
+        id: 1,
+        name: "Framgia Employee A",
+        avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+      },
+      project: {
+        id: 2,
+        name: "Lionel Ryan",
+        logo: "http://taiga.framgia.vn/v-1529572629992/images/project-logos/project-logo-02.png"
+      }
+    },
+    {
+      id: 2,
+      name: "Laptop dell",
+      serial_code: "331569121930451",
+      device_type: "laptop",
+      os_version: "ubuntu_16",
+      pic: {
+        id: 2,
+        name: "Framgia Employee B",
+        avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+      },
+      project: {
+        id: 2,
+        name: "Lionel Ryan",
+        logo: "http://taiga.framgia.vn/v-1529572629992/images/project-logos/project-logo-02.png"
+      }
+    },
+    {
+      id: 3,
+      name: "PC 1",
+      serial_code: "549831084275227",
+      device_type: "pc",
+      os_version: "window10",
+      pic: {
+        id: 3,
+        name: "Framgia Employee C",
+        avatar: "https://mbtskoudsalg.com/images/avatar-png-icon-1.png"
+      },
+      project: {
+        id: 2,
+        name: "Lionel Ryan",
+        logo: "http://taiga.framgia.vn/v-1529572629992/images/project-logos/project-logo-02.png"
+      }
+    }
+  ]
 end

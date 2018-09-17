@@ -9,6 +9,8 @@ class Employee < ApplicationRecord
   has_many :efforts, through: :employee_levels
   has_many :total_efforts, dependent: :destroy
   has_many :skills, through: :levels
+  has_many :devices, foreign_key: :pic_id
+  has_many :requests, foreign_key: :requester_id
 
   has_one :employee_token, dependent: :destroy
 

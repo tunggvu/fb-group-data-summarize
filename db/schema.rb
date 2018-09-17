@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_29_011925) do
+ActiveRecord::Schema.define(version: 2018_09_14_034223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "devices", force: :cascade do |t|
+    t.string "name"
+    t.string "serial_code"
+    t.integer "device_type"
+    t.bigint "project_id"
+    t.string "os_version"
+    t.bigint "pic_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pic_id"], name: "index_devices_on_pic_id"
+    t.index ["project_id"], name: "index_devices_on_project_id"
+  end
 
   create_table "efforts", force: :cascade do |t|
     t.bigint "sprint_id", null: false
@@ -115,6 +128,22 @@ ActiveRecord::Schema.define(version: 2018_08_29_011925) do
     t.index ["product_owner_id"], name: "index_projects_on_product_owner_id"
   end
 
+  create_table "requests", force: :cascade do |t|
+    t.integer "status"
+    t.bigint "device_id"
+    t.bigint "project_id"
+    t.bigint "request_pic_id"
+    t.bigint "requester_id"
+    t.string "confirmation_digest"
+    t.date "modified_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id"], name: "index_requests_on_device_id"
+    t.index ["project_id"], name: "index_requests_on_project_id"
+    t.index ["request_pic_id"], name: "index_requests_on_request_pic_id"
+    t.index ["requester_id"], name: "index_requests_on_requester_id"
+  end
+
   create_table "requirements", force: :cascade do |t|
     t.bigint "phase_id", null: false
     t.integer "quantity"
@@ -162,6 +191,8 @@ ActiveRecord::Schema.define(version: 2018_08_29_011925) do
     t.index ["employee_id"], name: "index_total_efforts_on_employee_id"
   end
 
+  add_foreign_key "devices", "employees", column: "pic_id"
+  add_foreign_key "devices", "projects"
   add_foreign_key "efforts", "employee_levels"
   add_foreign_key "efforts", "sprints"
   add_foreign_key "employee_levels", "employees"
@@ -173,6 +204,10 @@ ActiveRecord::Schema.define(version: 2018_08_29_011925) do
   add_foreign_key "levels", "skills"
   add_foreign_key "organizations", "employees", column: "manager_id"
   add_foreign_key "phases", "projects"
+  add_foreign_key "requests", "devices"
+  add_foreign_key "requests", "employees", column: "request_pic_id"
+  add_foreign_key "requests", "employees", column: "requester_id"
+  add_foreign_key "requests", "projects"
   add_foreign_key "requirements", "levels"
   add_foreign_key "requirements", "phases"
   add_foreign_key "roles", "employees"

@@ -8,6 +8,7 @@ class Project < ApplicationRecord
   has_many :efforts, through: :sprints
   has_many :employee_levels, through: :efforts
   has_many :employees, -> { distinct }, through: :employee_levels
+  has_many :devices
 
   validates :name, presence: true
 

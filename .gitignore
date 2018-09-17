@@ -37,3 +37,4 @@ config/environments/*.local.yml
 
 /config/application.yml.*
 !/config/application.yml.example
+.idea/

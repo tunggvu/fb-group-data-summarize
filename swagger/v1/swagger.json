@@ -33,6 +33,97 @@
         }
       }
     },
+    "/devices/{id}": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string",
+          "description": "Token authorization user"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "type": "integer",
+          "description": "Device ID",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Show device's infomation",
+        "tags": [
+          "Devices"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "401": {
+            "description": "unauthenticated user",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "device not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Device with 'id'=0"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "device has been found",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "name": "laptop 0",
+                  "serial_code": "546031702833217",
+                  "device_type": "laptop",
+                  "os_version": "Tyrell Jenkins",
+                  "project": {
+                    "id": 3,
+                    "name": "Stanford Carroll",
+                    "description": null,
+                    "starts_on": "2018-09-15",
+                    "logo": "/uploads/avatar.png",
+                    "product_owner": {
+                      "id": 2,
+                      "organization_id": 1,
+                      "name": "Gussie D'Amore Sr.",
+                      "employee_code": "B1210001",
+                      "email": "gussie.d'amore.sr.@framgia.com",
+                      "birthday": null,
+                      "phone": "0987654321",
+                      "avatar": "/uploads/avatar.png"
+                    }
+                  },
+                  "pic": {
+                    "id": 251,
+                    "organization_id": 39,
+                    "name": "Chasity Bauch",
+                    "employee_code": "B1210250",
+                    "email": "chasity.bauch@framgia.com",
+                    "birthday": null,
+                    "phone": "0987654321",
+                    "avatar": "/uploads/avatar.png"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
     "/projects/{project_id}/sprints/{sprint_id}/efforts": {
       "parameters": [
         {

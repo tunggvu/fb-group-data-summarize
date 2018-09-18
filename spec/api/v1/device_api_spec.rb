@@ -41,4 +41,101 @@ describe "Device API" do
       end
     end
   end
+
+  path "/devices/{id}" do
+    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Device ID"
+    let(:"Authorization") { "Bearer #{employee_token.token}" }
+    let(:id) { device1.id }
+
+    get "Show device's infomation" do
+      tags "Devices"
+      consumes "application/json"
+
+      response "401", "unauthenticated user" do
+        let(:"Authorization") { "" }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthenticated,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthenticated,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "device not found" do
+        let(:id) { 0 }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: Device.name, id: 0)
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Device.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "device has been found" do
+        examples "application/json" => [
+          {
+            id: 1,
+            name: "laptop 0",
+            serial_code: "546031702833217",
+            device_type: "laptop",
+            os_version: "Tyrell Jenkins",
+            project: {
+              id: 3,
+              name: "Stanford Carroll",
+              description: nil,
+              starts_on: "2018-09-15",
+              logo: "/uploads/avatar.png",
+              product_owner: {
+                  id: 2,
+                  organization_id: 1,
+                  name: "Gussie D'Amore Sr.",
+                  employee_code: "B1210001",
+                  email: "gussie.d'amore.sr.@framgia.com",
+                  birthday: nil,
+                  phone: "0987654321",
+                  avatar: "/uploads/avatar.png"
+              }
+            },
+            pic: {
+              id: 251,
+              organization_id: 39,
+              name: "Chasity Bauch",
+              employee_code: "B1210250",
+              email: "chasity.bauch@framgia.com",
+              birthday: nil,
+              phone: "0987654321",
+              avatar: "/uploads/avatar.png"
+            }
+          }
+        ]
+
+        run_test! do
+          expected = Entities::Device.represent device1
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
 end

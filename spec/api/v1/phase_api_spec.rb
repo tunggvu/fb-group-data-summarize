@@ -13,7 +13,7 @@ describe "Phase API" do
 
   before { group.update_attributes! manager_id: group_leader.id }
 
-  path "/api/v1/projects/{project_id}/phases" do
+  path "/projects/{project_id}/phases" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     let(:"Authorization") { "Bearer #{group_leader_token.token}" }
@@ -268,7 +268,7 @@ describe "Phase API" do
     end
   end
 
-  path "/api/v1/projects/{project_id}/phases/{id}" do
+  path "/projects/{project_id}/phases/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :id, in: :path, type: :integer, description: "Phase ID"

@@ -30,7 +30,7 @@ describe "Project API" do
     other_section.update_attributes! manager_id: other_section_manager.id
   end
 
-  path "/api/v1/projects" do
+  path "/projects" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
 
     get "All projects" do
@@ -490,7 +490,7 @@ describe "Project API" do
     end
   end
 
-  path "/api/v1/projects/{id}" do
+  path "/projects/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
 
     get "Get information of specific project" do

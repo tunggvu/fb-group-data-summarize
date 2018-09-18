@@ -14,7 +14,7 @@ describe "Requirement API" do
   let!(:level1) { FactoryBot.create :level }
   let!(:level2) { FactoryBot.create :level }
   let!(:requirement) { FactoryBot.create :requirement, phase: phase1, level: level1 }
-  path "/api/v1/phases/{phase_id}/requirements" do
+  path "/phases/{phase_id}/requirements" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
     let(:"Authorization") { "Bearer #{group_leader_token.token}" }
@@ -257,7 +257,7 @@ describe "Requirement API" do
     end
   end
 
-  path "/api/v1/phases/{phase_id}/requirements/{id}" do
+  path "/phases/{phase_id}/requirements/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
     parameter name: :id, in: :path, type: :integer, description: "Requirement ID"

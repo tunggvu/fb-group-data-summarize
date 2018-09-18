@@ -27,7 +27,7 @@ describe "Employee API" do
     group.update_attributes(manager_id: manager.id, parent: division)
   end
 
-  path "/api/v1/employees" do
+  path "/employees" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 
@@ -704,7 +704,7 @@ describe "Employee API" do
     end
   end
 
-  path "/api/v1/employees/{id}" do
+  path "/employees/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 
@@ -812,7 +812,7 @@ describe "Employee API" do
     end
   end
 
-  path "/api/v1/employees/{id}/efforts" do
+  path "/employees/{id}/efforts" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :id, in: :path, type: :integer, description: "Id of employee"
     parameter name: :start_time, in: :query, type: :Date, description: "Start time to filter"
@@ -974,7 +974,7 @@ describe "Employee API" do
     end
   end
 
-  path "/api/v1/employees/{id}/skills" do
+  path "/employees/{id}/skills" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{employee_token.token}" }
 

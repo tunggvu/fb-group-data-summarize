@@ -28,7 +28,7 @@ describe "Effort API" do
   before { section.update_attributes! manager_id: section_manager.id }
   before { div2.update_attributes! manager_id: div2_manager.id }
 
-  path "/api/v1/projects/{project_id}/sprints/{sprint_id}/efforts" do
+  path "/projects/{project_id}/sprints/{sprint_id}/efforts" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :sprint_id, in: :path, type: :integer, description: "Sprint ID"
@@ -583,7 +583,7 @@ describe "Effort API" do
     end
   end
 
-  path "/api/v1/projects/{project_id}/sprints/{sprint_id}/efforts/{id}" do
+  path "/projects/{project_id}/sprints/{sprint_id}/efforts/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :sprint_id, in: :path, type: :integer, description: "Sprint ID"
@@ -862,7 +862,7 @@ describe "Effort API" do
     end
   end
 
-  path "/api/v1/efforts" do
+  path "/efforts" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:Authorization) { "Bearer #{section_manager_token.token}" }
 

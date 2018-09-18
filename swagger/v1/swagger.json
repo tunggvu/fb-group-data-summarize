@@ -4,8 +4,36 @@
     "title": "API V1",
     "version": "v1"
   },
+  "basePath": "/api/v1",
   "paths": {
-    "/api/v1/projects/{project_id}/sprints/{sprint_id}/efforts": {
+    "/devices": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string",
+          "description": "Token authorization user"
+        }
+      ],
+      "get": {
+        "summary": "all devices",
+        "tags": [
+          "Devices"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "return all devices"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/sprints/{sprint_id}/efforts": {
       "parameters": [
         {
           "name": "Authorization",
@@ -189,7 +217,7 @@
         }
       }
     },
-    "/api/v1/projects/{project_id}/sprints/{sprint_id}/efforts/{id}": {
+    "/projects/{project_id}/sprints/{sprint_id}/efforts/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -236,12 +264,6 @@
               "properties": {
                 "effort": {
                   "type": "integer"
-                },
-                "employee_id": {
-                  "type": "integer"
-                },
-                "level_id": {
-                  "type": "integer"
                 }
               }
             }
@@ -261,12 +283,12 @@
             }
           },
           "400": {
-            "description": "empty params",
+            "description": "missing params",
             "examples": {
               "application/json": {
                 "error": {
                   "code": 400,
-                  "message": "effort is empty"
+                  "message": "effort is missing"
                 }
               }
             }
@@ -278,17 +300,6 @@
                 "error": {
                   "code": 401,
                   "message": "unauthorized"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "when employee level nil",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 422,
-                  "message": "Validation failed: Employee level must exist"
                 }
               }
             }
@@ -326,7 +337,7 @@
         }
       }
     },
-    "/api/v1/efforts": {
+    "/efforts": {
       "parameters": [
         {
           "name": "Authorization",
@@ -415,7 +426,7 @@
         }
       }
     },
-    "/api/v1/employees": {
+    "/employees": {
       "parameters": [
         {
           "name": "Authorization",
@@ -651,7 +662,7 @@
         }
       }
     },
-    "/api/v1/employees/{id}": {
+    "/employees/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -746,7 +757,7 @@
         }
       }
     },
-    "/api/v1/employees/{id}/efforts": {
+    "/employees/{id}/efforts": {
       "parameters": [
         {
           "name": "Authorization",
@@ -836,7 +847,7 @@
         }
       }
     },
-    "/api/v1/employees/{id}/skills": {
+    "/employees/{id}/skills": {
       "parameters": [
         {
           "name": "Authorization",
@@ -914,7 +925,7 @@
         }
       }
     },
-    "/api/v1/skills/{skill_id}/levels": {
+    "/skills/{skill_id}/levels": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1011,7 +1022,7 @@
         }
       }
     },
-    "/api/v1/skills/{skill_id}/levels/{id}": {
+    "/skills/{skill_id}/levels/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1134,7 +1145,7 @@
         }
       }
     },
-    "/api/v1/organizations": {
+    "/organizations": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1296,7 +1307,7 @@
         }
       }
     },
-    "/api/v1/organizations/{id}": {
+    "/organizations/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1537,7 +1548,7 @@
         }
       }
     },
-    "/api/v1/organizations/{id}/employees": {
+    "/organizations/{id}/employees": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1611,7 +1622,7 @@
         }
       }
     },
-    "/api/v1/organizations/{id}/employees/{employee_id}": {
+    "/organizations/{id}/employees/{employee_id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1676,7 +1687,7 @@
         }
       }
     },
-    "/api/v1/projects/{project_id}/phases": {
+    "/projects/{project_id}/phases": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1812,7 +1823,7 @@
         }
       }
     },
-    "/api/v1/projects/{project_id}/phases/{id}": {
+    "/projects/{project_id}/phases/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -1975,7 +1986,7 @@
         }
       }
     },
-    "/api/v1/profile": {
+    "/profile": {
       "parameters": [
         {
           "name": "Authorization",
@@ -2087,7 +2098,7 @@
         }
       }
     },
-    "/api/v1/projects": {
+    "/projects": {
       "parameters": [
         {
           "name": "Authorization",
@@ -2250,7 +2261,7 @@
         }
       }
     },
-    "/api/v1/projects/{id}": {
+    "/projects/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -2525,7 +2536,7 @@
         }
       }
     },
-    "/api/v1/phases/{phase_id}/requirements": {
+    "/phases/{phase_id}/requirements": {
       "parameters": [
         {
           "name": "Authorization",
@@ -2669,7 +2680,7 @@
         }
       }
     },
-    "/api/v1/phases/{phase_id}/requirements/{id}": {
+    "/phases/{phase_id}/requirements/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -2846,7 +2857,7 @@
         }
       }
     },
-    "/api/v1/session": {
+    "/session": {
       "post": {
         "summary": "Login API",
         "tags": [
@@ -3006,7 +3017,7 @@
         }
       }
     },
-    "/api/v1/skills": {
+    "/skills": {
       "parameters": [
         {
           "name": "Authorization",
@@ -3163,7 +3174,7 @@
         }
       }
     },
-    "/api/v1/skills/{id}": {
+    "/skills/{id}": {
       "parameters": [
         {
           "name": "Authorization",
@@ -3328,7 +3339,7 @@
         }
       }
     },
-    "/api/v1/projects/{project_id}/phases/{phase_id}/sprints": {
+    "/projects/{project_id}/phases/{phase_id}/sprints": {
       "parameters": [
         {
           "name": "Authorization",
@@ -3524,7 +3535,7 @@
         }
       }
     },
-    "/api/v1/projects/{project_id}/phases/{phase_id}/sprints/{id}": {
+    "/projects/{project_id}/phases/{phase_id}/sprints/{id}": {
       "parameters": [
         {
           "name": "Authorization",

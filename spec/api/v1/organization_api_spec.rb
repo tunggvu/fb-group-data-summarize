@@ -21,7 +21,7 @@ describe "Organization API" do
     division2.update manager_id: manager.id
   end
 
-  path "/api/v1/organizations" do
+  path "/organizations" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     get "organization tree" do
       tags "Organizations"
@@ -186,7 +186,7 @@ describe "Organization API" do
     end
   end
 
-  path "/api/v1/organizations/{id}" do
+  path "/organizations/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{admin_token.token}" }
 
@@ -453,7 +453,7 @@ describe "Organization API" do
     end
   end
 
-  path "/api/v1/organizations/{id}/employees" do
+  path "/organizations/{id}/employees" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:id) { division2.id }
 
@@ -613,7 +613,7 @@ describe "Organization API" do
     end
   end
 
-  path "/api/v1/organizations/{id}/employees/{employee_id}" do
+  path "/organizations/{id}/employees/{employee_id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :id, in: :path, type: :integer, description: "Organization ID"
     parameter name: :employee_id, in: :path, type: :integer, description: "Employee ID"

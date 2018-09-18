@@ -13,7 +13,7 @@ describe "Level API" do
   let!(:level2) { FactoryBot.create :level, skill: skill }
   let!(:level3) { FactoryBot.create :level, skill: skill }
 
-  path "/api/v1/skills/{skill_id}/levels" do
+  path "/skills/{skill_id}/levels" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :skill_id, in: :path, type: :integer, description: "Skill ID"
     let(:"Authorization") { "Bearer #{admin_token.token}" }
@@ -171,7 +171,7 @@ describe "Level API" do
     end
   end
 
-  path "/api/v1/skills/{skill_id}/levels/{id}" do
+  path "/skills/{skill_id}/levels/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :skill_id, in: :path, type: :integer, description: "Skill ID"
     parameter name: :id, in: :path, type: :integer, description: "Level ID"

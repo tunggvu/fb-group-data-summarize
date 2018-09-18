@@ -26,7 +26,7 @@ describe "SprintAPI" do
   let!(:sprint3) { create :sprint, project: project, phase: phase, starts_on: 9.days.from_now, ends_on: 12.days.from_now }
   let(:level) { create :level }
 
-  path "/api/v1/projects/{project_id}/phases/{phase_id}/sprints" do
+  path "/projects/{project_id}/phases/{phase_id}/sprints" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
@@ -467,7 +467,7 @@ describe "SprintAPI" do
     end
   end
 
-  path "/api/v1/projects/{project_id}/phases/{phase_id}/sprints/{id}" do
+  path "/projects/{project_id}/phases/{phase_id}/sprints/{id}" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"

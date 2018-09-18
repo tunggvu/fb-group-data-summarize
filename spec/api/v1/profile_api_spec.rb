@@ -6,7 +6,7 @@ describe "Profile API" do
   let(:current_user) { FactoryBot.create(:employee) }
   let(:user_token) { FactoryBot.create :employee_token, employee: current_user }
 
-  path "/api/v1/profile" do
+  path "/profile" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:"Authorization") { "Bearer #{user_token.token}" }
 

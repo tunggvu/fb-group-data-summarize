@@ -15,6 +15,9 @@ application.
 * SECRET_JWT PUBLIC_JWT you can generate base on RSA 2048
 * Example http://csfieldguide.org.nz/en/interactives/rsa-key-generator/index.html
 * Remember to replace NEW_LINE character by "\n" in application.yml
+
+* SENDGRID_API_KEY: you can generate API key by create account in sendgrid: https://signup.sendgrid.com/,
+  after that generate API key in https://app.sendgrid.com/settings/api_keys
 ## Build Docker Image
 
 #### Create data folder for postgres

@@ -18,5 +18,19 @@ class V1::DeviceAPI < Grape::API
         present @device, with: Entities::Device
       end
     end
+
+    desc "Create device"
+    params do
+      requires :name, type: String, allow_blank: false
+      requires :serial_code, type: String, allow_blank: false
+      requires :project_id, type: Integer
+      requires :device_type, type: Integer
+      optional :pic_id, type: Integer
+      optional :os_version, type: String
+    end
+    post do
+      authorize Project.find(params[:project_id]), :product_owner?
+      present Device.create!(declared(params).to_h), with: Entities::Device
+    end
   end
 end

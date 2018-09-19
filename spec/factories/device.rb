@@ -6,6 +6,7 @@ FactoryBot.define do
     association :project
     serial_code Faker::Code.nric
     os_version Faker::App.semantic_version
+    name Faker::Name.name
 
     trait :laptop do
       device_type :laptop

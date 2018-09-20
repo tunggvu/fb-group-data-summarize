@@ -17,6 +17,19 @@ class V1::DeviceAPI < Grape::API
       get do
         present @device, with: Entities::Device
       end
+
+      desc "Update device"
+      params do
+        optional :name, type: String
+        optional :os_version, type: String
+      end
+
+      patch do
+        authorize @device, :device_owner?
+
+        @device.update_attributes! declared(params, include_missing: false)
+        present @device, with: Entities::Device
+      end
     end
 
     desc "Create device"

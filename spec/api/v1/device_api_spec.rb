@@ -12,8 +12,15 @@ describe "Device API" do
   let(:po1_token) { create :employee_token, employee: product_owner1 }
   let(:project1) { create :project, product_owner: product_owner1 }
   let(:project2) { create :project, product_owner: product_owner2 }
-  let!(:device1) { create(:device, :laptop, pic: product_owner1, project: project1) }
-  let!(:device2) { create(:device, :pc, pic: product_owner2, project: project2) }
+  let(:pic1) { create :employee, organization: division }
+  let(:pic1_token) { create :employee_token, employee: pic1 }
+  let(:po1_token) { create :employee_token, employee: product_owner1 }
+  let!(:device1) { create(:device, :laptop, project: project1) }
+  let!(:device2) { create(:device, :pc, project: project2) }
+
+  before do
+    device1.update_attributes! pic: pic1
+  end
 
   path "/devices" do
     parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
@@ -292,6 +299,167 @@ describe "Device API" do
         run_test! do
           expected = Entities::Device.represent device1
           expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+
+    patch "Update device's infomation" do
+      tags "Devices"
+      consumes "application/json"
+      let(:"Authorization") { "Bearer #{po1_token.token}" }
+
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: { type: :string },
+          os_version: { type: :string }
+        }
+      }
+
+      response "401", "unauthorized product_owner/pic" do
+        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let(:params) { {
+          name: "Test name"
+        } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.unauthenticated,
+            message: I18n.t("api_error.unauthorized")
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthenticated,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "device not found" do
+        let(:id) { 0 }
+        let(:params) { {
+          os_version: "Ubuntu 16.04"
+        } }
+
+        examples "application/json" => {
+          error: {
+            code: Settings.error_formatter.http_code.record_not_found,
+            message: I18n.t("api_error.invalid_id", model: Device.name, id: 0)
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Device.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "PO Update device successful" do
+        let(:params) { {
+          os_version: "Ubuntu 18.04"
+        } }
+
+        examples "application/json" => [
+          {
+            id: 1,
+            name: "laptop 0",
+            serial_code: "546031702833217",
+            device_type: "laptop",
+            os_version: "Tyrell Jenkins",
+            project: {
+              id: 3,
+              name: "Stanford Carroll",
+              description: nil,
+              starts_on: "2018-09-15",
+              logo: "/uploads/avatar.png",
+              product_owner: {
+                  id: 2,
+                  organization_id: 1,
+                  name: "Gussie D'Amore Sr.",
+                  employee_code: "B1210001",
+                  email: "gussie.d'amore.sr.@framgia.com",
+                  birthday: nil,
+                  phone: "0987654321",
+                  avatar: "/uploads/avatar.png"
+              }
+            },
+            pic: {
+              id: 251,
+              organization_id: 39,
+              name: "Chasity Bauch",
+              employee_code: "B1210250",
+              email: "chasity.bauch@framgia.com",
+              birthday: nil,
+              phone: "0987654321",
+              avatar: "/uploads/avatar.png"
+            }
+          }
+        ]
+
+        run_test! do
+          expected = Entities::Device.represent device1.reload
+          expect(response.body).to eq expected.to_json
+          expect(device1.os_version).to eq "Ubuntu 18.04"
+        end
+      end
+
+      response "200", "PIC Update device successful" do
+        let(:"Authorization") { "Bearer #{pic1_token.token}" }
+        let(:params) { {
+          os_version: "Ubuntu 18.04"
+        } }
+
+        examples "application/json" => [
+          {
+            id: 1,
+            name: "laptop 0",
+            serial_code: "546031702833217",
+            device_type: "laptop",
+            os_version: "Tyrell Jenkins",
+            project: {
+              id: 3,
+              name: "Stanford Carroll",
+              description: nil,
+              starts_on: "2018-09-15",
+              logo: "/uploads/avatar.png",
+              product_owner: {
+                  id: 2,
+                  organization_id: 1,
+                  name: "Gussie D'Amore Sr.",
+                  employee_code: "B1210001",
+                  email: "gussie.d'amore.sr.@framgia.com",
+                  birthday: nil,
+                  phone: "0987654321",
+                  avatar: "/uploads/avatar.png"
+              }
+            },
+            pic: {
+              id: 251,
+              organization_id: 39,
+              name: "Chasity Bauch",
+              employee_code: "B1210250",
+              email: "chasity.bauch@framgia.com",
+              birthday: nil,
+              phone: "0987654321",
+              avatar: "/uploads/avatar.png"
+            }
+          }
+        ]
+
+        run_test! do
+          expected = Entities::Device.represent device1.reload
+          expect(response.body).to eq expected.to_json
+          expect(device1.os_version).to eq "Ubuntu 18.04"
         end
       end
     end

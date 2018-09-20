@@ -31,6 +31,97 @@
             "description": "unauthorized"
           }
         }
+      },
+      "post": {
+        "summary": "Create device",
+        "tags": [
+          "Devices"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Device name"
+                },
+                "serial_code": {
+                  "type": "string",
+                  "description": "Device serial code"
+                },
+                "os_version": {
+                  "type": "string",
+                  "description": "Os of device"
+                },
+                "device_type": {
+                  "type": "integer",
+                  "description": "Device type 1 2 3"
+                },
+                "pic_id": {
+                  "type": "integer",
+                  "description": "Person in charge"
+                },
+                "project_id": {
+                  "type": "integer",
+                  "description": "project id of pic"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "member cannot create device",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Po created device successfully",
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "name": "Macbook Air 2018",
+                "serial_code": "2333124444334",
+                "device_type": 1,
+                "os_version": "Window10"
+              }
+            }
+          },
+          "400": {
+            "description": "validation failed: Project must exist",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "product_id is missing"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "device not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Project with 'id'=0"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/devices/{id}": {
@@ -82,6 +173,97 @@
           },
           "200": {
             "description": "device has been found",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "name": "laptop 0",
+                  "serial_code": "546031702833217",
+                  "device_type": "laptop",
+                  "os_version": "Tyrell Jenkins",
+                  "project": {
+                    "id": 3,
+                    "name": "Stanford Carroll",
+                    "description": null,
+                    "starts_on": "2018-09-15",
+                    "logo": "/uploads/avatar.png",
+                    "product_owner": {
+                      "id": 2,
+                      "organization_id": 1,
+                      "name": "Gussie D'Amore Sr.",
+                      "employee_code": "B1210001",
+                      "email": "gussie.d'amore.sr.@framgia.com",
+                      "birthday": null,
+                      "phone": "0987654321",
+                      "avatar": "/uploads/avatar.png"
+                    }
+                  },
+                  "pic": {
+                    "id": 251,
+                    "organization_id": 39,
+                    "name": "Chasity Bauch",
+                    "employee_code": "B1210250",
+                    "email": "chasity.bauch@framgia.com",
+                    "birthday": null,
+                    "phone": "0987654321",
+                    "avatar": "/uploads/avatar.png"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update device's infomation",
+        "tags": [
+          "Devices"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "os_version": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "unauthorized product_owner/pic",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "device not found",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 404,
+                  "message": "Couldn't find Device with 'id'=0"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "PIC Update device successful",
             "examples": {
               "application/json": [
                 {
@@ -3816,102 +3998,6 @@
                 "error": {
                   "code": 401,
                   "message": "unauthorized"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/devices": {
-      "parameters": [
-        {
-          "name": "Authorization",
-          "in": "header",
-          "type": "string",
-          "description": "Token authorization user"
-        }
-      ],
-      "post": {
-        "summary": "Create device",
-        "tags": [
-          "Devices"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "params",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "serial_code": {
-                  "type": "string"
-                },
-                "device_type": {
-                  "type": "integer"
-                },
-                "project_id": {
-                  "type": "integer"
-                },
-                "os_version": {
-                  "type": "string"
-                },
-                "pic_id": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "member cannot create device",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 401,
-                  "message": "unauthorized"
-                }
-              }
-            }
-          },
-          "201": {
-            "description": "Device create successfully",
-            "examples": {
-              "application/json": {
-                "name": "Macbook Air 2018",
-                "serial_code": "22243423423",
-                "device_type": "mac_mini",
-                "os_version": "Window10",
-                "project_id": 1,
-                "pic_id": 1
-              }
-            }
-          },
-          "422": {
-            "description": "Validation failed: Project must exist",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 422,
-                  "message": "Validation failed: Project must exist"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Name validation failed - missing",
-            "examples": {
-              "application/json": {
-                "error": {
-                  "code": 400,
-                  "message": "name is missing"
                 }
               }
             }

@@ -1,0 +1,298 @@
+/skills:
+  get:
+    summary: Get all skills
+    tags:
+      - Skills
+    responses:
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              unauthenticated:
+                error:
+                  code: 401
+                  message: unauthorized
+              unauthorized:
+                error:
+                  code: 401
+                  message: unauthorized
+      200:
+        description: return all skills
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SkillLevel'
+            example:
+              - id: 28523152
+                name: eu i
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                levels:
+                - id: 67354355
+                  name: 'aliquip '
+                  logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                  rank: 45196393
+                  skill_id: 3593242
+              - id: 87853089
+                name: 'Ut '
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                levels:
+                - id: 67725294
+                  name: ali
+                  logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                  rank: -1861221
+                  skill_id: -76872276
+                - id: 61694819
+                  name: 'off'
+                  logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                  rank: -29289828
+                  skill_id: 24437180
+  post:
+    summary: Create skill
+    tags:
+      - Skills
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Skill's name
+              logo:
+                type: string
+                description: Logo path
+              levels:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Level's name
+                    rank:
+                      type: integer
+                      description: Rank number
+                    logo:
+                      type: string
+                      description: Logo path
+          example:
+            name: Ruby on Rails,
+            logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png,
+            levels:
+              - name: Something,
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                rank: 123
+              - name: Something else
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                rank: 456
+    responses:
+      201:
+        description: created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SkillLevel'
+            example:
+              id: 42814442
+              name: volup
+              logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+              levels:
+              - id: 15785576
+                name: al
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                rank: 92878607
+                skill_id: 60261939
+              - id: 4155938
+                name: volupta
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                rank: -27562324
+                skill_id: 63219058
+      400:
+        description: empty/missing params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              name missing:
+                value:
+                  error:
+                    code: 400
+                    message: name is missing
+              name empty:
+                value:
+                  error:
+                    code: 400
+                    message: name is empty
+/skills/{id}:
+  parameters:
+    - name: id
+      in: path
+      schema:
+        type: integer
+      description: Skill ID
+      required: true
+  patch:
+    summary: Update skill
+    tags:
+      - Skills
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Skill's name
+              logo:
+                type: string
+                description: Logo path
+              levels:
+                type: array
+                description: Skill levels
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Level ID
+                    name:
+                      type: string
+                      description: Level's name
+                    rank:
+                      type: integer
+                      description: Rank number
+                    logo:
+                      type: string
+                      description: Logo path
+          example:
+            logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png,
+            levels:
+              - id: level.id,
+                name: level.name,
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png,
+                rank: level.rank
+              - id: level2.id,
+                name: level2.name,
+                logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png,
+                rank: level2.rank
+    responses:
+      404:
+        description: invalid id
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Skill with 'id'=0
+      400:
+        description: missing params[:levels][:name]
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              name missing:
+                value:
+                  error:
+                    code: 400
+                    message: name is missing
+              level name missing:
+                value:
+                  error:
+                    code: 400
+                    message: levels[0][name] is missing
+
+      422:
+        description: empty value for params[:name]
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 422
+                message: "Validation failed: Name can't be blank"
+      200:
+        description: update successfully (level can be deleted too)
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SkillLevel'
+            examples:
+              level created:
+                value:
+                  id: 42814442
+                  name: volup
+                  logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                  levels:
+                    - id: 15785576
+                      name: al
+                      logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                      rank: 92878607
+                      skill_id: 60261939
+                    - id: 4155938
+                      name: volupta
+                      logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                      rank: -27562324
+                      skill_id: 63219058
+              level deleted:
+                value:
+                  id: 42814442
+                  name: volup
+                  logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                  levels:
+                    - id: 15785576
+                      name: al
+                      logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                      rank: 92878607
+                      skill_id: 60261939
+                    - id: 4155938
+                      name: volupta
+                      logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                      rank: -27562324
+                      skill_id: 63219058
+              other attributes updated:
+                value:
+                  id: 42814442
+                  name: volup
+                  logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                  levels:
+                    - id: 15785576
+                      name: al
+                      logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                      rank: 92878607
+                      skill_id: 60261939
+                    - id: 4155938
+                      name: volupta
+                      logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                      rank: -27562324
+                      skill_id: 63219058
+  delete:
+    summary: Delete skill
+    tags:
+    - Skills
+    responses:
+      422:
+        description: unable to delete when having association
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 422
+                message: Failed to destroy the record
+      200:
+        description: delete successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SuccessMessage'

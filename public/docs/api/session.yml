@@ -1,0 +1,123 @@
+/session:
+  post:
+    summary: Login API
+    tags:
+      - Sessions
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: email user
+                required: true
+              password:
+                type: string
+                description: password name
+                required: true
+              remember:
+                type: boolean
+                description: Remember me
+          example:
+            email: sample@framgia.com
+            password: Aa@123456
+    responses:
+      200:
+        description: Login success with valid email/password
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Session'
+      400:
+        description: Invalid Param
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              email_format_invalid:
+                summary: format email invalid
+                value:
+                  error:
+                    code: 400
+                    message: Email is in an invalid format
+              wrong_email_password:
+                summary: wrong email password
+                value:
+                  error:
+                    code: 400
+                    message: wrong email password
+  patch:
+    summary: Change Password API
+    tags:
+      - Sessions
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              current_password:
+                type: string
+                description: Current password
+              new_password:
+                type: string
+                description: New Password
+          required:
+          - current_password
+          - new_password
+          example:
+            current_password: 123456
+            new_password: Aa@123456
+
+    responses:
+      400:
+        description: missing params[:levels][:name]
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              wrong_current_password:
+                value:
+                  error:
+                    code: 400
+                    message: wrong current password
+              new_password_wrong_format:
+                value:
+                  error:
+                    code: 400
+                    message: New password must be at least 8 characters, contains at least 1 special character, 1 number and 1 alphabet character
+      200:
+        description: update successfully (level can be deleted too)
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SuccessMessage'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+  delete:
+    summary: Logout API
+    tags:
+    - Sessions
+    responses:
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      200:
+        description: with valid token
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SuccessMessage'
+            example:
+              message: You have been logged out

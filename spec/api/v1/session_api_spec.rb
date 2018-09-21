@@ -24,29 +24,20 @@ RSpec.describe "Sessions" do
       }
 
       response "200", "Login success with valid email/password" do
-        examples "application/json": {
-          token: "Your token",
-          expired_at: "2018-08-31T14:33:00.048+07:00"
-        }
-
         let(:params) { FactoryBot.attributes_for :login_request }
+
         before do
           employee.update_attributes email: params[:email], password: params[:password]
         end
+
         run_test! do |response|
           expect_http_status :ok
         end
       end
 
       response "400", "Login with invalid format of email" do
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: "#{I18n.t("grape.errors.attributes.email")} #{I18n.t("grape.errors.messages.employee.email.regexp")}"
-          }
-        }
-
         let(:params) { FactoryBot.attributes_for(:login_request, email: Faker::Internet.email, password: "123456789") }
+
         before do
           employee.update_attributes email: params[:email], password: params[:password]
         end
@@ -64,13 +55,6 @@ RSpec.describe "Sessions" do
       end
 
       response "400", "Login with invalid password" do
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.wrong_email_password,
-            message: I18n.t("api_error.wrong_email_password")
-          }
-        }
-
         let(:params) { FactoryBot.attributes_for(:login_request, password: "Aa@123456777") }
 
         run_test! do |response|
@@ -85,10 +69,8 @@ RSpec.describe "Sessions" do
       parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
 
       response "200", "with valid token" do
-        examples "application/json" => {
-          "Emres-Authorization": "Bearer your_token"
-        }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
         run_test! do |response|
           expected = { message: I18n.t("log_out") }
           expect(response.body).to eq expected.to_json
@@ -97,6 +79,7 @@ RSpec.describe "Sessions" do
 
       response "401", "with invalid token" do
         let("Emres-Authorization") { "" }
+
         run_test! do |response|
           expect_http_status :unauthorized
         end
@@ -124,12 +107,7 @@ RSpec.describe "Sessions" do
             new_password: "Aa123456798"
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: "#{I18n.t("grape.errors.attributes.new_password")} #{I18n.t("grape.errors.messages.employee.password.regexp")}"
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -149,12 +127,7 @@ RSpec.describe "Sessions" do
             new_password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -174,12 +147,7 @@ RSpec.describe "Sessions" do
             new_password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.wrong_current_password")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -199,9 +167,7 @@ RSpec.describe "Sessions" do
             new_password: "Aa@123456798"
           }
         }
-        examples "application/json" => {
-          message: I18n.t("success")
-        }
+
         run_test! do |response|
           expected = { message: I18n.t("success") }
           expect(response.body).to eq expected.to_json

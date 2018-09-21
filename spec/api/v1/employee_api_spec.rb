@@ -62,13 +62,6 @@ describe "Employee API" do
         let(:end_time) { 2.days.ago }
         let(:total_effort_lt) { 25 }
 
-
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "input_time")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -84,20 +77,6 @@ describe "Employee API" do
         let(:start_time) { 2.days.ago }
         let(:end_time) { 2.days.from_now }
 
-        examples "application/json" =>
-          [
-            {
-              "employee_name": "Queenie Harris IV",
-              "employee_id": 2,
-              "total_efforts": [
-                {
-                  "start_time": "2018-08-28",
-                  "end_time": "2018-08-30",
-                  "value": 25
-                }
-              ]
-            }
-          ]
         run_test! do |response|
           expected = Entities::EmployeeEffort.represent(Employee.with_total_efforts_in_period(start_time, end_time))
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
@@ -108,9 +87,6 @@ describe "Employee API" do
         let(:start_time) { 15.days.ago }
         let(:end_time) { 10.days.ago }
         let(:total_effort_lt) { 50 }
-
-        examples "application/json" =>
-          []
 
         run_test! do |response|
           expected = []
@@ -124,19 +100,6 @@ describe "Employee API" do
         let(:end_time) { 2.days.from_now }
         let(:total_effort_lt) { 50 }
 
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
         run_test! do |response|
           expected = Entities::Employee.represent(Employee.all)
           expect(response_body).to match_array JSON.parse(expected.to_json)
@@ -149,20 +112,6 @@ describe "Employee API" do
         let(:end_time) { 2.days.from_now }
         let(:total_effort_lt) { 50 }
 
-        examples "application/json" =>
-          [
-            {
-              "employee_name": "Queenie Harris IV",
-              "employee_id": 2,
-              "total_efforts": [
-                {
-                  "start_time": "2018-08-28",
-                  "end_time": "2018-08-30",
-                  "value": 25
-                }
-              ]
-            }
-          ]
         run_test! do |response|
           expected = Entities::EmployeeEffort.represent(Employee.with_total_efforts_in_period(start_time, end_time))
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
@@ -178,20 +127,6 @@ describe "Employee API" do
         let(:end_time) { 2.days.from_now }
         let(:total_effort_lt) { 50 }
 
-        examples "application/json" =>
-          [
-            {
-              "employee_name": "Queenie Harris IV",
-              "employee_id": 2,
-              "total_efforts": [
-                {
-                  "start_time": "2018-08-28",
-                  "end_time": "2018-08-30",
-                  "value": 25
-                }
-              ]
-            }
-          ]
         run_test! do |response|
           expected = Entities::EmployeeEffort.represent(Employee.where(id: employee.id).with_total_efforts_in_period(start_time, end_time))
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
@@ -206,19 +141,6 @@ describe "Employee API" do
         let("level_ids[]") { [level.id, level2.id] }
         let(:project_id) { project.id }
 
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
         run_test! do |response|
           expected = [Entities::Employee.represent(employee)]
           expect(response.body).to eq expected.to_json
@@ -231,19 +153,6 @@ describe "Employee API" do
         let(:skill_id) { skill.id }
         let("level_ids[]") { [level.id, level2.id] }
 
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
         run_test! do |response|
           expected = Entities::Employee.represent(Employee.all)
           expect(response_body).to match_array JSON.parse(expected.to_json)
@@ -254,19 +163,6 @@ describe "Employee API" do
         let(:query) { employee.name }
         let(:skill_id) { skill.id }
 
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
         run_test! do |response|
           expected = [Entities::Employee.represent(employee)]
           expect(response.body).to eq expected.to_json
@@ -276,19 +172,6 @@ describe "Employee API" do
       response "200", "return employees with 1 param" do
         let(:query) { employee.name }
 
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
         run_test! do |response|
           expected = [Entities::Employee.represent(employee)]
           expect(response.body).to eq expected.to_json
@@ -303,19 +186,7 @@ describe "Employee API" do
         let!(:employee1) { FactoryBot.create :employee, organization: section }
         let!(:employee2) { FactoryBot.create :employee, organization: section2 }
         let!(:employee3) { FactoryBot.create :employee, organization: clan1 }
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
+
         run_test! do |response|
           expected = Entities::Employee.represent [admin, manager, employee, employee2]
           expect(response_body).to match_array JSON.parse(expected.to_json)
@@ -324,19 +195,7 @@ describe "Employee API" do
 
       response "200", "return employees with params ids" do
         let("ids[]") { [employee.id, manager.id] }
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
+
         run_test! do |response|
           expected = Entities::Employee.represent [employee, manager]
           expect(response_body).to match_array JSON.parse(expected.to_json)
@@ -345,19 +204,7 @@ describe "Employee API" do
 
       response "200", "return employees with params organization_id" do
         let(:organization_id) { division.id }
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
+
         run_test! do |response|
           expected = [
             Entities::Employee.represent(manager)
@@ -368,19 +215,7 @@ describe "Employee API" do
 
       response "200", "return employees with params project_id" do
         let(:project_id) { project.id }
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
+
         run_test! do |response|
           expected = [Entities::Employee.represent(employee)]
           expect(response.body).to eq expected.to_json
@@ -393,8 +228,7 @@ describe "Employee API" do
         let("level_ids[]") { [0] }
         let("ids[]") { [0] }
         let(:project_id) { 0 }
-        examples "application/json" =>
-         []
+
         run_test! do |response|
           expected = []
           expect(response.body).to eq expected.to_json
@@ -402,29 +236,7 @@ describe "Employee API" do
       end
 
       response "200", "return employees without any params" do
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            },
-            {
-              id: 2,
-              organization_id: 1,
-              name: "Eldora Fay",
-              employee_code: "B1210001",
-              email: "eldora.fay@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0987654321",
-              avatar: "#"
-            }
-          ]
+
         run_test! do |response|
           expected = Entities::Employee.represent(Employee.all)
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
@@ -438,12 +250,6 @@ describe "Employee API" do
         let(:skill_id) { skill.id }
         let("level_ids[]") { [level.id, level2.id] }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -457,12 +263,7 @@ describe "Employee API" do
 
       response "404", "return error when pass organization not existed to params organization_id " do
         let(:organization_id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
-          }
-        }
+
         run_test! do |response|
           expected = {
             error: {
@@ -476,41 +277,12 @@ describe "Employee API" do
 
       response "404", "return error when pass organization not existed to params organization_not_in " do
         let(:organization_not_in) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
-          }
-        }
+
         run_test! do |response|
           expected = {
             error: {
               code: Settings.error_formatter.http_code.record_not_found,
               message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "unauthorized" do
-        let("Emres-Authorization") { "" }
-        let(:query) { employee.name }
-        let(:organization_id) { employee.organization_id }
-        let(:skill_id) { skill.id }
-        let("level_ids[]") { [level.id, level2.id] }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -543,12 +315,7 @@ describe "Employee API" do
             password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -571,16 +338,7 @@ describe "Employee API" do
             password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          id: 1,
-          organization_id: 1,
-          name: "Employee",
-          employee_code: "B120000",
-          email: "employee@framgia.com",
-          birthday: "1/1/2018",
-          phone: "0123456789",
-          avatar: "#"
-        }
+
         run_test! do
           expected = Entities::Employee.represent Employee.last
           expect(response.body).to eq expected.to_json
@@ -598,16 +356,7 @@ describe "Employee API" do
             password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          id: 1,
-          organization_id: 1,
-          name: "Employee",
-          employee_code: "B120000",
-          email: "employee@framgia.com",
-          birthday: "1/1/2018",
-          phone: "0123456789",
-          avatar: "#"
-        }
+
         run_test! do
           expected = Entities::Employee.represent Employee.last
           expect(response.body).to eq expected.to_json
@@ -623,12 +372,7 @@ describe "Employee API" do
             password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: I18n.t("grape.errors.attributes.email"))
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -651,12 +395,7 @@ describe "Employee API" do
             password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_params", params: "Email")
-          }
-        }
+
         before do
           group.update_attributes(manager_id: manager.id)
         end
@@ -682,12 +421,7 @@ describe "Employee API" do
             password: "Aa@123456"
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.taken_params", params: "Email")
-          }
-        }
+
         before do
           group.update_attributes(manager_id: manager.id)
         end
@@ -716,16 +450,7 @@ describe "Employee API" do
       response "200", "return one employee" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { employee.id }
-        examples "application/json" => {
-          id: 1,
-          organization_id: 1,
-          name: "Employee",
-          employee_code: "B120000",
-          email: "employee@framgia.com",
-          birthday: "1/1/2018",
-          phone: "0123456789",
-          avatar: "#"
-        }
+
         run_test! do
           expected = Entities::Employee.represent employee,
             only: [:id, :organization_id, :name, :employee_code, :email, :birthday, :phone, :avatar]
@@ -735,12 +460,7 @@ describe "Employee API" do
 
       response "404", "invalid id" do
         let(:id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -762,12 +482,7 @@ describe "Employee API" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         let(:id) { employee.id }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -784,9 +499,7 @@ describe "Employee API" do
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
 
         let(:id) { employee2.id }
-        examples "application/json" => {
-          message: "Delete successfully"
-        }
+
         run_test! do
           expected = {
             message: I18n.t("delete_success")
@@ -799,9 +512,7 @@ describe "Employee API" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
         let(:id) { employee2.id }
-        examples "application/json" => {
-          message: "Delete successfully"
-        }
+
         run_test! do
           expected = {
             message: I18n.t("delete_success")
@@ -829,12 +540,7 @@ describe "Employee API" do
 
       response "404", "invalid employee's id" do
         let(:id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -849,12 +555,6 @@ describe "Employee API" do
       response "401", "unauthenticated" do
         let("Emres-Authorization") {}
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -873,12 +573,6 @@ describe "Employee API" do
         let(:start_time) { 5.days.from_now }
         let(:end_time) { 10.days.from_now }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -892,12 +586,7 @@ describe "Employee API" do
 
       response "400", "params start_time (or end_time) is empty" do
         let(:start_time) {}
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "start_time")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -911,12 +600,7 @@ describe "Employee API" do
 
       response "400", "params start_time (or end_time) is invalid" do
         let(:start_time) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.invalid", params: "start_time")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -932,7 +616,6 @@ describe "Employee API" do
         let(:start_time) { 20.days.from_now }
         let(:end_time) { 21.days.from_now }
 
-        examples "application/json" => []
         run_test! do
           expected = []
           expect(response.body).to eq expected.to_json
@@ -943,7 +626,6 @@ describe "Employee API" do
         let(:start_time) { 20.days.from_now }
         let(:end_time) { Date.current }
 
-        examples "application/json" => []
         run_test! do
           expected = []
           expect(response.body).to eq expected.to_json
@@ -954,18 +636,6 @@ describe "Employee API" do
         let(:start_time) { 5.days.from_now }
         let(:end_time) { 10.days.from_now }
 
-        examples "application/json" => [
-          {
-            project_name: "Emres",
-            effort_value: 50,
-            skill: "Ruby"
-          },
-          {
-            project_name: "AABBCC",
-            effort_value: 70,
-            skill: "PHP"
-          }
-        ]
         run_test! do
           expected = Entities::EffortDetailWithProject.represent([effort, effort2])
           expect(response.body).to eq expected.to_json
@@ -987,39 +657,6 @@ describe "Employee API" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { employee.id }
 
-        examples "application/json" =>
-          {
-            "id": 2,
-            "name": "Zelma Dibbert",
-            "skills": [
-                {
-                    "id": 2,
-                    "name": "Java",
-                    "levels": [
-                        {
-                            "id": 6,
-                            "name": "Senior",
-                            "rank": 3,
-                            "skill_id": 2,
-                            "logo": "/uploads/avatar.png"
-                        }
-                    ]
-                },
-                {
-                    "id": 1,
-                    "name": "Ruby",
-                    "levels": [
-                        {
-                            "id": 2,
-                            "name": "Middle",
-                            "rank": 2,
-                            "skill_id": 1,
-                            "logo": "/uploads/avatar.png"
-                        }
-                    ]
-                }
-            ]
-        }
         run_test! do
           expected = Entities::EmployeeSkill.represent(employee, employee_id: employee.id)
           expect(response.body).to eq expected.to_json
@@ -1028,12 +665,7 @@ describe "Employee API" do
 
       response "404", "invalid id" do
         let(:id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
-          }
-        }
+
         run_test! do
           expected = {
             error: {

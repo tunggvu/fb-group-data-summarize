@@ -15,16 +15,6 @@ describe "Profile API" do
       consumes "application/json"
 
       response "200", "Return profile of current user" do
-        examples "application/json" => {
-          id: 1,
-          organization_id: 1,
-          avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-          name: "occaecat",
-          employee_code: "D412437",
-          email: "v8uGTMi@fAXlhkXWMQNFdsEQ.qe",
-          phone: "+839948435",
-          birthday: "2621-07-19"
-        }
         run_test! do
           expected = Entities::Employee.represent current_user
           expect(response.body).to eq expected.to_json
@@ -32,12 +22,6 @@ describe "Profile API" do
       end
 
       response "401", "Unauthenticated user" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         let("Emres-Authorization") { "" }
         run_test! do
           expected = {
@@ -65,16 +49,6 @@ describe "Profile API" do
       }
 
       response "200", "Updated profile" do
-        examples "application/json" => {
-          id: -25217952,
-          organization_id: -18753403,
-          name: "fugiat consectetur nulla",
-          employee_code: "V612453",
-          email: "Eff4Io5b-9@ILYSqeFBanInhDEINmNKeyzW.xy",
-          birthday: "2436-05-01",
-          phone: "43722327",
-          avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
-        }
         let(:profile) {
           {
             phone: "0123456789",
@@ -88,12 +62,6 @@ describe "Profile API" do
       end
 
       response "401", "Unauthenticated user" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         let("Emres-Authorization") { "" }
         let(:profile) {
           {
@@ -113,12 +81,6 @@ describe "Profile API" do
       end
 
       response "400", "phone is wrong format" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.invalid", params: "phone")
-          }
-        }
         let(:profile) {
           {
             phone: "aaa123456"

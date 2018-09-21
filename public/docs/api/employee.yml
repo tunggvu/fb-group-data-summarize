@@ -1,0 +1,461 @@
+/employees:
+  get:
+    summary: All employees
+    tags:
+    - Employees
+    parameters:
+      - name: query
+        in: query
+        description: Filter employee with name or employee code
+        schema:
+          type: string
+
+      - name: organization_id
+        in: query
+        description: Filter employees in organization
+        schema:
+          type: integer
+
+      - name: skill_id
+        in: query
+        description: Filter employees in skill
+        schema:
+          type: integer
+
+      - name: organization_not_in
+        in: query
+        description: Filter employees not in organization
+        schema:
+          type: integer
+
+      - name: level_ids[]
+        in: query
+        description: Filter employees with multiple levels
+        schema:
+          collectionFormat: multi
+          type: array
+          items:
+            type: integer
+
+      - name: ids[]
+        in: query
+        description: Filter employees with ids
+        schema:
+          collectionFormat: multi
+          type: array
+          items:
+            type: integer
+
+      - name: project_id
+        in: query
+        description: Filter employees with project id
+        schema:
+          type: integer
+
+      - name: total_effort_lt
+        in: query
+        description: Filter employees with total effort
+        schema:
+          type: integer
+
+      - name: start_time
+        in: query
+        description: Filter employees with start time
+        schema:
+          type: date
+
+      - name: end_time
+        in: query
+        description: Filter employees with end time
+        schema:
+          type: date
+    responses:
+      200:
+        description: Return all employees
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Employee'
+            examples:
+              all:
+                summary: without any params
+                value:
+                  - id: 1
+                    organization_id: 103
+                    name: Etha Ebert
+                    employee_code: B1210464
+                    email: etha.ebert@framgia.com
+                    birthday:
+                    phone: 0987654321
+                    avatar: "/uploads/avatar.png"
+              all_params:
+                summary: all params
+                value:
+                  - employee_name: Queenie Harris IV
+                    employee_id: 2
+                    total_efforts:
+                      - start_time: 2018-08-28
+                        end_time: 2018-08-30
+                        value: 25
+              invalid_time:
+                summary: invalid start/end time, total_effort_lt
+                value: []
+      400:
+        description: Invalid params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              end_time:
+                summary: empty end_time
+                value:
+                  error:
+                    code: 400
+                    message: input_time empty
+              start_time:
+                summary: empty start_time
+                value:
+                  error:
+                    code: 400
+                    message: input_time empty
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Cannot find id model
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              invalid_organization:
+                value:
+                  error:
+                    code: 404
+                    message: Couldn't find Organization with 'id'= 0
+  post:
+    summary: Create employee
+    tags:
+    - Employees
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Employee name
+              employee_code:
+                type: string
+                description: Employee code
+              email:
+                type: string
+                description: Employee mail
+              organization_id:
+                type: integer
+                description: Organization ID
+              password:
+                type: string
+                description: Employee password
+            required:
+              - name
+              - employee_code
+              - email
+          example:
+            name: New employee
+            employee_code: B123456
+            email: new_employee@framgia.com
+            organization_id: 1
+            password: 123456
+
+    responses:
+      201:
+        description: Created Successful
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Employee'
+      400:
+        description: Invalid params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 400
+                message: email missing params
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      422:
+        description: Invalid attribute
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              invalid_email:
+                value:
+                  error:
+                    code: 422
+                    message: "Validation failed: Email is invalid"
+              email_taken:
+                value:
+                  error:
+                    code: 422
+                    message: "Validation failed: Email has already been taken"
+/employees/{id}:
+  parameters:
+  - name: id
+    in: path
+    schema:
+      type: integer
+    description: Employee ID
+    required: true
+
+  get:
+    summary: Get information of specific employee
+    tags:
+    - Employees
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Return specific employee
+        content:
+          application/json:
+            schema:
+              $ref: "../schema.yml#/Employee"
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Employee not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              employee:
+                value:
+                  error:
+                    code: 404
+                    message: Couldn't find Employee with 'id'=0
+  delete:
+    summary: Delete specific employee
+    tags:
+    - Employees
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Delete Successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SuccessMessage'
+            examples:
+              admin:
+                value:
+                  message: Delete successfully
+              manager:
+                summary: manager of PO
+                value:
+                  message: Delete successfully
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+
+/employees/{id}/efforts:
+  parameters:
+  - name: id
+    in: path
+    schema:
+      type: integer
+    description: Employee ID
+    required: true
+  get:
+    summary: Detail efforts by employee
+    tags:
+    - Employees
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Return detail effort by employee
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  project_name:
+                    type: string
+                    description: Name of project
+                  effort_value:
+                    type: integer
+                    description: Effort value of employee
+                  skill:
+                    type: string
+                    description: Skill of employee
+            examples:
+              default:
+                value:
+                  - project_name: AABBCC,
+                    effort_value: 70,
+                    skill: PHP
+                  - project_name: Emres,
+                    effort_value: 50,
+                    skill: Ruby
+              invalid_time:
+                summary: end time before start time
+                value: []
+              not_math_apram:
+                summary: record not math param
+                value: []
+      400:
+        description: Param Invalid
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              empty_start_time:
+                value:
+                  error:
+                    code: 404
+                    message: start_time is empty
+              empty_end_time:
+                value:
+                  error:
+                    code: 404
+                    message: end_time is empty
+              invalid_start_time:
+                value:
+                  error:
+                    code: 404
+                    message: start_time is invalid
+              invalid_end_time:
+                value:
+                  error:
+                    code: 404
+                    message: end_time is invalid
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              invalid_token:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+              user_other_project:
+                summary: user in other project
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+      404:
+        description: Employee not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              employee:
+                value:
+                  error:
+                    code: 404
+                    message: Couldn't find Employee with 'id'=0
+
+/employees/{id}/skills:
+  parameters:
+  - name: id
+    in: path
+    schema:
+      type: integer
+    description: Employee ID
+    required: true
+  get:
+    summary: Skills of employee
+    tags:
+    - Employees
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Return skills by employee
+        content:
+          application/json:
+            example:
+              id: 2
+              name: Zelma Dibbert
+              skills:
+              - id: 2
+                name: Java
+                levels:
+                - id: 6
+                  name: Senior
+                  rank: 3
+                  skill_id: 2
+                  logo: "/uploads/avatar.png"
+              - id: 1
+                name: Ruby
+                levels:
+                - id: 2
+                  name: Middle
+                  rank: 2
+                  skill_id: 1
+                  logo: "/uploads/avatar.png"
+
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              invalid_token:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+              user_other_project:
+                summary: user in other project
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+      404:
+        description: Employee not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              employee:
+                value:
+                  error:
+                    code: 404
+                    message: Couldn't find Employee with 'id'=0

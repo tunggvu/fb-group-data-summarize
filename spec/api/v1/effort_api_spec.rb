@@ -43,13 +43,6 @@ describe "Effort API" do
       response "404", "cannot find project id" do
         let(:project_id) { 0 }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Project.name, id: 0)
-          }
-        }
-
         run_test! do |response|
           expected = {
             error: {
@@ -63,13 +56,6 @@ describe "Effort API" do
 
       response "404", "cannot find sprint id" do
         let(:sprint_id) { 0 }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Sprint.name, id: 0)
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -85,12 +71,6 @@ describe "Effort API" do
       response "401", "user hasn't logged in cannot view effort" do
         let("Emres-Authorization") {}
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -104,41 +84,6 @@ describe "Effort API" do
       response "200", "members in project can view effort" do
         let("Emres-Authorization") { "Bearer #{member_token.token}" }
 
-        examples "application/json" => [
-          {
-            id: 10284,
-            effort: 75,
-            name: "Lexie Yost V",
-            skill: {
-              id: 1,
-              name: "Ruby",
-              logo: "#",
-              level: {
-                id: 1,
-                name: "Junior",
-                rank: 1,
-                logo: "#"
-              }
-            }
-          },
-          {
-            id: 10521,
-            effort: 50,
-            name: "Administator",
-            skill: {
-              id: 1,
-              name: "Ruby",
-              logo: "#",
-              level: {
-                id: 3,
-                name: "Senior",
-                rank: 3,
-                logo: "#"
-              }
-            }
-          }
-        ]
-
         run_test! do |response|
           expected = [Entities::Effort.represent(effort),
             Entities::Effort.represent(another_effort)]
@@ -149,12 +94,6 @@ describe "Effort API" do
       response "401", "members not in project cannot view effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -169,35 +108,6 @@ describe "Effort API" do
       response "200", "PO can view effort" do
         let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
 
-        examples "application/json" => [
-          {
-            id: 7318,
-            effort: 60,
-            name: "Jimmy Graham",
-            skill_level: {
-              level_id: 2,
-              level_name: "Middle",
-              logo: "#",
-              rank: 2,
-              skill_id: 1,
-              skill_name: "Ruby"
-            }
-          },
-          {
-            id: 10284,
-            effort: 75,
-            name: "Lexie Yost V",
-            skill_level: {
-              level_id: 1,
-              level_name: "Junior",
-              logo: "#",
-              rank: 1,
-              skill_id: 1,
-              skill_name: "Ruby"
-            }
-          }
-        ]
-
         run_test! do |response|
           expected = [Entities::Effort.represent(effort),
             Entities::Effort.represent(another_effort)]
@@ -207,41 +117,6 @@ describe "Effort API" do
 
       response "200", "Admin can view effort" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-
-        examples "application/json" => [
-          {
-            id: 10284,
-            effort: 75,
-            name: "Lexie Yost V",
-            skill: {
-              id: 1,
-              name: "Ruby",
-              logo: "#",
-              level: {
-                id: 1,
-                name: "Junior",
-                rank: 1,
-                logo: "#"
-              }
-            }
-          },
-          {
-            id: 10521,
-            effort: 50,
-            name: "Administator",
-            skill: {
-              id: 1,
-              name: "Ruby",
-              logo: "#",
-              level: {
-                id: 3,
-                name: "Senior",
-                rank: 3,
-                logo: "#"
-              }
-            }
-          }
-        ]
 
         run_test! do |response|
           expected = [Entities::Effort.represent(effort),
@@ -285,29 +160,6 @@ describe "Effort API" do
       end
 
       response "201", "PO can create effort" do
-        examples "application/json": [
-          {
-            id: 10539,
-            effort: 70,
-            employee_level: {
-              name: "Karl White",
-              id: 227,
-              skill: {
-                id: 1,
-                name: "Ruby",
-                logo: "/uploads/avatar.png",
-                level: {
-                  id: 3,
-                  name: "Senior",
-                  rank: 3,
-                  logo: {
-                    url: "/uploads/level/logo/3/%23"
-                  }
-                }
-              }
-            }
-          }
-        ]
 
         run_test! do |response|
           expected = [Entities::Effort.represent(Effort.last)]
@@ -318,30 +170,6 @@ describe "Effort API" do
       response "201", "manager of PO can create effort" do
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
-        examples "application/json": [
-          {
-            id: 10539,
-            effort: 70,
-            employee_level: {
-              name: "Karl White",
-              id: 227,
-              skill: {
-                id: 1,
-                name: "Ruby",
-                logo: "/uploads/avatar.png",
-                level: {
-                  id: 3,
-                  name: "Senior",
-                  rank: 3,
-                  logo: {
-                    url: "/uploads/level/logo/3/%23"
-                  }
-                }
-              }
-            }
-          }
-        ]
-
         run_test! do |response|
           expected = [Entities::Effort.represent(Effort.last)]
           expect(response.body).to eq expected.to_json
@@ -350,8 +178,6 @@ describe "Effort API" do
 
       response "201", "empty efforts array" do
         before { params[:efforts] = [] }
-
-        examples "application/json": []
 
         run_test! do |response|
           expected = []
@@ -362,30 +188,6 @@ describe "Effort API" do
       response "201", "Admin can create effort" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
-        examples "application/json": [
-          {
-            id: 10539,
-            effort: 70,
-            employee_level: {
-              name: "Karl White",
-              id: 227,
-              skill: {
-                id: 1,
-                name: "Ruby",
-                logo: "/uploads/avatar.png",
-                level: {
-                  id: 3,
-                  name: "Senior",
-                  rank: 3,
-                  logo: {
-                    url: "/uploads/level/logo/3/%23"
-                  }
-                }
-              }
-            }
-          }
-        ]
-
         run_test! do |response|
           expected = [Entities::Effort.represent(Effort.last)]
           expect(response.body).to eq expected.to_json
@@ -395,8 +197,6 @@ describe "Effort API" do
       response "201", "skip creating effort which has invalid emp_id/level_id" do
         before { params[:efforts][0][:employee_id] = 0 }
 
-        examples "application/json": []
-
         run_test! do |response|
           expected = []
           expect(response.body).to eq expected.to_json
@@ -405,13 +205,6 @@ describe "Effort API" do
 
       response "401", "user hasn't logged in cannot create effort" do
         let("Emres-Authorization") { "" }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -427,13 +220,6 @@ describe "Effort API" do
       response "401", "employee cannot create effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
-
         run_test! do |response|
           expected = {
             error: {
@@ -447,13 +233,6 @@ describe "Effort API" do
 
       response "401", "manager in other division cannot create effort" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
-
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -469,13 +248,6 @@ describe "Effort API" do
       response "400", "missing params" do
         before { params.delete(:efforts) }
 
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: :efforts)
-          }
-        }
-
         run_test! do
           expected = {
             error: {
@@ -489,13 +261,6 @@ describe "Effort API" do
 
       response "400", "one of efforts missing params" do
         before { params[:efforts][0].delete(:employee_id) }
-
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "efforts[0][employee_id]")
-          }
-        }
 
         run_test! do
           expected = {
@@ -511,13 +276,6 @@ describe "Effort API" do
       response "422", "effort is greater than 100" do
         before { params[:efforts][0][:effort] = 101 }
 
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.effort_greater")
-          }
-        }
-
         run_test! do |response|
           expected = {
             error: {
@@ -531,13 +289,6 @@ describe "Effort API" do
 
       response "422", "effort is less than 0" do
         before { params[:efforts][0][:effort] = -1 }
-
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.effort_less_than_zero")
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -562,13 +313,6 @@ describe "Effort API" do
         end
 
         before { params[:efforts].push(duped_effort_params) }
-
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.effort_employee_must_be_unique_in_sprint")
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -612,12 +356,6 @@ describe "Effort API" do
           }
         }
 
-        examples "application/json" => {
-          id: 1,
-          employee_id: 1,
-          effort: 50,
-          level_id: 1
-        }
         run_test! do |response|
           expected = Entities::Effort.represent sprint.efforts
           expect(response.body).to eq expected.to_json
@@ -633,11 +371,6 @@ describe "Effort API" do
           }
         }
 
-        examples "application/json" => {
-          id: 1,
-          employee_level_id: 1,
-          effort: 50
-        }
         run_test! do |response|
           expected = Entities::Effort.represent sprint.efforts
           expect(response.body).to eq expected.to_json
@@ -652,11 +385,6 @@ describe "Effort API" do
           }
         }
 
-        examples "application/json" => {
-          id: 1,
-          employee_level_id: 1,
-          effort: 100
-        }
         run_test! do |response|
           expected = Entities::Effort.represent sprint.efforts
           expect(response.body).to eq expected.to_json
@@ -671,12 +399,6 @@ describe "Effort API" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "effort")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -691,12 +413,6 @@ describe "Effort API" do
       response "400", "missing params" do
         let(:params) { { } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "effort")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -716,12 +432,6 @@ describe "Effort API" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -740,12 +450,6 @@ describe "Effort API" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -766,9 +470,6 @@ describe "Effort API" do
       response "200", "Admin can delete an effort" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
-        examples "application/json" => {
-          message: I18n.t("delete_success")
-        }
         run_test! do |response|
           expected = {message: I18n.t("delete_success")}
           expect(response.body).to eq expected.to_json
@@ -777,9 +478,6 @@ describe "Effort API" do
       end
 
       response "200", "PO can delete an effort " do
-        examples "application/json" => {
-          message: I18n.t("delete_success")
-        }
         run_test! do |response|
           expected = {message: I18n.t("delete_success")}
           expect(response.body).to eq expected.to_json
@@ -790,9 +488,6 @@ describe "Effort API" do
       response "200", "manager of PO can delete effort" do
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
-        examples "application/json" => {
-          message: I18n.t("delete_success")
-        }
         run_test! do |response|
           expected = {message: I18n.t("delete_success")}
           expect(response.body).to eq expected.to_json
@@ -803,12 +498,6 @@ describe "Effort API" do
       response "401", "user hasn't logged in cannot delete effort" do
         let("Emres-Authorization") {}
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -823,12 +512,6 @@ describe "Effort API" do
       response "401", "employee cannot delete an effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -843,12 +526,6 @@ describe "Effort API" do
       response "401", "manager of other division cannot delete an effort" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -879,17 +556,7 @@ describe "Effort API" do
       let(:end_time) { 5.days.from_now }
 
       response "200", "return detail effort with correct params" do
-        examples "application/json" =>
-          [
-            {
-              employee_id: 1,
-              start_time: "1/1/2018",
-              end_time: "2/1/2018",
-              effort: 100,
-              sprint_id: 1,
-              employee_level_id: 1
-            }
-          ]
+
         run_test! do |response|
           expected = [Entities::EffortDetail.represent(another_effort)]
           expect(response.body).to eq expected.to_json
@@ -899,12 +566,6 @@ describe "Effort API" do
       response "400", "empty params" do
         let(:end_time) {}
 
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "end_time")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -919,12 +580,6 @@ describe "Effort API" do
       response "404", "invalid employee id" do
         let(:employee_id) { 0 }
 
-        examples "application/json": {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -939,12 +594,6 @@ describe "Effort API" do
       response "401", "unauthenticated" do
         let("Emres-Authorization") {}
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -959,12 +608,6 @@ describe "Effort API" do
       response "401", "user can't view effort of employee in other project" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {

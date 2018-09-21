@@ -1,0 +1,191 @@
+/devices:
+  get:
+    summary: All devices
+    tags:
+    - Devices
+    responses:
+      200:
+        description: Return all devices
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schema.yml#/Device'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+  post:
+    summary: Create device
+    tags:
+    - Devices
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            name:
+              type: string
+              description: Device name
+            serial_code:
+              type: string
+              description: Serial Code
+            os_version:
+              type: string
+              description: Os Version
+            device_type:
+              type: integer
+              description: Device Type
+            pic_id:
+              type: integer
+              description: Persion In Charge ID
+            project_id:
+              type: integer
+              description: Project ID
+          example:
+            name: Macbook Air 2018
+            serial_code: 22243423423
+            os_version: 1
+            device_type: OS X 10.9
+            pic_id: 1
+            project_id: 2
+    responses:
+      201:
+        description: Created Successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Device'
+      400:
+        description: Invalid params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              name missing:
+                value:
+                  error:
+                    code: 400
+                    message: name is missing
+              project must exist:
+                value:
+                  error:
+                    code: 400
+                    message: project_id is missing
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              no_authorization:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+              employee:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+              po_other_project:
+                summary: po of other project
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+      404:
+        description: Device not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Device with 'id'=0
+/devices/{id}:
+  parameters:
+  - name: ID
+    in: path
+    schema:
+      type: integer
+    required: true
+    description: Device ID
+  get:
+    summary: Show device's information
+    tags:
+    - Devices
+    responses:
+      200:
+        description: return device's information
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Device'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Device not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Device with 'id'=0
+  patch:
+    summary: Update device's information
+    tags:
+    - Devices
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            name:
+              type: string
+              description: Device name
+            os_version:
+              type: string
+              description: Os Version
+          example:
+            name: Macbook Air 2018
+            os_version: OS X 10.9
+    responses:
+      401:
+        description: "Unauthorized"
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Device not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Device with 'id'=0
+      200:
+        description: Update device successful
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Device'

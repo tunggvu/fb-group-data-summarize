@@ -38,12 +38,6 @@ describe "Level API" do
           rank: 100
         } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -61,12 +55,6 @@ describe "Level API" do
           rank: 100
         } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is empty"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -85,12 +73,6 @@ describe "Level API" do
         } }
         let("Emres-Authorization") { "" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthenticated,
-            message: "unauthorized"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -109,12 +91,6 @@ describe "Level API" do
           rank: 100
         } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -133,12 +109,6 @@ describe "Level API" do
           rank: 100
         } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Skill with 'id'=0"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -156,13 +126,6 @@ describe "Level API" do
           rank: 100
         } }
 
-        examples "application/json" => {
-          id: 1,
-          name: "Master",
-          rank: 100,
-          logo: "#",
-          skill_id: 1234
-        }
         run_test! do
           expected = Entities::Level.represent skill.levels.last
           expect(response.body).to eq expected.to_json
@@ -199,12 +162,6 @@ describe "Level API" do
           rank: 100
         } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is missing"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -222,12 +179,6 @@ describe "Level API" do
           rank: 100,
         } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: "name is empty"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -246,12 +197,6 @@ describe "Level API" do
           rank: 100
         } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -270,12 +215,6 @@ describe "Level API" do
         } }
         let("Emres-Authorization") { "" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthenticated,
-            message: "unauthorized"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -294,13 +233,6 @@ describe "Level API" do
           logo: "#"
         } }
 
-        examples "application/json" => {
-          id: 1,
-          name: "Master",
-          rank: 100,
-          logo: "#",
-          skill_id: 1234
-        }
         run_test! do
           expected = Entities::Level.represent level2.reload
           expect(response.body).to eq expected.to_json
@@ -316,12 +248,6 @@ describe "Level API" do
       response "401", "employee cannot delete level" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: "unauthorized"
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -334,10 +260,6 @@ describe "Level API" do
       end
 
       response "200", "deleted a level" do
-        examples "application/json" =>  {
-          message: "Delete successfully"
-        }
-
         run_test! do
           expected = { message: "Delete successfully" }
           expect(response.body).to eq expected.to_json

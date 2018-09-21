@@ -18,6 +18,9 @@ application.
 
 * SENDGRID_API_KEY: you can generate API key by create account in sendgrid: https://signup.sendgrid.com/,
   after that generate API key in https://app.sendgrid.com/settings/api_keys
+## Documentation
+* Read more at `public/docs`
+
 ## Build Docker Image
 
 #### Create data folder for postgres
@@ -48,7 +51,7 @@ directory and run command `docker build -t emres-front --rm .`
 ### Start EMRES
 To start `emres-server` and `emres-front`, run command `docker-compose up -d`
 
-Docker will start 4 instances of `emres-server`, 4 instances of `emres-front` 
+Docker will start 4 instances of `emres-server`, 4 instances of `emres-front`
 and an instance of `haproxy` to proxy those 8 instances. And the `haproxy`
 monitoring service is run on `.:8870`
 
@@ -63,7 +66,7 @@ monitoring service is run on `.:8870`
 #### Build production image
 `docker build -t emres-server-production -f Dockerfile_production .`
 
-#### Initialize database 
+#### Initialize database
 `docker-compose run --rm server-3 bundle exec rake db:create`
 
 `docker-compose run --rm server-3 bundle exec rake db:migrate`
@@ -83,4 +86,3 @@ irreversible. **BUT** the data for database will remain untouched.
 
 The database's data and configuration files are stored at `/data/emres-server/`,
 delete that directory will cause data loss for the database
-

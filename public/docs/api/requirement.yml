@@ -1,0 +1,237 @@
+/phases/{phase_id}/requirements:
+  parameters:
+  - name: phase_id
+    in: path
+    type: integer
+    description: Phase ID
+    required: true
+  get:
+    summary: All requirement in phases of project
+    tags:
+    - Requirements
+    consumes:
+    - application/json
+    responses:
+      404:
+        description: Phase not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Phase with 'id'=0
+      200:
+        description: return all requirement in phase
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schema.yml#/Requirement'
+      401:
+        description: employee isn't in project cannot get all requirements
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              employee not in project cannot get requirements:
+                value:
+                  error:
+                  code: 401
+                  message: unauthorized
+              unauthorize token:
+                value:
+                  error:
+                  code: 401
+                  message: unauthorized
+  post:
+    summary: Create new requirement
+    tags:
+    - Requirements
+    consumes:
+    - application/json
+    parameters:
+    - name: params
+      in: body
+      schema:
+        type: object
+        properties:
+          level_id:
+            type: integer
+            description: Level ID
+            example: 1
+          phase_id:
+            type: integer
+            description: Phase ID
+            example: 1
+          quantity:
+            type: integer
+            description: Quanity
+            quantity: 10
+        required:
+        - level_id
+        - phase_id
+        - quantity
+    responses:
+      401:
+        description: manager in other division cannot create requirement
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              employee cannot create requirement:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+              manager in other division cannot create requirement:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+      201:
+        description: Manager or PO can create requirement
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Requirement'
+      400:
+        description: empty params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 400
+                message: level_id is empty
+/phases/{phase_id}/requirements/{id}:
+  parameters:
+  - name: phase_id
+    in: path
+    type: integer
+    description: Phase ID
+    required: true
+  - name: id
+    in: path
+    type: integer
+    description: Requirement ID
+    required: true
+  get:
+    summary: specific requirement in phase
+    tags:
+    - Requirements
+    consumes:
+    - application/json
+    responses:
+      404:
+        description: requirement not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Requirement with 'id'=0
+      200:
+        description: return specific requirement in phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Requirement'
+      401:
+        description: employee isn't in project cannot get requirement
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+  patch:
+    summary: update requirement
+    tags:
+    - Requirements
+    consumes:
+    - application/json
+    parameters:
+    - name: params
+      in: body
+      schema:
+        type: object
+        properties:
+          level_id:
+            type: integer
+            description: Level ID
+          quantity:
+            type: integer
+            description: Quanity
+        required:
+        - phase_id
+        - level_id
+        - quantity
+    responses:
+      401:
+        description: cannot update requirement
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              manager in other division cannot update requirement:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+              employee cannot update requirement:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+      200:
+        description: PO can update requirement
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Requirement'
+      400:
+        description: missing params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 400
+                message: level_id is missing
+      422:
+        description: empty params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 422
+                message: 'Validation failed: Level must exist'
+  delete:
+    summary: delete requirement
+    tags:
+    - Requirements
+    consumes:
+    - application/json
+    responses:
+      401:
+        description: manager in other division cannot delete requirement
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      200:
+        description: PO can deleted a requirement
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'

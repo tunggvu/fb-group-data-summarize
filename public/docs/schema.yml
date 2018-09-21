@@ -1,0 +1,324 @@
+UnauthorizedError:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: unauthorized
+SuccessMessage:
+  type: object
+  properties:
+    message:
+      type: string
+      example: Delete successfully
+Error:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+Employee:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Employee ID
+      example: 1
+    organization_id:
+      type: integer
+      description: Organization ID of employee
+      example: 12
+    name:
+      type: string
+      description: Employee's name
+      example: Sang
+    employee_code:
+      type: string
+      description: Employee's code
+      example: B1210464
+    email:
+      type: string
+      description: Employee's email
+      example: etha.ebert@framgia.com
+    birthday:
+      type: date
+      description: Employee's birthday
+      example: 1996-11-02
+    phone:
+      type: string
+      description: Employee's number phone
+      example: 0987654321
+    avatar:
+      type: string
+      description: Path to avatar
+      example: "/uploads/avatar.png"
+Project:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Project ID
+      example: 1
+    name:
+      type: string
+      description: Project's name
+      example: Project 1
+    description:
+      type: string
+      description: Project's description
+      example: Some description
+    starts_on:
+      type: date
+      description: Start time of project
+      example: 2018-01-01
+    logo:
+      type: string
+      description: Path to logo
+      example: 2018-02-01
+    product_owner:
+      description: Project owner of project
+      allOf:
+        - $ref: '#/Employee'
+Device:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Device id
+      example: 1
+    name:
+      type: string
+      description: Device's name
+      example: Macbook Air 2020
+    serial_code:
+      description: Device's serial code
+      type: string
+      example: Some description
+    device_type:
+      type: integer
+      description: Type of device
+      example: laptop
+    pic:
+      description: Persion in charge
+      allOf:
+        - $ref: '#/Employee'
+    project:
+      description: Project ID
+      allOf:
+        - $ref: '#/Project'
+Effort:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Effort ID
+      example: 1
+    effort:
+      type: integer
+      description: Effort number
+      example: 100
+    employee_level:
+      allOf:
+        - $ref: '#/EmployeeLevel'
+EmployeeLevel:
+  type: object
+  properties:
+    name:
+      type: string
+      description: Employee's name
+      example: Nguyen Van Sang
+    id:
+      type: integer
+      description: Employee ID
+      example: 1
+    skill:
+      description: Skill of employee
+      allOf:
+        - $ref: '#/SkillLevel'
+SkillLevel:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Skill ID
+      example: 1
+    name:
+      type: string
+      description: Skill name
+      example: Ruby
+    logo:
+      type: string
+      description: Logo url
+      example: http://localhost:3000/uploads/avatar.png
+    level:
+      description: Level of skill
+      allOf:
+        - $ref: '#/Level'
+Level:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Level ID
+      example: 1
+    name:
+      type: string
+      description: Level name
+      example: Senior
+    rank:
+      type: integer
+      description: Rank number
+      example: 100
+    logo:
+      type: string
+      description: Logo url
+      example: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+Organization:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Organization ID
+      example: 1
+    name:
+      type: string
+      description: Organization name
+      example: Division 1
+    parent_id:
+      type: integer
+      description: Organization parent
+      example: 1
+    manager_id:
+      type: integer
+      description: Manager id
+      example: 3
+    level:
+      type: string
+      description: Level of organization
+      level: division
+    children:
+      allOf:
+        - $ref: '#/Organization'
+ProjectEffort:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Employee id
+      example: 1
+    name:
+      type: string
+      description: Employee name
+      example: Sang
+    skill:
+      description: Employee skill
+      allOf:
+        - $ref: '#/SkillLevel'
+SprintMember:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Sprint ID
+      example: 1
+    name:
+      type: string
+      description: Sprint name
+      example: Sprint 1
+    starts_on:
+      type: date
+      description: Start date of sprint
+      example: 2018-01-01
+    ends_on:
+      type: date
+      description: End date of sprint
+      example: 2018-02-01
+    members:
+      description: Efforts of sprint
+      allOf:
+        - $ref: '#/ProjectEffort'
+Sprint:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Sprint ID
+      example: 1
+    name:
+      type: string
+      description: Sprint name
+      example: Sprint 1
+    starts_on:
+      type: date
+      description: Start date of sprint
+      example: 2018-01-01
+    ends_on:
+      type: date
+      description: End date of sprint
+      example: 2018-02-01
+Session:
+  type: object
+  properties:
+    email:
+      type: string
+      description: email with format `@framgia.com`
+      example: nguyen.van.sang@framgia.com
+    password:
+      type: string
+      description: password
+      example: something
+    remember:
+      type: boolean
+      description: Remember Me
+      example: true
+Requirement:
+  type: object
+  properties:
+    level_id:
+      type: integer
+      description: Level id
+      example: 1
+    phase_id:
+      type: integer
+      description: Phase id
+      example: 1
+    skill_name:
+      type: string
+      description: Skill name
+      example: Ruby
+    skill_level:
+      type: string
+      description: Level of skill
+      example: Junior
+    quantity:
+      type: integer
+      description: Quantity needed
+      example: 10
+Phase:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Phase id
+      example: 1
+    name:
+      type: string
+      description: Phase name
+      example: Phase 1
+    starts_on:
+      type: date
+      description: Start date of phase
+      example: 2018-01-01
+    ends_on:
+      type: date
+      description: End date of phase
+      example: 2018-02-01

@@ -1,0 +1,64 @@
+/profile:
+  get:
+    summary: Get profile information
+    tags:
+    - Profiles
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Return profile of current user
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Employee'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+  patch:
+    summary: Update current user profile
+    tags:
+    - Profiles
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              phone:
+                type: string
+                description: updated phone number
+              avatar:
+                type: string
+                description: updated avatar
+          example:
+            phone: "123456789"
+            avatar: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+    responses:
+      200:
+        description: "Updated profile"
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Employee'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      400:
+        description: "Phone is wrong format"
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 400
+                message: phone is invalid

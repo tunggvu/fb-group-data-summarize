@@ -1,0 +1,197 @@
+/projects/{project_id}/phases:
+  parameters:
+  - name: project_id
+    in: path
+    type: integer
+    description: Project ID
+    required: true
+  get:
+    summary: All phases in project
+    tags:
+    - Phases
+    consumes:
+    - application/json
+    responses:
+      404:
+        description: project not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Project with 'id'=0
+      401:
+        description: employee not in project cannot view all phases
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      200:
+        description: return all phases in project
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schema.yml#/Phase'
+  post:
+    summary: Create new phase
+    tags:
+    - Phases
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Phase name
+              starts_on:
+                type: date
+                description: Date phase start
+              ends_on:
+                type: date
+                description: Date phase end
+          required:
+            name
+          example:
+            name: Phase 1
+            starts_on: 2018-01-01
+            ends_on: 2018-02-01
+    responses:
+      401:
+        description: manager in other division cannot create phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      201:
+        description: PO can create phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Phase'
+      400:
+        description: empty params ends_on
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 400
+                message: ends_on is empty
+/projects/{project_id}/phases/{id}:
+  parameters:
+  - name: project_id
+    in: path
+    type: integer
+    description: Project ID
+    required: true
+  - name: id
+    in: path
+    type: integer
+    description: Phase ID
+    required: true
+  get:
+    summary: specific phase in project
+    tags:
+    - Phases
+    consumes:
+    - application/json
+    responses:
+      404:
+        description: phase not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Phase with 'id'=0
+      200:
+        description: return specific phase in project
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Phase'
+      401:
+        description: employee isn't in project cannot view phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+  patch:
+    summary: update phase
+    tags:
+    - Phases
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Phase name
+              starts_on:
+                type: date
+                description: Date phase start
+              ends_on:
+                type: date
+                description: Date phase end
+          required: name
+          example:
+            name: Phase 1
+            starts_on: 2018-01-01
+            ends_on: 2018-02-01
+    responses:
+      401:
+        description: manager in other division cannot update phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      200:
+        description: PO can update phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Phase'
+      400:
+        description: empty params ends_on
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 400
+                message: ends_on is empty
+  delete:
+    summary: delete phase
+    tags:
+    - Phases
+    consumes:
+    - application/json
+    responses:
+      401:
+        description: manager in other division cannot delete phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      200:
+        description: deleted a phase
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SuccessMessage'

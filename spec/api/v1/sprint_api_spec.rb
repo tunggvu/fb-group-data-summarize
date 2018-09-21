@@ -41,12 +41,6 @@ describe "SprintAPI" do
       response "404", "project not found" do
         let(:project_id) { 0 }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Project.name, id: 0)
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -60,12 +54,7 @@ describe "SprintAPI" do
 
       response "404", "phase not found" do
         let(:phase_id) { 0 }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Phase.name, id: 0)
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -78,21 +67,6 @@ describe "SprintAPI" do
       end
 
       response "200", "return all sprint" do
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              name: "sprint 1",
-              starts_on: "2018-07-19",
-              ends_on: "2018-07-20"
-            },
-            {
-              id: 2,
-              name: "sprint 2",
-              starts_on: "2018-07-19",
-              ends_on: "2018-07-20"
-            }
-          ]
         run_test! do
           expected = Entities::Sprint.represent(phase.sprints)
           expect(response.body).to eq expected.to_json
@@ -100,12 +74,6 @@ describe "SprintAPI" do
       end
 
       response "401", "not login" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         let("Emres-Authorization") {}
         run_test! do
           expected = {
@@ -123,12 +91,6 @@ describe "SprintAPI" do
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.not_authorized_error,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -169,12 +131,6 @@ describe "SprintAPI" do
       }
 
       response "201", "PO can create sprint" do
-        examples "application/json" => {
-          id: 1,
-          name: "Sprint 1",
-          starts_on: "2018-07-25",
-          ends_on: "2018-08-04"
-        }
         run_test! do |response|
           expected = Entities::SprintMember.represent Sprint.last
           expect(response.body).to eq expected.to_json
@@ -191,30 +147,6 @@ describe "SprintAPI" do
           ]
         }
 
-        examples "application/json" => {
-          id: 1,
-          name: "Sprint 1",
-          starts_on: "2018-07-25",
-          ends_on: "2018-08-04",
-          members: [
-            {
-                effort: 100,
-                name: "Administator",
-                id: 1,
-                skill: {
-                    id: 1,
-                    name: "Ruby",
-                    logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                    level: {
-                        id: 3,
-                        name: "Senior",
-                        rank: 3,
-                        logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
-                    }
-                }
-            }
-          ]
-        }
         run_test! do |response|
           expected = Entities::SprintMember.represent Sprint.last
           expect(response.body).to eq expected.to_json
@@ -225,12 +157,6 @@ describe "SprintAPI" do
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         before { section.update_attributes! manager_id: section_manager.id }
 
-        examples "application/json" => {
-          id: 1,
-          name: "Sprint 1",
-          starts_on: "2018-07-25",
-          ends_on: "2018-08-04"
-        }
         run_test! do |response|
           expected = Entities::SprintMember.represent Sprint.last
           expect(response.body).to eq expected.to_json
@@ -246,12 +172,6 @@ describe "SprintAPI" do
           ]
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "efforts[0][employee_id]")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -271,12 +191,6 @@ describe "SprintAPI" do
           ]
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "efforts[0][level_id]")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -298,13 +212,6 @@ describe "SprintAPI" do
           ]
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: "Validation failed: Efforts effort must be less than or equal to 100"
-          }
-        }
-
         run_test! do |response|
           expected = {
             error: {
@@ -321,12 +228,6 @@ describe "SprintAPI" do
 
         before { section.update_attributes! manager_id: section_manager.id }
 
-        examples "application/json" => {
-          id: 1,
-          name: "Sprint 1",
-          starts_on: "2018-07-25",
-          ends_on: "2018-08-04"
-        }
         run_test! do |response|
           expected = Entities::SprintMember.represent Sprint.last
           expect(response.body).to eq expected.to_json
@@ -335,11 +236,6 @@ describe "SprintAPI" do
 
       response "401", "employee cannot create sprint" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-
-        examples "application/json" => {
-          error_code: Settings.error_formatter.http_code.unauthorized,
-          message: I18n.t("api_error.unauthorized")
-        }
 
         run_test! do |response|
           expected = {
@@ -358,13 +254,6 @@ describe "SprintAPI" do
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
-
         run_test! do |response|
           expected = {
             error: {
@@ -379,12 +268,6 @@ describe "SprintAPI" do
       response "400", "empty params" do
         before { params[:name] = "" }
 
-        examples "application/json" => {
-          error: {
-            error_code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "name")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -399,12 +282,6 @@ describe "SprintAPI" do
       response "400", "missing params" do
         before { params.delete(:name) }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "name")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -425,12 +302,6 @@ describe "SprintAPI" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_starts_on_ends_on")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -448,12 +319,6 @@ describe "SprintAPI" do
           params[:ends_on] = 12.days.from_now
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_starts_on")
-          }
-        }
         run_test! do |response|
           expected = {
             error: {
@@ -484,12 +349,6 @@ describe "SprintAPI" do
       response "404", "sprint not found" do
         let(:id) { 0 }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: "Couldn't find Sprint with 'id'=0"
-          }
-        }
         run_test! do
           expect(response.body).to include("Couldn't find Sprint with 'id'=0")
         end
@@ -497,12 +356,7 @@ describe "SprintAPI" do
 
       response "200", "return specific sprint" do
         let(:id) { sprint1.id }
-        examples "application/json" => {
-          id: 1,
-          name: "sprint 1",
-          starts_on: "2018-07-19",
-          ends_on: "2018-07-20"
-        }
+
         run_test! do
           expected = Entities::Sprint.represent sprint1, only: [:id, :name, :starts_on, :ends_on]
           expect(response.body).to eq expected.to_json
@@ -513,13 +367,6 @@ describe "SprintAPI" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.not_authorized_error,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         run_test! do
           expected = {
@@ -562,12 +409,6 @@ describe "SprintAPI" do
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -587,12 +428,6 @@ describe "SprintAPI" do
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -609,12 +444,6 @@ describe "SprintAPI" do
         let(:params) { { name: "sprint 3", starts_on: 4.days.from_now, ends_on: 8.days.from_now } }
         before { section.update_attributes! manager_id: section_manager.id }
 
-        examples "application/json" => {
-          id: 1,
-          name: "sprint 3",
-          starts_on: "2018-07-19",
-          ends_on: "2018-07-20"
-        }
         run_test! do
           expected = Entities::Sprint.represent sprint2.reload
           expect(response.body).to eq expected.to_json
@@ -623,12 +452,7 @@ describe "SprintAPI" do
 
       response "200", "PO can update sprint" do
         let(:params) { { name: "sprint 3", starts_on: 4.days.from_now, ends_on: 8.days.from_now } }
-        examples "application/json" => {
-          id: 1,
-          name: "sprint 3",
-          starts_on: "2018-07-19",
-          ends_on: "2018-07-20"
-        }
+
         run_test! do
           expected = Entities::Sprint.represent sprint2.reload
           expect(response.body).to eq expected.to_json
@@ -638,12 +462,6 @@ describe "SprintAPI" do
       response "400", "missing params" do
         before { params.delete(:name) }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "name")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -658,12 +476,6 @@ describe "SprintAPI" do
       response "400", "invalid date params" do
         before { params[:starts_on] = "2018-02-30" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.invalid", params: "starts_on")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -678,12 +490,6 @@ describe "SprintAPI" do
       response "400", "empty params name" do
         before { params[:name] = "" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "name")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -698,13 +504,6 @@ describe "SprintAPI" do
       response "422", "invalid starts on after ends on" do
         let(:params) { { name: "sprint 4", starts_on: 8.days.from_now, ends_on: 5.days.from_now } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_starts_on_ends_on")
-          }
-        }
-
         run_test! do
           expected = {
             error: {
@@ -718,12 +517,6 @@ describe "SprintAPI" do
 
       response "422", "invalid starts on before ends on of previous sprint" do
         let(:params) { { name: "sprint 4", starts_on: 2.days.from_now, ends_on: 8.days.from_now } }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_starts_on")
-          }
-        }
 
         run_test! do
           expected = {
@@ -740,13 +533,6 @@ describe "SprintAPI" do
         let(:id) { sprint3.id }
         before { params.merge!({ starts_on: 9.days.from_now, ends_on: 23.days.from_now }) }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_time_sprint")
-          }
-        }
-
         run_test! do
           expected = {
             error: {
@@ -760,13 +546,6 @@ describe "SprintAPI" do
 
       response "422", "invalid ends on after starts on of next sprint" do
         let(:params) { { name: "sprint 4", starts_on: 4.days.from_now, ends_on: 10.days.from_now } }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.invalid_ends_on")
-          }
-        }
 
         run_test! do
           expected = {
@@ -788,9 +567,6 @@ describe "SprintAPI" do
       parameter name: :id, in: :path, type: :integer, description: "Sprint ID"
 
       response "200", "delete successfully" do
-        examples "appication/json" => {
-          message: I18n.t("delete_success")
-        }
         run_test! do |response|
           expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
@@ -803,9 +579,6 @@ describe "SprintAPI" do
 
         before { section.update_attributes! manager_id: section_manager.id }
 
-        examples "appication/json" => {
-          message: I18n.t("delete_success")
-        }
         run_test! do |response|
           expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
@@ -815,12 +588,7 @@ describe "SprintAPI" do
 
       response "401", "employee cannot delete sprint" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
+
         run_test! do |response|
           expected = {
             error: {
@@ -834,12 +602,7 @@ describe "SprintAPI" do
 
       response "401", "manager of other division cannot delete sprint" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
+
         run_test! do |response|
           expected = {
             error: {

@@ -1,0 +1,73 @@
+---
+openapi: 3.0.0
+info:
+  title: Emres API
+  version: v1
+  description: Quản lý effort của nhân viên trong từng dự án, hỗ trợ việc kiểm soát, phân phối nhân lực giữa các dự án một cách hợp lý và hiệu quả. Nói cách khác là giúp các manager có thể biết được nhân lực ở từng dự án để có cái nhìn tổng quát và có thể kiểm soát cũng như phân chia nhân lực giữa các dự án một cách hiệu quả nhất
+
+servers:
+  - url: //localhost:3000/api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Emres-Authorization: Bearer <token>"
+security:
+  - bearerAuth: []
+paths:
+  /devices:
+    $ref: api/device.yml#/~1devices
+  /devices/{id}:
+    $ref: api/device.yml#/~1devices~1{id}
+  /efforts:
+    $ref: api/effort.yml#/~1efforts
+  /projects/{project_id}/sprints/{sprint_id}/efforts:
+    $ref: api/effort.yml#/~1projects~1{project_id}~1sprints~1{sprint_id}~1efforts
+  /projects/{project_id}/sprints/{sprint_id}/efforts/{id}:
+    $ref: api/effort.yml#/~1projects~1{project_id}~1sprints~1{sprint_id}~1efforts~1{id}
+  /skills/{skill_id}/levels:
+    $ref: api/level.yml#/~1skills~1{skill_id}~1levels
+  /skills/{skill_id}/levels/{id}:
+    $ref: api/level.yml#/~1skills~1{skill_id}~1levels~1{id}
+  /employees:
+    $ref: api/employee.yml#/~1employees
+  /employees/{id}:
+    $ref: api/employee.yml#/~1employees~1{id}
+  /employees/{id}/efforts:
+    $ref: api/employee.yml#/~1employees~1{id}~1efforts
+  /employees/{id}/skills:
+    $ref: api/employee.yml#/~1employees~1{id}~1skills
+  /organizations:
+    $ref: api/organization.yml#/~1organizations
+  /organizations/{id}:
+    $ref: api/organization.yml#/~1organizations~1{id}
+  /organizations/{id}/employees:
+    $ref: api/organization.yml#/~1organizations~1{id}~1employees
+  /organizations/{id}/employees/{employee_id}:
+    $ref: api/organization.yml#/~1organizations~1{id}~1employees~1{employee_id}
+  /skills:
+    $ref: api/skill.yml#/~1skills
+  /skills/{id}:
+    $ref: api/skill.yml#/~1skills~1{id}
+  /projects/{project_id}/phases/{phase_id}/sprints:
+    $ref: api/sprint.yml#/~1projects~1{project_id}~1phases~1{phase_id}~1sprints
+  /projects/{project_id}/phases/{phase_id}/sprints/{id}:
+    $ref: api/sprint.yml#/~1projects~1{project_id}~1phases~1{phase_id}~1sprints~1{id}
+  /projects:
+    $ref: api/project.yml#/~1projects
+  /projects/{id}:
+    $ref: api/project.yml#/~1projects~1{id}
+  /projects/{project_id}/phases:
+    $ref: api/phase.yml#/~1projects~1{project_id}~1phases
+  /projects/{project_id}/phases/{id}:
+    $ref: api/phase.yml#/~1projects~1{project_id}~1phases~1{id}
+  /profile:
+    $ref: api/profile.yml#/~1profile
+  /phases/{phase_id}/requirements:
+    $ref: api/requirement.yml#/~1phases~1{phase_id}~1requirements
+  /phases/{phase_id}/requirements/{id}:
+    $ref: api/requirement.yml#/~1phases~1{phase_id}~1requirements~1{id}
+  /session:
+    $ref: api/session.yml#/~1session

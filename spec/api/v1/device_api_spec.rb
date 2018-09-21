@@ -160,7 +160,7 @@ describe "Device API" do
         examples "application/json" =>  {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "product_id")
+            message: I18n.t("api_error.missing_params", params: "project_id")
           }
         }
 

@@ -25,12 +25,6 @@ describe "Skill API" do
       response "401", "unauthenticated user" do
         let("Emres-Authorization") { "" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -45,12 +39,6 @@ describe "Skill API" do
       response "401", "unauthorized user" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -63,44 +51,6 @@ describe "Skill API" do
       end
 
       response "200", "return all skills" do
-        examples "application/json" =>
-        [
-          {
-            "id": 28523152,
-            "name": "eu i",
-            "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            "levels": [
-              {
-                "id": 67354355,
-                "name": "aliquip ",
-                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                "rank": 45196393,
-                "skill_id": 3593242
-              }
-            ],
-          },
-          {
-            "id": 87853089,
-            "name": "Ut ",
-            "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            "levels": [
-              {
-                "id": 67725294,
-                "name": "ali",
-                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                "rank": -1861221,
-                "skill_id": -76872276
-              },
-              {
-                "id": 61694819,
-                "name": "off",
-                "logo": "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                "rank": -29289828,
-                "skill_id": 24437180
-              }
-            ]
-          }
-        ]
         run_test! do
           expected = [Entities::Skill.represent(skill), Entities::Skill.represent(other_skill)]
           expect(response.body).to eq expected.to_json
@@ -145,27 +95,6 @@ describe "Skill API" do
           }
         }
 
-        examples "application/json" => {
-          id: 42814442,
-          name: "volup",
-          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-          levels: [
-            {
-              id: 15785576,
-              name: "al",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: 92878607,
-              skill_id: 60261939
-            },
-            {
-              id: 4155938,
-              name: "volupta",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: -27562324,
-              skill_id: 63219058
-            }
-          ]
-        }
         run_test! do
           expected = Entities::Skill.represent Skill.last, only: [:id, :name, :logo, :levels]
           expect(response.body).to eq expected.to_json
@@ -191,12 +120,6 @@ describe "Skill API" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "name")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -228,12 +151,6 @@ describe "Skill API" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.empty_params", params: "name")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -292,12 +209,7 @@ describe "Skill API" do
             ]
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Skill.name, id: 0)
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -331,12 +243,6 @@ describe "Skill API" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "name")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -369,12 +275,7 @@ describe "Skill API" do
             ]
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "levels[0][name]")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -408,12 +309,7 @@ describe "Skill API" do
             ]
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: I18n.t("api_error.blank_params", params: "Name")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -453,34 +349,6 @@ describe "Skill API" do
           }
         }
 
-        examples "application/json" => {
-          id: 42814442,
-          name: "volup",
-          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-          levels: [
-            {
-              id: 15785576,
-              name: "al",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: 92878607,
-              skill_id: 60261939
-            },
-            {
-              id: 4155938,
-              name: "volupta",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: 27562324,
-              skill_id: 63219058
-            },
-            {
-              id: 41538221,
-              name: "level name",
-              logo: "#",
-              rank: 20,
-              skill_id: 63219033
-            }
-          ]
-        }
         run_test! do
           expected = Entities::Skill.represent skill.reload
           expect(response.body).to eq expected.to_json
@@ -517,27 +385,6 @@ describe "Skill API" do
           }
         }
 
-        examples "application/json" => {
-          id: 42814442,
-          name: "volup",
-          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-          levels: [
-            {
-              id: 15785576,
-              name: "al",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: 92878607,
-              skill_id: 60261939
-            },
-            {
-              id: 4155938,
-              name: "volupta",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: -27562324,
-              skill_id: 63219058
-            }
-          ]
-        }
         run_test! do
           expected = Entities::Skill.represent skill.reload
           expect(response.body).to eq expected.to_json
@@ -568,27 +415,6 @@ describe "Skill API" do
           }
         }
 
-        examples "application/json" => {
-          id: 42814442,
-          name: "volup",
-          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-          levels: [
-            {
-              id: 15785576,
-              name: "al",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: 92878607,
-              skill_id: 60261939
-            },
-            {
-              id: 4155938,
-              name: "volupta",
-              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-              rank: -27562324,
-              skill_id: 63219058
-            }
-          ]
-        }
         run_test! do
           expected = Entities::Skill.represent skill.reload
           expect(response.body).to eq expected.to_json
@@ -603,13 +429,6 @@ describe "Skill API" do
 
       response "422", "unable to delete when having association" do
         let(:id) { skill.id }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.data_operation,
-            message: "Failed to destroy the record"
-          }
-        }
-
         let!(:requirement) { FactoryBot.create :requirement, level: level }
         run_test! do
           expected = {
@@ -624,9 +443,6 @@ describe "Skill API" do
 
       response "200", "delete successfully" do
         let(:id) { skill.id }
-        examples "application/json" => {
-          message: I18n.t("delete_success")
-        }
 
         run_test! do
           expected = { message: I18n.t("delete_success") }

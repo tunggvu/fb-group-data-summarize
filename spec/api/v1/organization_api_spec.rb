@@ -27,45 +27,8 @@ describe "Organization API" do
       tags "Organizations"
       consumes "application/json"
       response "200", "return application tree" do
-        examples "application/json" => [{
-            id: 1,
-            name: "Division 1",
-            parent_id: nil,
-            manager_id: 2,
-            level: "division",
-            children: [{
-              id: 2,
-              name: "Section 1",
-              parent_id: 1,
-              manager_id: 3,
-              level: "section",
-              children: [{
-                id: 3,
-                name: "Group 1",
-                parent_id: 2,
-                manager_id: 4,
-                level: "clan",
-                children: [{
-                  id: 4,
-                  name: "Team 1",
-                  parent_id: 3,
-                  manager_id: 5,
-                  level: "team",
-                  children: []
-                }]
-              }]
-            }]
-          },
-          {
-            id: 10,
-            name: "Division 2",
-            parent_id: nil,
-            manager_id: 12,
-            level: "division",
-            children: []
-          }]
-
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
         run_test! do |response|
           expected = [
             Entities::BaseOrganization.represent(division),
@@ -76,12 +39,6 @@ describe "Organization API" do
       end
 
       response "401", "unauthorized" do
-        examples "application/json" =>  {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         let("Emres-Authorization") { nil }
         let(:id) { section.id }
@@ -112,14 +69,6 @@ describe "Organization API" do
       }
 
       response "201", "created an organization" do
-        examples "application/json" => {
-            id: 3,
-            name: "Group 1",
-            parent_id: 2,
-            manager_id: 4,
-            level: "clan",
-            children: []
-          }
 
         let(:organization) {
           {
@@ -137,12 +86,6 @@ describe "Organization API" do
       end
 
       response "400", "validation failed" do
-        examples "application/json" =>  {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "name")
-          }
-        }
 
         let(:organization) { { manager_id: 100, level: 4 } }
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
@@ -158,12 +101,6 @@ describe "Organization API" do
       end
 
       response "401", "unauthorized" do
-        examples "application/json" =>  {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         let(:organization) {
           {
@@ -195,49 +132,6 @@ describe "Organization API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
       response "200", "returns the organization information" do
-        examples "application/json" => {
-            id: 1,
-            parent_id: nil,
-            manager_id: 2,
-            level: "division",
-            name: "Division 1",
-            children: [
-              {
-                id: 2,
-                parent_id: 1,
-                manager_id: 3,
-                level: "section",
-                name: "Section 1",
-                children: [
-                  {
-                    id: 3,
-                    parent_id: 2,
-                    manager_id: 4,
-                    level: "clan",
-                    name: "Clan 1",
-                    children: [
-                      {
-                        id: 4,
-                        parent_id: 3,
-                        manager_id: 5,
-                        level: "team",
-                        name: "Team 1",
-                        children: []
-                      },
-                      {
-                        id: 5,
-                        parent_id: 3,
-                        manager_id: 6,
-                        level: "team",
-                        name: "Team 2",
-                        children: []
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
 
         let(:id) { division2.id }
         run_test! do |response|
@@ -247,12 +141,6 @@ describe "Organization API" do
       end
 
       response "404", "returns invalid id error" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
-          }
-        }
 
         let(:id) { 0 }
         run_test! do |response|
@@ -283,14 +171,6 @@ describe "Organization API" do
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
       response "200", "updated an organization" do
-        examples "application/json" => {
-            id: 3,
-            name: "Group 1",
-            parent_id: 2,
-            manager_id: 4,
-            level: "clan",
-            children: []
-          }
 
         let(:organization) {
           {
@@ -308,12 +188,6 @@ describe "Organization API" do
       end
 
       response "400", "validation failed" do
-        examples "application/json" =>  {
-            error: {
-              code: Settings.error_formatter.http_code.validation_errors,
-              message: I18n.t("api_error.missing_params", params: "name")
-            }
-          }
 
         let(:organization) { { manager_id: 100,
                                level: 3 }
@@ -331,12 +205,6 @@ describe "Organization API" do
       end
 
       response "401", "unauthorized" do
-        examples "application/json" =>  {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
 
         let(:organization) {
           {
@@ -359,12 +227,6 @@ describe "Organization API" do
       end
 
       response "404", "not found organization" do
-        examples "application/json" => {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
-            }
-          }
 
         let(:organization) {
           {
@@ -393,9 +255,6 @@ describe "Organization API" do
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
       response "200", "deleted an organization" do
-        examples "application/json" =>  {
-          message: I18n.t("delete_success")
-        }
 
         let(:id) { division2.id }
         let!(:other_employee) { FactoryBot.create :employee, organization: division2 }
@@ -410,12 +269,6 @@ describe "Organization API" do
       end
 
       response "401", "unauthorized" do
-        examples "application/json" =>  {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
         let(:id) { section.id }
@@ -431,12 +284,6 @@ describe "Organization API" do
       end
 
       response "404", "not found organization" do
-        examples "application/json" => {
-            error: {
-              code: Settings.error_formatter.http_code.record_not_found,
-              message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
-            }
-          }
 
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:id) { 0 }
@@ -481,12 +328,7 @@ describe "Organization API" do
             employees: [employee1.id, employee2.id]
           }
         }
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -515,12 +357,6 @@ describe "Organization API" do
           }
         }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -539,8 +375,6 @@ describe "Organization API" do
             employees: []
           }
         }
-        examples "application/json" =>
-          []
 
         run_test! do |response|
           expected = []
@@ -557,19 +391,6 @@ describe "Organization API" do
             employees: [employee1.id, employee2.id]
           }
         }
-        examples "application/json" =>
-          [
-            {
-              id: 1,
-              organization_id: 1,
-              name: "Employee",
-              employee_code: "B120000",
-              email: "employee@framgia.com",
-              birthday: "1/1/2018",
-              phone: "0123456789",
-              avatar: "#"
-            }
-          ]
 
         run_test! do |response|
           expected = [
@@ -590,18 +411,6 @@ describe "Organization API" do
           }
         }
 
-        examples "application/json" => [
-          {
-            id: 1,
-            organization_id: 1,
-            name: "Employee",
-            employee_code: "B120000",
-            email: "employee@framgia.com",
-            birthday: "1/1/2018",
-            phone: "0123456789",
-            avatar: "#"
-          }
-        ]
         run_test! do
           expected = [
             Entities::Employee.represent(employee1.reload),
@@ -626,9 +435,6 @@ describe "Organization API" do
       consumes "application/json"
 
       response "200", "admin can delete employee" do
-        examples "application/json" => {
-          message: I18n.t("delete_success")
-        }
 
         run_test! do |response|
           expected = {
@@ -639,9 +445,6 @@ describe "Organization API" do
       end
 
       response "200", "manager of organization can delete employee" do
-        examples "application/json" => {
-          message: I18n.t("delete_success")
-        }
 
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
 
@@ -654,12 +457,6 @@ describe "Organization API" do
       end
 
       response "404", "not found employee" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
-          }
-        }
 
         let(:employee_id) { 0 }
         run_test! do |response|
@@ -669,12 +466,6 @@ describe "Organization API" do
       end
 
       response "404", "not found organization" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
-          }
-        }
 
         let(:id) { 0 }
         run_test! do |response|
@@ -689,12 +480,6 @@ describe "Organization API" do
       end
 
       response "404", "cannot delete employee not in organization" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Employee.name, id: 0)
-          }
-        }
 
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:id) { section2.id }
@@ -705,12 +490,6 @@ describe "Organization API" do
       end
 
       response "401", "employee cannot delete employee" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
@@ -725,12 +504,6 @@ describe "Organization API" do
       end
 
       response "401", "manager of other organization cannot delete employee" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         let(:other_manager) { FactoryBot.create :employee, organization: division }
         let(:other_manager_token) { FactoryBot.create :employee_token, employee: other_manager }
@@ -747,12 +520,6 @@ describe "Organization API" do
       end
 
       response "401", "unauthorized" do
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthorized,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
 
         let("Emres-Authorization") { "" }
         run_test! do |response|

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Project.all.each do |project|
-  starts_on = 15.days.ago
+  starts_on = Date.today
   5.times do |n|
     Phase.seed do |p|
       p.name = "phase #{n+1}"

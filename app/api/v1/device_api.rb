@@ -8,14 +8,14 @@ class V1::DeviceAPI < Grape::API
     paginate per_page: Settings.paginate.per_page.device
 
     get do
-      present paginate(Device.all.includes(:pic, project: :product_owner)), with: Entities::Device
+      present paginate(Device.all.includes(:pic, :project)), with: Entities::Device
     end
 
     route_param :id do
-      before { @device = Device.find params[:id] }
       desc "return device"
       get do
-        present @device, with: Entities::Device
+        device = Device.includes(requests: [:request_pic, :requester, :project]).find(params[:id])
+        present device, with: Entities::DeviceDetail
       end
 
       desc "Update device"
@@ -25,10 +25,11 @@ class V1::DeviceAPI < Grape::API
       end
 
       patch do
-        authorize @device, :device_owner?
+        device = Device.find(params[:id])
+        authorize device, :device_owner?
 
-        @device.update_attributes! declared(params, include_missing: false)
-        present @device, with: Entities::Device
+        device.update_attributes! declared(params, include_missing: false)
+        present device, with: Entities::Device
       end
     end
 

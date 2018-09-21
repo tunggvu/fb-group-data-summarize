@@ -220,12 +220,6 @@ describe "Device API" do
       response "401", "unauthenticated user" do
         let("Emres-Authorization") { "" }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthenticated,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
         run_test! do
           expected = {
             error: {
@@ -240,13 +234,6 @@ describe "Device API" do
       response "404", "device not found" do
         let(:id) { 0 }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Device.name, id: 0)
-          }
-        }
-
         run_test! do
           expected = {
             error: {
@@ -259,45 +246,8 @@ describe "Device API" do
       end
 
       response "200", "device has been found" do
-        examples "application/json" => [
-          {
-            id: 1,
-            name: "laptop 0",
-            serial_code: "546031702833217",
-            device_type: "laptop",
-            os_version: "Tyrell Jenkins",
-            project: {
-              id: 3,
-              name: "Stanford Carroll",
-              description: nil,
-              starts_on: "2018-09-15",
-              logo: "/uploads/avatar.png",
-              product_owner: {
-                  id: 2,
-                  organization_id: 1,
-                  name: "Gussie D'Amore Sr.",
-                  employee_code: "B1210001",
-                  email: "gussie.d'amore.sr.@framgia.com",
-                  birthday: nil,
-                  phone: "0987654321",
-                  avatar: "/uploads/avatar.png"
-              }
-            },
-            pic: {
-              id: 251,
-              organization_id: 39,
-              name: "Chasity Bauch",
-              employee_code: "B1210250",
-              email: "chasity.bauch@framgia.com",
-              birthday: nil,
-              phone: "0987654321",
-              avatar: "/uploads/avatar.png"
-            }
-          }
-        ]
-
         run_test! do
-          expected = Entities::Device.represent device1
+          expected = Entities::DeviceDetail.represent device1
           expect(response.body).to eq expected.to_json
         end
       end
@@ -382,16 +332,7 @@ describe "Device API" do
               description: nil,
               starts_on: "2018-09-15",
               logo: "/uploads/avatar.png",
-              product_owner: {
-                  id: 2,
-                  organization_id: 1,
-                  name: "Gussie D'Amore Sr.",
-                  employee_code: "B1210001",
-                  email: "gussie.d'amore.sr.@framgia.com",
-                  birthday: nil,
-                  phone: "0987654321",
-                  avatar: "/uploads/avatar.png"
-              }
+              product_owner_id: 2
             },
             pic: {
               id: 251,
@@ -431,17 +372,7 @@ describe "Device API" do
               name: "Stanford Carroll",
               description: nil,
               starts_on: "2018-09-15",
-              logo: "/uploads/avatar.png",
-              product_owner: {
-                  id: 2,
-                  organization_id: 1,
-                  name: "Gussie D'Amore Sr.",
-                  employee_code: "B1210001",
-                  email: "gussie.d'amore.sr.@framgia.com",
-                  birthday: nil,
-                  phone: "0987654321",
-                  avatar: "/uploads/avatar.png"
-              }
+              logo: "/uploads/avatar.png"
             },
             pic: {
               id: 251,

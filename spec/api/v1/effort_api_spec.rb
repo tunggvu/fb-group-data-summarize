@@ -29,10 +29,10 @@ describe "Effort API" do
   before { div2.update_attributes! manager_id: div2_manager.id }
 
   path "/projects/{project_id}/sprints/{sprint_id}/efforts" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :sprint_id, in: :path, type: :integer, description: "Sprint ID"
-    let(:Authorization) { "Bearer #{group_leader_token.token}" }
+    let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:sprint_id) { sprint.id }
 
@@ -83,7 +83,7 @@ describe "Effort API" do
       end
 
       response "401", "user hasn't logged in cannot view effort" do
-        let(:"Authorization") {}
+        let("Emres-Authorization") {}
 
         examples "application/json" => {
           error: {
@@ -102,7 +102,7 @@ describe "Effort API" do
       end
 
       response "200", "members in project can view effort" do
-        let(:"Authorization") { "Bearer #{member_token.token}" }
+        let("Emres-Authorization") { "Bearer #{member_token.token}" }
 
         examples "application/json" => [
           {
@@ -147,7 +147,7 @@ describe "Effort API" do
       end
 
       response "401", "members not in project cannot view effort" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -167,7 +167,7 @@ describe "Effort API" do
       end
 
       response "200", "PO can view effort" do
-        let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
 
         examples "application/json" => [
           {
@@ -206,7 +206,7 @@ describe "Effort API" do
       end
 
       response "200", "Admin can view effort" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
         examples "application/json" => [
           {
@@ -316,7 +316,7 @@ describe "Effort API" do
       end
 
       response "201", "manager of PO can create effort" do
-        let(:Authorization) { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
         examples "application/json": [
           {
@@ -360,7 +360,7 @@ describe "Effort API" do
       end
 
       response "201", "Admin can create effort" do
-        let(:Authorization) { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
         examples "application/json": [
           {
@@ -404,7 +404,7 @@ describe "Effort API" do
       end
 
       response "401", "user hasn't logged in cannot create effort" do
-        let(:Authorization) { "" }
+        let("Emres-Authorization") { "" }
 
         examples "application/json" => {
           error: {
@@ -425,7 +425,7 @@ describe "Effort API" do
       end
 
       response "401", "employee cannot create effort" do
-        let(:Authorization) { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json": {
           error: {
@@ -446,7 +446,7 @@ describe "Effort API" do
       end
 
       response "401", "manager in other division cannot create effort" do
-        let(:Authorization) { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
         examples "application/json": {
           error: {
@@ -584,11 +584,11 @@ describe "Effort API" do
   end
 
   path "/projects/{project_id}/sprints/{sprint_id}/efforts/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :sprint_id, in: :path, type: :integer, description: "Sprint ID"
     parameter name: :id, in: :path, type: :integer, description: "Effort ID"
-    let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+    let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:sprint_id) { sprint.id }
     let(:id) { effort.id }
@@ -605,7 +605,7 @@ describe "Effort API" do
       }
 
       response "200", "Admin can update effort" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:params) {
           {
             effort: 50
@@ -626,7 +626,7 @@ describe "Effort API" do
       end
 
       response "200", "manager of PO can update effort" do
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         let(:params) {
           {
             effort: 50
@@ -709,7 +709,7 @@ describe "Effort API" do
       end
 
       response "401", "employee cannot update effort" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
             effort: rand(1..100)
@@ -733,7 +733,7 @@ describe "Effort API" do
       end
 
       response "401", "manager in other division cannot update effort" do
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
         let(:params) {
           {
             effort: rand(1..100)
@@ -764,7 +764,7 @@ describe "Effort API" do
       let(:id) { effort.id }
 
       response "200", "Admin can delete an effort" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
         examples "application/json" => {
           message: I18n.t("delete_success")
@@ -788,7 +788,7 @@ describe "Effort API" do
       end
 
       response "200", "manager of PO can delete effort" do
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
         examples "application/json" => {
           message: I18n.t("delete_success")
@@ -801,7 +801,7 @@ describe "Effort API" do
       end
 
       response "401", "user hasn't logged in cannot delete effort" do
-        let(:"Authorization") {}
+        let("Emres-Authorization") {}
 
         examples "application/json" => {
           error: {
@@ -821,7 +821,7 @@ describe "Effort API" do
       end
 
       response "401", "employee cannot delete an effort" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -841,7 +841,7 @@ describe "Effort API" do
       end
 
       response "401", "manager of other division cannot delete an effort" do
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -863,8 +863,8 @@ describe "Effort API" do
   end
 
   path "/efforts" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:Authorization) { "Bearer #{section_manager_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
     get "Detail effort of a employee" do
       tags "Efforts"
@@ -937,7 +937,7 @@ describe "Effort API" do
       end
 
       response "401", "unauthenticated" do
-        let(:Authorization) {}
+        let("Emres-Authorization") {}
 
         examples "application/json" => {
           error: {
@@ -957,7 +957,7 @@ describe "Effort API" do
       end
 
       response "401", "user can't view effort of employee in other project" do
-        let(:Authorization) { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {

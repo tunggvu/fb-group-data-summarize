@@ -9,7 +9,7 @@
     "/devices": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -127,7 +127,7 @@
     "/devices/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -309,7 +309,7 @@
     "/projects/{project_id}/sprints/{sprint_id}/efforts": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -493,7 +493,7 @@
     "/projects/{project_id}/sprints/{sprint_id}/efforts/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -613,7 +613,7 @@
     "/efforts": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -702,7 +702,7 @@
     "/employees": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -938,7 +938,7 @@
     "/employees/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1033,7 +1033,7 @@
     "/employees/{id}/efforts": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1123,7 +1123,7 @@
     "/employees/{id}/skills": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1201,7 +1201,7 @@
     "/skills/{skill_id}/levels": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1298,7 +1298,7 @@
     "/skills/{skill_id}/levels/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1421,7 +1421,7 @@
     "/organizations": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1583,7 +1583,7 @@
     "/organizations/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1824,7 +1824,7 @@
     "/organizations/{id}/employees": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1898,7 +1898,7 @@
     "/organizations/{id}/employees/{employee_id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -1963,7 +1963,7 @@
     "/projects/{project_id}/phases": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -2099,7 +2099,7 @@
     "/projects/{project_id}/phases/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -2262,7 +2262,7 @@
     "/profile": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -2374,7 +2374,7 @@
     "/projects": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -2537,7 +2537,7 @@
     "/projects/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -2812,7 +2812,7 @@
     "/phases/{phase_id}/requirements": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -2956,7 +2956,7 @@
     "/phases/{phase_id}/requirements/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -3199,7 +3199,7 @@
         ],
         "parameters": [
           {
-            "name": "Authorization",
+            "name": "Emres-Authorization",
             "in": "header",
             "type": "string",
             "description": "Token authorization user"
@@ -3210,7 +3210,7 @@
             "description": "with valid token",
             "examples": {
               "application/json": {
-                "Authorization": "Bearer your_token"
+                "Emres-Authorization": "Bearer your_token"
               }
             }
           },
@@ -3229,7 +3229,7 @@
         ],
         "parameters": [
           {
-            "name": "Authorization",
+            "name": "Emres-Authorization",
             "in": "header",
             "type": "string",
             "description": "Token authorization user"
@@ -3293,7 +3293,7 @@
     "/skills": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -3450,7 +3450,7 @@
     "/skills/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -3615,7 +3615,7 @@
     "/projects/{project_id}/phases/{phase_id}/sprints": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"
@@ -3811,7 +3811,7 @@
     "/projects/{project_id}/phases/{phase_id}/sprints/{id}": {
       "parameters": [
         {
-          "name": "Authorization",
+          "name": "Emres-Authorization",
           "in": "header",
           "type": "string",
           "description": "Token authorization user"

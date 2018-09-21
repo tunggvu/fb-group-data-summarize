@@ -7,8 +7,8 @@ describe "Profile API" do
   let(:user_token) { FactoryBot.create :employee_token, employee: current_user }
 
   path "/profile" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:"Authorization") { "Bearer #{user_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{user_token.token}" }
 
     get "Get profile information" do
       tags "Profiles"
@@ -38,7 +38,7 @@ describe "Profile API" do
             message: I18n.t("api_error.unauthorized")
           }
         }
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
         run_test! do
           expected = {
             error: {
@@ -94,7 +94,7 @@ describe "Profile API" do
             message: I18n.t("api_error.unauthorized")
           }
         }
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
         let(:profile) {
           {
             phone: "0123456789",

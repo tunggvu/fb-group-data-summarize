@@ -15,15 +15,15 @@ describe "Skill API" do
   let!(:level2) { FactoryBot.create :level, skill: skill }
 
   path "/skills" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:"Authorization") { "Bearer #{admin_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
     get "Get all skills" do
       tags "Skills"
       consumes "application/json"
 
       response "401", "unauthenticated user" do
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
 
         examples "application/json" => {
           error: {
@@ -43,7 +43,7 @@ describe "Skill API" do
       end
 
       response "401", "unauthorized user" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -248,8 +248,8 @@ describe "Skill API" do
   end
 
   path "/skills/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:"Authorization") { "Bearer #{admin_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
     patch "Update skill" do
       tags "Skills"

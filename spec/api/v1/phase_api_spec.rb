@@ -14,9 +14,9 @@ describe "Phase API" do
   before { group.update_attributes! manager_id: group_leader.id }
 
   path "/projects/{project_id}/phases" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
-    let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+    let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
 
     get "All phases in project" do
@@ -46,7 +46,7 @@ describe "Phase API" do
       response "401", "employee not in project cannot view all phases" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -105,7 +105,7 @@ describe "Phase API" do
       response "401", "employee cannot create phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         examples "application/json" => {
@@ -129,7 +129,7 @@ describe "Phase API" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
         let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
@@ -154,7 +154,7 @@ describe "Phase API" do
       response "201", "manager of PO can create phase" do
         let(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { section.update_attributes! manager_id: section_manager.id }
@@ -269,10 +269,10 @@ describe "Phase API" do
   end
 
   path "/projects/{project_id}/phases/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :id, in: :path, type: :integer, description: "Phase ID"
-    let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+    let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
 
     get "specific phase in project" do
@@ -308,7 +308,7 @@ describe "Phase API" do
       response "401", "employee isn't in project cannot view phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { phase1.id }
 
         examples "application/json" => {
@@ -349,7 +349,7 @@ describe "Phase API" do
       response "401", "employee cannot update phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) { { name: "phase 3" } }
 
         examples "application/json" => {
@@ -373,7 +373,7 @@ describe "Phase API" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
         let(:params) { { name: "phase 2" } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
@@ -398,7 +398,7 @@ describe "Phase API" do
       response "200", "manager of PO can update phase" do
         let(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         let(:params) { { name: "phase 3", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { section.update_attributes! manager_id: section_manager.id }
@@ -520,7 +520,7 @@ describe "Phase API" do
       response "401", "employee cannot delete phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) { { name: "phase 3" } }
 
         examples "application/json" => {
@@ -544,7 +544,7 @@ describe "Phase API" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
         let(:params) { { name: "phase 2" } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
@@ -569,7 +569,7 @@ describe "Phase API" do
       response "200", "manager of PO can delete phase" do
         let(:section_manager) { FactoryBot.create :employee, organization: section }
         let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
         before { section.update_attributes! manager_id: section_manager.id }
 

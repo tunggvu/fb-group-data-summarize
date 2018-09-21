@@ -28,8 +28,8 @@ describe "Employee API" do
   end
 
   path "/employees" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:"Authorization") { "Bearer #{employee_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
     get "Information of all employees" do
       tags "Employees"
@@ -44,7 +44,7 @@ describe "Employee API" do
       parameter name: :total_effort_lt, in: :query, type: :integer, required: false
       parameter name: :end_time, in: :query, type: :date, required: false
 
-      let(:Authorization) { "Bearer #{admin_token.token}" }
+      let("Emres-Authorization") { "Bearer #{admin_token.token}" }
       let(:query) {}
       let(:organization_id) {}
       let(:skill_id) {}
@@ -119,7 +119,7 @@ describe "Employee API" do
       end
 
       response "200", "will ignore all paramaters which employee cannot use and returns all employees" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:start_time) { 2.days.ago }
         let(:end_time) { 2.days.from_now }
         let(:total_effort_lt) { 50 }
@@ -199,7 +199,7 @@ describe "Employee API" do
       end
 
       response "200", "can filter by organization, not start_time and end_time" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
         let(:organization_id) { employee.organization_id }
         let(:skill_id) { skill.id }
@@ -226,7 +226,7 @@ describe "Employee API" do
       end
 
       response "200", "will ignore all paramaters which employee cannot use and returns all employees" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:query) { employee.name }
         let(:skill_id) { skill.id }
         let("level_ids[]") { [level.id, level2.id] }
@@ -432,7 +432,7 @@ describe "Employee API" do
       end
 
       response "401", "unauthorized" do
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
         let(:query) { employee.name }
         let(:organization_id) { employee.organization_id }
         let(:skill_id) { skill.id }
@@ -494,7 +494,7 @@ describe "Employee API" do
       end
 
       response "401", "unauthorized" do
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
         let(:query) { employee.name }
         let(:organization_id) { employee.organization_id }
         let(:skill_id) { skill.id }
@@ -561,7 +561,7 @@ describe "Employee API" do
       end
 
       response "201", "admin create successfully" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:params) {
           {
             name: "New employee",
@@ -588,7 +588,7 @@ describe "Employee API" do
       end
 
       response "201", "manager create successfully" do
-        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager_token.token}" }
         let(:params) {
           {
             name: "New employee",
@@ -641,7 +641,7 @@ describe "Employee API" do
       end
 
       response "422", "wrong params" do
-        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager_token.token}" }
         let(:params) {
           {
             name: "New employee",
@@ -672,7 +672,7 @@ describe "Employee API" do
       end
 
       response "422", "email has been taken" do
-        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager_token.token}" }
         let(:params) {
           {
             name: "New employee",
@@ -705,8 +705,8 @@ describe "Employee API" do
   end
 
   path "/employees/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:"Authorization") { "Bearer #{employee_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
     get "Get information of specific employee" do
       tags "Employees"
@@ -714,7 +714,7 @@ describe "Employee API" do
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
       response "200", "return one employee" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { employee.id }
         examples "application/json" => {
           id: 1,
@@ -759,7 +759,7 @@ describe "Employee API" do
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
       response "401", "member cannot delete" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         let(:id) { employee.id }
         examples "application/json" => {
@@ -781,7 +781,7 @@ describe "Employee API" do
 
       let(:employee2) { FactoryBot.create :employee, organization: group }
       response "200", "manager can delete" do
-        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager_token.token}" }
 
         let(:id) { employee2.id }
         examples "application/json" => {
@@ -796,7 +796,7 @@ describe "Employee API" do
       end
 
       response "200", "admin can delete" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
         let(:id) { employee2.id }
         examples "application/json" => {
@@ -813,12 +813,12 @@ describe "Employee API" do
   end
 
   path "/employees/{id}/efforts" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :id, in: :path, type: :integer, description: "Id of employee"
     parameter name: :start_time, in: :query, type: :Date, description: "Start time to filter"
     parameter name: :end_time, in: :query, type: :Date, description: "End time to filter"
 
-    let(:"Authorization") { "Bearer #{manager_token.token}" }
+    let("Emres-Authorization") { "Bearer #{manager_token.token}" }
     let(:id) { employee.id }
     let(:start_time) {}
     let(:end_time) {}
@@ -847,7 +847,7 @@ describe "Employee API" do
       end
 
       response "401", "unauthenticated" do
-        let(:Authorization) {}
+        let("Emres-Authorization") {}
 
         examples "application/json" => {
           error: {
@@ -869,7 +869,7 @@ describe "Employee API" do
       response "401", "user can't view detail effort of employee in other project" do
         let(:another_employee) { FactoryBot.create :employee }
         let(:another_employee_token) { FactoryBot.create :employee_token, employee: another_employee }
-        let(:"Authorization") { "Bearer #{another_employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{another_employee_token.token}" }
         let(:start_time) { 5.days.from_now }
         let(:end_time) { 10.days.from_now }
 
@@ -975,8 +975,8 @@ describe "Employee API" do
   end
 
   path "/employees/{id}/skills" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:"Authorization") { "Bearer #{employee_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
     get "get skills of employee" do
       tags "Employees"
@@ -984,7 +984,7 @@ describe "Employee API" do
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
       response "200", "return all skill of employee" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { employee.id }
 
         examples "application/json" =>

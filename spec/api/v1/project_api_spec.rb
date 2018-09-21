@@ -31,7 +31,7 @@ describe "Project API" do
   end
 
   path "/projects" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
 
     get "All projects" do
       tags "Projects"
@@ -42,7 +42,7 @@ describe "Project API" do
       consumes "application/json"
 
       response "401", "unauthorized" do
-        let(:"Authorization") { "Bearer" }
+        let("Emres-Authorization") { "Bearer" }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
@@ -61,7 +61,7 @@ describe "Project API" do
       end
 
       response "200", "Admin can see all projects" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json" => [
           {
             id: 1,
@@ -106,7 +106,7 @@ describe "Project API" do
       end
 
       response "200", "Manager can see all projects" do
-        let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
         examples "application/json" => [
           {
             id: 1,
@@ -151,7 +151,7 @@ describe "Project API" do
       end
 
       response "200", "Employee can see all projects" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         examples "application/json" => [
           {
             id: 1,
@@ -232,7 +232,7 @@ describe "Project API" do
             }
           }
         ]
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = [Entities::Project.represent(project),
             Entities::Project.represent(other_project)]
@@ -260,7 +260,7 @@ describe "Project API" do
             }
           }
         ]
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:name) { project.name }
         run_test! do |response|
           expected = [Entities::Project.represent(project)]
@@ -288,7 +288,7 @@ describe "Project API" do
             }
           }
         ]
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:organization_id) { section.id }
         run_test! do |response|
           expected = [Entities::Project.represent(other_project)]
@@ -298,7 +298,7 @@ describe "Project API" do
 
       response "200", "return nill when any project match name" do
         examples "application/json" => []
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:name) { "123 project_name 123" }
         let(:organization_id) { group.id }
         run_test! do |response|
@@ -314,7 +314,7 @@ describe "Project API" do
             message: I18n.t("api_error.invalid_id", model: Organization.name, id: 0)
           }
         }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:name) { project.name }
         let(:organization_id) { 0 }
         run_test! do |response|
@@ -348,7 +348,7 @@ describe "Project API" do
             }
           }
         ]
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:name) { other_project.name }
         let(:organization_id) { group.id }
         run_test! do |response|
@@ -373,7 +373,7 @@ describe "Project API" do
       }
 
       response "201", "Admin can create" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json": {
           id: 11,
           name: "Project 1",
@@ -405,7 +405,7 @@ describe "Project API" do
       end
 
       response "201", "Manager can create a project" do
-        let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
 
         examples "application/json": {
           id: 11,
@@ -438,7 +438,7 @@ describe "Project API" do
       end
 
       response "401", "Employee cannot create" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         let(:params) {
           {
@@ -466,7 +466,7 @@ describe "Project API" do
       end
 
       response "400", "missing param name" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.validation_errors,
@@ -491,14 +491,14 @@ describe "Project API" do
   end
 
   path "/projects/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
 
     get "Get information of specific project" do
       tags "Projects"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Project ID"
       response "200", "Admin can see any project" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json" => {
           name: "Project 1",
           logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
@@ -592,7 +592,7 @@ describe "Project API" do
       end
 
       response "200", "Manager can see any project" do
-        let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
         examples "application/json" => {
           name: "Project 1",
           logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl",
@@ -686,7 +686,7 @@ describe "Project API" do
       end
 
       response "200", "Employee can see project that employee belongs to" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:employee_level) { FactoryBot.create :employee_level, employee: employee }
         let(:sprint) { FactoryBot.create :sprint, project: project }
         let!(:effort) { FactoryBot.create :effort, employee_level: employee_level, sprint: sprint }
@@ -783,7 +783,7 @@ describe "Project API" do
       end
 
       response "401", "Employee cannot see project that employee does not belongs to" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
@@ -805,7 +805,7 @@ describe "Project API" do
 
       response "404", "project not found" do
         let(:id) { 0 }
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.record_not_found,
@@ -839,7 +839,7 @@ describe "Project API" do
       parameter name: :id, in: :path, type: :integer, description: "Project ID"
 
       response "200", "product owner can update project that product owner created" do
-        let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
         let(:id) { other_project.id }
 
         examples "application/json": {
@@ -873,7 +873,7 @@ describe "Project API" do
       end
 
       response "200", "manager of product owner can update project that product owner created" do
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         let(:id) { other_project.id }
 
         examples "application/json": {
@@ -907,7 +907,7 @@ describe "Project API" do
       end
 
       response "401", "manager, but not manage product owner cannot update project that product owner created" do
-        let(:"Authorization") { "Bearer #{other_section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{other_section_manager_token.token}" }
         let(:id) { other_project.id }
         examples "application/json" => {
           error: {
@@ -932,7 +932,7 @@ describe "Project API" do
 
       response "200", "admin can update a project" do
         let(:id) { project.id }
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json" => {
           id: 1,
           name: "Project 1",
@@ -964,7 +964,7 @@ describe "Project API" do
       end
 
       response "401", "Employee cannot update" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { project.id }
         examples "application/json" => {
           error: {
@@ -995,7 +995,7 @@ describe "Project API" do
 
       response "200", "admin delete successfully" do
         let(:id) { project.id }
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         examples "application/json" => {
           message: I18n.t("delete_success")
         }
@@ -1009,7 +1009,7 @@ describe "Project API" do
 
       response "200", "manager delete successfully" do
         let(:id) { other_project.id }
-        let(:"Authorization") { "Bearer #{group_leader_token.token}" }
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
         examples "application/json" => {
           message: I18n.t("delete_success")
         }
@@ -1023,7 +1023,7 @@ describe "Project API" do
 
       response "401", "employee cannot delete project" do
         let(:id) { project.id }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,

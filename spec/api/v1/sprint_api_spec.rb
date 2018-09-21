@@ -27,10 +27,10 @@ describe "SprintAPI" do
   let(:level) { create :level }
 
   path "/projects/{project_id}/phases/{phase_id}/sprints" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
-    let(:Authorization) { "Bearer #{group_leader_token.token}" }
+    let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:phase_id) { phase.id }
 
@@ -106,7 +106,7 @@ describe "SprintAPI" do
             message: I18n.t("api_error.unauthorized")
           }
         }
-        let(:Authorization) {}
+        let("Emres-Authorization") {}
         run_test! do
           expected = {
             error: {
@@ -121,7 +121,7 @@ describe "SprintAPI" do
       response "401", "employee isn't in project cannot view all sprints" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -222,7 +222,7 @@ describe "SprintAPI" do
       end
 
       response "201", "manager of PO can create sprint" do
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         before { section.update_attributes! manager_id: section_manager.id }
 
         examples "application/json" => {
@@ -317,7 +317,7 @@ describe "SprintAPI" do
       end
 
       response "201", "manager of PO can create sprint" do
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -334,7 +334,7 @@ describe "SprintAPI" do
       end
 
       response "401", "employee cannot create sprint" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error_code: Settings.error_formatter.http_code.unauthorized,
@@ -353,7 +353,7 @@ describe "SprintAPI" do
       end
 
       response "401", "manager in other division cannot create sprint" do
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
 
         before { div2.update_attributes! manager_id: div2_manager.id }
@@ -468,11 +468,11 @@ describe "SprintAPI" do
   end
 
   path "/projects/{project_id}/phases/{phase_id}/sprints/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
     parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
     parameter name: :id, in: :path, type: :integer, description: "Sprint ID"
-    let(:Authorization) { "Bearer #{group_leader_token.token}" }
+    let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
     let(:phase_id) { phase.id }
     let(:id) { sprint2.id }
@@ -512,7 +512,7 @@ describe "SprintAPI" do
       response "401", "employee isn't in project cannot get information specific sprint" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -560,7 +560,7 @@ describe "SprintAPI" do
       response "401", "employee cannot update sprint" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
-        let(:Authorization) { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {
@@ -583,7 +583,7 @@ describe "SprintAPI" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
-        let(:Authorization) { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -605,7 +605,7 @@ describe "SprintAPI" do
       end
 
       response "200", "manager of PO can update sprint" do
-        let(:Authorization) { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         let(:params) { { name: "sprint 3", starts_on: 4.days.from_now, ends_on: 8.days.from_now } }
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -799,7 +799,7 @@ describe "SprintAPI" do
       end
 
       response "200", "manager of PO can delete sprint" do
-        let(:"Authorization") { "Bearer #{section_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -814,7 +814,7 @@ describe "SprintAPI" do
       end
 
       response "401", "employee cannot delete sprint" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,
@@ -833,7 +833,7 @@ describe "SprintAPI" do
       end
 
       response "401", "manager of other division cannot delete sprint" do
-        let(:"Authorization") { "Bearer #{div2_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
         examples "application/json" => {
           error: {
             code: Settings.error_formatter.http_code.unauthorized,

@@ -1,4 +1,4 @@
-access_token_header: "Authorization"
+access_token_header: "Emres-Authorization"
 access_token_value_prefix: "Bearer"
 
 http_code:

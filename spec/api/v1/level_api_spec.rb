@@ -14,9 +14,9 @@ describe "Level API" do
   let!(:level3) { FactoryBot.create :level, skill: skill }
 
   path "/skills/{skill_id}/levels" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :skill_id, in: :path, type: :integer, description: "Skill ID"
-    let(:"Authorization") { "Bearer #{admin_token.token}" }
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
     let(:skill_id) { skill.id }
 
     post "Create a new level" do
@@ -83,7 +83,7 @@ describe "Level API" do
           name: "Master",
           rank: 100
         } }
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
 
         examples "application/json" => {
           error: {
@@ -103,7 +103,7 @@ describe "Level API" do
       end
 
       response "401", "employee cannot create level" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) { {
           name: "Master",
           rank: 100
@@ -172,10 +172,10 @@ describe "Level API" do
   end
 
   path "/skills/{skill_id}/levels/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :skill_id, in: :path, type: :integer, description: "Skill ID"
     parameter name: :id, in: :path, type: :integer, description: "Level ID"
-    let(:"Authorization") { "Bearer #{admin_token.token}" }
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
     let(:skill_id) { skill.id }
 
     patch "update a level" do
@@ -240,7 +240,7 @@ describe "Level API" do
       end
 
       response "401", "employee cannot update level" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) { {
           name: "Master",
           rank: 100
@@ -268,7 +268,7 @@ describe "Level API" do
           name: "Master",
           rank: 100
         } }
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
 
         examples "application/json" => {
           error: {
@@ -314,7 +314,7 @@ describe "Level API" do
       let(:id) { level3.id }
 
       response "401", "employee cannot delete level" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         examples "application/json" => {
           error: {

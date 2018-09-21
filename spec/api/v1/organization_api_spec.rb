@@ -22,7 +22,7 @@ describe "Organization API" do
   end
 
   path "/organizations" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     get "organization tree" do
       tags "Organizations"
       consumes "application/json"
@@ -65,7 +65,7 @@ describe "Organization API" do
             children: []
           }]
 
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = [
             Entities::BaseOrganization.represent(division),
@@ -83,7 +83,7 @@ describe "Organization API" do
           }
         }
 
-        let(:"Authorization") { nil }
+        let("Emres-Authorization") { nil }
         let(:id) { section.id }
         run_test! do |response|
           expected = {
@@ -129,7 +129,7 @@ describe "Organization API" do
              parent_id: Organization.first.id
           }
         }
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         run_test! do |response|
           expected = Entities::BaseOrganization.represent Organization.last
           expect(response.body).to eq expected.to_json
@@ -145,7 +145,7 @@ describe "Organization API" do
         }
 
         let(:organization) { { manager_id: 100, level: 4 } }
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         run_test! do |response|
           expected = {
             error: {
@@ -172,7 +172,7 @@ describe "Organization API" do
              level: 4
           }
         }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = {
             error: {
@@ -187,8 +187,8 @@ describe "Organization API" do
   end
 
   path "/organizations/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
-    let(:"Authorization") { "Bearer #{admin_token.token}" }
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
     get "Information of an organization" do
       tags "Organizations"
@@ -345,7 +345,7 @@ describe "Organization API" do
             level: 1
           }
         }
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { division2.id }
         run_test! do |response|
           expected = {
@@ -417,7 +417,7 @@ describe "Organization API" do
           }
         }
 
-        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager_token.token}" }
         let(:id) { section.id }
         run_test! do |response|
           expected = {
@@ -438,7 +438,7 @@ describe "Organization API" do
             }
           }
 
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:id) { 0 }
         run_test! do |response|
           expected = {
@@ -454,7 +454,7 @@ describe "Organization API" do
   end
 
   path "/organizations/{id}/employees" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     let(:id) { division2.id }
 
     patch "Update an organization for employees" do
@@ -473,7 +473,7 @@ describe "Organization API" do
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
       response "401", "member cannot add employee" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:employee2) { FactoryBot.create :employee }
         let(:employee1) { FactoryBot.create :employee }
         let(:employees) {
@@ -506,7 +506,7 @@ describe "Organization API" do
           division.update manager_id: manager2.id
         end
 
-        let(:"Authorization") { "Bearer #{manager2_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager2_token.token}" }
         let(:employee2) { FactoryBot.create :employee }
         let(:employee1) { FactoryBot.create :employee }
         let(:employees) {
@@ -533,7 +533,7 @@ describe "Organization API" do
       end
 
       response "200", "return blank array if params is blank" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:employees) {
           {
             employees: []
@@ -549,7 +549,7 @@ describe "Organization API" do
       end
 
       response "200", "admin can add employee" do
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:employee2) { FactoryBot.create :employee }
         let(:employee1) { FactoryBot.create :employee }
         let(:employees) {
@@ -581,7 +581,7 @@ describe "Organization API" do
       end
 
       response "200", "manager of organization can add employee" do
-        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager_token.token}" }
         let(:employee2) { FactoryBot.create :employee }
         let(:employee1) { FactoryBot.create :employee }
         let(:employees) {
@@ -614,10 +614,10 @@ describe "Organization API" do
   end
 
   path "/organizations/{id}/employees/{employee_id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :id, in: :path, type: :integer, description: "Organization ID"
     parameter name: :employee_id, in: :path, type: :integer, description: "Employee ID"
-    let(:"Authorization") { "Bearer #{admin_token.token}" }
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
     let(:id) { division2.id }
     let(:employee_id) { employee.id }
 
@@ -643,7 +643,7 @@ describe "Organization API" do
           message: I18n.t("delete_success")
         }
 
-        let(:"Authorization") { "Bearer #{manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{manager_token.token}" }
 
         run_test! do |response|
           expected = {
@@ -696,7 +696,7 @@ describe "Organization API" do
           }
         }
 
-        let(:"Authorization") { "Bearer #{admin_token.token}" }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:id) { section2.id }
         run_test! do |response|
           message = I18n.t("api_error.invalid_id", model: Employee.name, id: employee_id)
@@ -712,7 +712,7 @@ describe "Organization API" do
           }
         }
 
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = {
             error: {
@@ -734,7 +734,7 @@ describe "Organization API" do
 
         let(:other_manager) { FactoryBot.create :employee, organization: division }
         let(:other_manager_token) { FactoryBot.create :employee_token, employee: other_manager }
-        let(:"Authorization") { "Bearer #{other_manager_token.token}" }
+        let("Emres-Authorization") { "Bearer #{other_manager_token.token}" }
         run_test! do |response|
           expected = {
             error: {
@@ -754,7 +754,7 @@ describe "Organization API" do
           }
         }
 
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
         run_test! do |response|
           expected = {
             error: {

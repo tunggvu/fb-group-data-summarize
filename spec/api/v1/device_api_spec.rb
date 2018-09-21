@@ -23,12 +23,12 @@ describe "Device API" do
   end
 
   path "/devices" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     get "all devices" do
       tags "Devices"
       produces "application/json"
       response "200", "return all devices" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = Entities::Device.represent [device1, device2]
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
@@ -36,7 +36,7 @@ describe "Device API" do
       end
 
       response "401", "unauthorized" do
-        let(:"Authorization") { nil }
+        let("Emres-Authorization") { nil }
         run_test! do |response|
           expected = {
             error: {
@@ -52,7 +52,7 @@ describe "Device API" do
     post "Create device" do
       tags "Devices"
       consumes "application/json"
-      let(:"Authorization") { "Bearer #{po1_token.token}" }
+      let("Emres-Authorization") { "Bearer #{po1_token.token}" }
 
       parameter name: :params, in: :body, schema: {
         type: :object,
@@ -67,7 +67,7 @@ describe "Device API" do
       }
 
       response "401", "member cannot create device" do
-        let(:"Authorization") { nil }
+        let("Emres-Authorization") { nil }
         let(:params) {
           {
             name: "Macbook air 2018",
@@ -208,9 +208,9 @@ describe "Device API" do
   end
 
   path "/devices/{id}" do
-    parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :id, in: :path, type: :integer, description: "Device ID"
-    let(:"Authorization") { "Bearer #{employee_token.token}" }
+    let("Emres-Authorization") { "Bearer #{employee_token.token}" }
     let(:id) { device1.id }
 
     get "Show device's infomation" do
@@ -218,7 +218,7 @@ describe "Device API" do
       consumes "application/json"
 
       response "401", "unauthenticated user" do
-        let(:"Authorization") { "" }
+        let("Emres-Authorization") { "" }
 
         examples "application/json" => {
           error: {
@@ -306,7 +306,7 @@ describe "Device API" do
     patch "Update device's infomation" do
       tags "Devices"
       consumes "application/json"
-      let(:"Authorization") { "Bearer #{po1_token.token}" }
+      let("Emres-Authorization") { "Bearer #{po1_token.token}" }
 
       parameter name: :params, in: :body, schema: {
         type: :object,
@@ -317,7 +317,7 @@ describe "Device API" do
       }
 
       response "401", "unauthorized product_owner/pic" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) { {
           name: "Test name"
         } }
@@ -414,7 +414,7 @@ describe "Device API" do
       end
 
       response "200", "PIC Update device successful" do
-        let(:"Authorization") { "Bearer #{pic1_token.token}" }
+        let("Emres-Authorization") { "Bearer #{pic1_token.token}" }
         let(:params) { {
           os_version: "Ubuntu 18.04"
         } }

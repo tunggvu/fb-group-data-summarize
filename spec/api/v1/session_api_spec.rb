@@ -82,13 +82,13 @@ RSpec.describe "Sessions" do
     delete "logout api" do
       tags "Session"
       consumes "application/json"
-      parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+      parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
 
       response "200", "with valid token" do
         examples "application/json" => {
-          "Authorization": "Bearer your_token"
+          "Emres-Authorization": "Bearer your_token"
         }
-        let("Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
           expected = { message: I18n.t("log_out") }
           expect(response.body).to eq expected.to_json
@@ -96,7 +96,7 @@ RSpec.describe "Sessions" do
       end
 
       response "401", "with invalid token" do
-        let("Authorization") { "" }
+        let("Emres-Authorization") { "" }
         run_test! do |response|
           expect_http_status :unauthorized
         end
@@ -106,7 +106,7 @@ RSpec.describe "Sessions" do
     patch "Change Password API" do
       tags "Session"
       consumes "application/json"
-      parameter name: "Authorization", in: :header, type: :string, description: "Token authorization user"
+      parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
@@ -117,7 +117,7 @@ RSpec.describe "Sessions" do
       }
 
       response "400", "new password is wrong format " do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
             current_password: employee.password,
@@ -142,7 +142,7 @@ RSpec.describe "Sessions" do
       end
 
       response "401", "Unauthorized" do
-        let(:"Authorization") { "Bearer" }
+        let("Emres-Authorization") { "Bearer" }
         let(:params) {
           {
             current_password: "Aa@123456",
@@ -167,7 +167,7 @@ RSpec.describe "Sessions" do
       end
 
       response "400", "Wrong current password" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
             current_password: "Aa@23450",
@@ -192,7 +192,7 @@ RSpec.describe "Sessions" do
       end
 
       response "200", "Change Password success with valid new password" do
-        let(:"Authorization") { "Bearer #{employee_token.token}" }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
             current_password: employee.password,

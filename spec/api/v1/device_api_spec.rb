@@ -15,20 +15,31 @@ describe "Device API" do
   let(:pic1) { create :employee, organization: division }
   let(:pic1_token) { create :employee_token, employee: pic1 }
   let(:po1_token) { create :employee_token, employee: product_owner1 }
-  let!(:device1) { create(:device, :laptop, project: project1) }
-  let!(:device2) { create(:device, :pc, project: project2) }
+  let!(:device1) { create(:device, :laptop, name: "Device 1", pic: product_owner1, project: project1) }
+  let!(:device2) { create(:device, :pc, name: "Device 2", pic: product_owner2, project: project2) }
 
   before do
     device1.update_attributes! pic: pic1
   end
 
+
   path "/devices" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     get "all devices" do
       tags "Devices"
-      produces "application/json"
-      response "200", "return all devices" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+      consumes "application/json"
+
+      parameter name: :query, in: :query, type: :string, description: "Filter device with name, serial code or os version"
+      parameter name: "device_types[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter device with multiple device type"
+      parameter name: :project_id, in: :query, type: :integer, description: "Filter device with project id"
+
+      let(:"Emres-Authorization") { "Bearer #{employee_token.token}" }
+      let(:query) {}
+      let("device_types[]") { [] }
+      let(:project_id) {}
+
+      response "200", "return all devices without params" do
+
         run_test! do |response|
           expected = Entities::Device.represent [device1, device2]
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
@@ -45,6 +56,53 @@ describe "Device API" do
             }
           }
           expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return devices with query param" do
+        let(:query) { device1.name }
+
+        run_test! do |response|
+          expected = Entities::Device.represent [device1]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return devices with params device types" do
+        let("device_types[]") { [device1.device_type_before_type_cast, device2.device_type_before_type_cast] }
+        run_test! do |response|
+          expected = Entities::Device.represent [device1, device2]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return devices with params project_id" do
+        let(:project_id) { device1.project_id }
+
+        run_test! do |response|
+          expected = Entities::Device.represent [device1]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return empty devices" do
+        let(:query) { device1.name }
+        let(:project_id) { 0 }
+        let("device_types[]") { [0] }
+
+        run_test! do |response|
+          expect(JSON.parse response.body).to be_empty
+        end
+      end
+
+      response "200", "return devices with all params" do
+        let(:query) { device1.name }
+        let(:project_id) { device1.project_id }
+        let("device_types[]") { [device1.device_type_before_type_cast] }
+
+        run_test! do |response|
+          expected = Entities::Device.represent [device1]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
     end
@@ -78,12 +136,7 @@ describe "Device API" do
             pic_id: employee.id,
           }
         }
-        examples "application/json" => {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-        }
+
         run_test! do
           expected = {
             error: {
@@ -106,13 +159,7 @@ describe "Device API" do
             pic_id: employee.id
           }
         }
-        examples "application/json" => {
-          id: 1,
-          name: "Macbook Air 2018",
-          serial_code: "2333124444334",
-          device_type: 1,
-          os_version: "Window10",
-        }
+
         run_test! do
           expected = Entities::Device.represent Device.last
           expect(response.body).to eq expected.to_json
@@ -127,12 +174,6 @@ describe "Device API" do
             os_version: "Window10",
             project_id: project1.id,
             pic_id: employee.id
-          }
-        }
-        examples "application/json" =>  {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "name")
           }
         }
 
@@ -157,12 +198,6 @@ describe "Device API" do
             pic_id: employee.id
           }
         }
-        examples "application/json" =>  {
-          error: {
-            code: Settings.error_formatter.http_code.validation_errors,
-            message: I18n.t("api_error.missing_params", params: "project_id")
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -184,13 +219,6 @@ describe "Device API" do
             os_version: "Window10",
             project_id: 0,
             pic_id: employee.id
-          }
-        }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Project.name, id: 0)
           }
         }
 

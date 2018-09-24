@@ -4,11 +4,21 @@ class V1::DeviceAPI < Grape::API
   resource :devices do
     before { authenticate! }
 
-    desc "Get all devices from all projects"
+    desc "Get all devices from all projects by filter"
     paginate per_page: Settings.paginate.per_page.device
-
+    params do
+      optional :query, type: String
+      optional :device_types, type: Array[Integer]
+      optional :project_id, type: Integer
+    end
     get do
-      present paginate(Device.all.includes(:pic, :project)), with: Entities::Device
+      search_params = {
+        name_or_os_version_or_serial_code_cont: params[:query],
+        device_type_in: params[:device_types],
+        project_id_in: params[:project_id],
+      }
+      devices = Device.includes(:pic, :project).ransack(search_params).result(distinct: true)
+      present paginate(devices), with: Entities::Device
     end
 
     route_param :id do

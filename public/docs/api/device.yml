@@ -1,17 +1,48 @@
 /devices:
   get:
-    summary: All devices
+    summary: Return all devices filted
     tags:
     - Devices
+    parameters:
+    - name: query
+      in: query
+      description: Devices name, serial code or Os version
+      schema:
+        type: string
+      example: pc 9
+
+    - name: project_id
+      in: query
+      description: Project ID
+      schema:
+        type: integer
+      example: 1
+
+    - name: device_types[]
+      in: query
+      description: |
+        List device type
+        - 1 : laptop
+        - 2 : pc
+        - 3 : mac_mini
+        - 4 : mac_book
+      schema:
+        collectionFormat: multi
+        type: array
+        items:
+          type: integer
+      example: [1, 2]
+
     responses:
       200:
-        description: Return all devices
+        description: Return all devices filted
         content:
           application/json:
             schema:
               type: array
               items:
                 $ref: '../schema.yml#/Device'
+
       401:
         description: Unauthorized
         content:
@@ -28,25 +59,26 @@
       content:
         application/json:
           schema:
-            type: object
-            name:
-              type: string
-              description: Device name
-            serial_code:
-              type: string
-              description: Serial Code
-            os_version:
-              type: string
-              description: Os Version
-            device_type:
-              type: integer
-              description: Device Type
-            pic_id:
-              type: integer
-              description: Persion In Charge ID
-            project_id:
-              type: integer
-              description: Project ID
+            properties:
+              type: object
+              name:
+                type: string
+                description: Device name
+              serial_code:
+                type: string
+                description: Serial Code
+              os_version:
+                type: string
+                description: Os Version
+              device_type:
+                type: integer
+                description: Device Type
+              pic_id:
+                type: integer
+                description: Persion In Charge ID
+              project_id:
+                type: integer
+                description: Project ID
           example:
             name: Macbook Air 2018
             serial_code: 22243423423

@@ -4004,6 +4004,203 @@
           }
         }
       }
+    },
+    "/devices": {
+      "parameters": [
+        {
+          "name": "Authorization",
+          "in": "header",
+          "type": "string",
+          "description": "Token authorization user"
+        }
+      ],
+      "post": {
+        "summary": "Create device",
+        "tags": [
+          "Devices"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "params",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "serial_code": {
+                  "type": "string"
+                },
+                "device_type": {
+                  "type": "integer"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "os_version": {
+                  "type": "string"
+                },
+                "pic_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "member cannot create device",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Device create successfully",
+            "examples": {
+              "application/json": {
+                "name": "Macbook Air 2018",
+                "serial_code": "22243423423",
+                "device_type": "mac_mini",
+                "os_version": "Window10",
+                "project_id": 1,
+                "pic_id": 1
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed: Project must exist",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 422,
+                  "message": "Validation failed: Project must exist"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Name validation failed - missing",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 400,
+                  "message": "name is missing"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Information of all devices",
+        "tags": [
+          "Devices"
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "type": "string",
+            "description": "Devices name, serial code or Os version"
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "type": "integer",
+            "description": "Project ID"
+          },
+          {
+            "name": "device_types[]",
+            "in": "query",
+            "type": "array",
+            "collectionFormat": "multi",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Filter devices with device types"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all devices filted",
+            "examples": {
+              "application/json": [
+                {
+                  "id": 194,
+                  "name": "Laptop dell 111",
+                  "serial_code": "123131313",
+                  "device_type": "laptop",
+                  "os_version": "Window 10",
+                  "pic": {
+                    "id": 10,
+                    "organization_id": 9,
+                    "name": "Maximo Friesen",
+                    "employee_code": "B1210009",
+                    "email": "maximo.friesen@framgia.com",
+                    "birthday": "22/4/1995",
+                    "phone": "0987654321",
+                    "avatar": "http://localhost:3000/uploads/avatar.png"
+                  },
+                  "project": {
+                    "id": 3,
+                    "name": "Ressie Stark",
+                    "description": "null",
+                    "starts_on": "2018-09-12",
+                    "logo": "http://localhost:3000/uploads/avatar.png"
+                  }
+                },
+                {
+                  "id": 99,
+                  "name": "MacMini 18",
+                  "serial_code": "1312321321",
+                  "device_type": "laptop",
+                  "os_version": "MacOs 10",
+                  "pic": {
+                    "id": 10,
+                    "organization_id": 9,
+                    "name": "Maximo Friesen",
+                    "employee_code": "B1210009",
+                    "email": "maximo.friesen@framgia.com",
+                    "birthday": "22/4/1995",
+                    "phone": "0987654321",
+                    "avatar": "http://localhost:3000/uploads/avatar.png"
+                  },
+                  "project": {
+                    "id": 1,
+                    "name": "Connor Jones",
+                    "description": "null",
+                    "starts_on": "2018-09-12",
+                    "logo": "http://localhost:3000/uploads/avatar.png"
+                  }
+                }
+              ]
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "examples": {
+              "application/json": {
+                "error": {
+                  "code": 401,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

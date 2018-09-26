@@ -73,3 +73,5 @@ paths:
     $ref: api/requirement.yml#/~1phases~1{phase_id}~1requirements~1{id}
   /session:
     $ref: api/session.yml#/~1session
+  /sprints/{id}/employees:
+    $ref: api/sprint.yml#/~1sprints~1{id}~1employees

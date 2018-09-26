@@ -369,3 +369,52 @@
                   error:
                     code: 401
                     message: unauthorized
+/sprints/{id}/employees:
+  parameters:
+  - name: id
+    in: path
+    schema:
+      type: integer
+    description: Sprints ID
+    required: true
+    example: 1
+  get:
+    summary: Get employee offort information specific sprint
+    tags:
+    - Sprints
+    responses:
+      200:
+        description: return specific sprint
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schema.yml#/EmployeeLevel'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              employee not in project and can't view:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+              not login:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+      404:
+        description: sprint not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Sprint with 'id'=0

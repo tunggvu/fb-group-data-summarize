@@ -75,6 +75,21 @@ class V1::SprintAPI < Grape::API
     end
   end
 
+  resource :sprints do
+    before { authenticate! }
+
+    route_param :id do
+      resource :employees do
+        get do
+          sprint = Sprint.find params[:id]
+          authorize sprint.project, :view?
+          employee_lvs = sprint.employee_levels.includes(:employee, level: :skill)
+          present employee_lvs, with: Entities::EmployeeLevel
+        end
+      end
+    end
+  end
+
   helpers do
     def create_efforts_attributes_params(params)
       employee_levels = EmployeeLevel.find_by_employee_and_level(params[:efforts])

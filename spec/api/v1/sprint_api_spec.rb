@@ -26,6 +26,8 @@ describe "SprintAPI" do
   let!(:sprint3) { create :sprint, project: project, phase: phase, starts_on: 9.days.from_now, ends_on: 12.days.from_now }
   let(:level) { create :level }
 
+  let(:employee_level) { FactoryBot.create :employee_level, employee: employee, level: level }
+
   path "/projects/{project_id}/phases/{phase_id}/sprints" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
@@ -607,6 +609,60 @@ describe "SprintAPI" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
+
+  path "/sprints/{id}/employees" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Sprint ID"
+    let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
+    let(:project_id) { project.id }
+    let(:phase_id) { phase.id }
+    let(:id) { sprint2.id }
+
+    get "get information specific sprint" do
+      tags "Sprints"
+      consumes "application/json"
+
+      response "404", "sprint not found" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Sprint.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return employee offort information specific sprint" do
+        let(:id) { sprint1.id }
+        let!(:effort) { FactoryBot.create :effort, sprint: sprint1, employee_level: employee_level, effort: 80 }
+
+        run_test! do
+          expected = Entities::EmployeeLevel.represent [employee_level]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "401", "employee isn't in project cannot get information specific sprint" do
+        let(:employee) { FactoryBot.create :employee }
+        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.not_authorized_error,
               message: I18n.t("api_error.unauthorized")
             }
           }

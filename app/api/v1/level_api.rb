@@ -2,13 +2,12 @@
 
 class V1::LevelAPI < Grape::API
   resource :skills do
-    before do
-      authenticate!
-      authorize :organization, :admin?
-    end
-
     route_param :skill_id do
-      before { @skill = Skill.find params[:skill_id] }
+      before do
+        authenticate!
+        authorize :organization, :admin?
+        @skill = Skill.find params[:skill_id]
+      end
 
       resource :levels do
         desc "Create new level"
@@ -22,7 +21,9 @@ class V1::LevelAPI < Grape::API
         end
 
         route_param :id do
-          before { @level = @skill.levels.find params[:id] }
+          before do
+            @level = @skill.levels.find params[:id]
+          end
 
           desc "Update a level"
           params do

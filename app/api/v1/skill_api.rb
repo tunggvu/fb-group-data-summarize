@@ -2,18 +2,15 @@
 
 class V1::SkillAPI < Grape::API
   resource :skills do
-    before do
-      authenticate!
-      authorize :skill, :admin?
-    end
+    before { authenticate! }
 
     desc "Show all skill available"
     paginate per_page: Settings.paginate.per_page.skill
 
     get do
+      authorize :organization, :executive?
       present paginate(Skill.includes(:levels)), with: Entities::Skill
     end
-
     desc "Create new skill"
     params do
       requires :name, type: String, allow_blank: false
@@ -25,6 +22,7 @@ class V1::SkillAPI < Grape::API
       end
     end
     post do
+      authorize :skill, :admin?
       save_params = declared params
       save_params[:levels_attributes] = save_params[:levels]
       save_params.delete :levels
@@ -32,6 +30,7 @@ class V1::SkillAPI < Grape::API
     end
 
     route_param :id do
+      before { authorize :skill, :admin? }
       desc "Update skill"
       params do
         requires :name, type: String

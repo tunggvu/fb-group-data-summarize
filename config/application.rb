@@ -47,6 +47,10 @@ module Emres
             methods: [:get, :post, :options, :delete, :put, :patch],
             expose: ["X-Page", "X-Per-Page", "X-Total"]
         end
+        allow do
+          origins ENV["FRONTEND_HOST"]
+          resource "/uploads/*", headers: :any, methods: :get
+        end
       end
     end
 

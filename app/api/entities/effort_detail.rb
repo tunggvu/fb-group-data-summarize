@@ -2,7 +2,10 @@
 
 module Entities
   class EffortDetail < Grape::Entity
-    expose :effort, :sprint_id, :employee_level_id
+    expose :effort
+    expose :project_name do |effort|
+      effort.sprint.project.name
+    end
     expose :employee_id do |effort|
       effort.employee_level.employee_id
     end

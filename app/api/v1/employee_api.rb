@@ -105,6 +105,13 @@ class V1::EmployeeAPI < Grape::API
         @employee.destroy!
         { message: I18n.t("delete_success") }
       end
+
+      resource :projects_owned do
+        desc "List project that employee is product owner"
+        get do
+          present @employee.projects, with: Entities::Project
+        end
+      end
     end
   end
 end

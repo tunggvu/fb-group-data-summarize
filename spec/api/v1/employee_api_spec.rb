@@ -676,7 +676,41 @@ describe "Employee API" do
           expect(response.body).to eq expected.to_json
         end
       end
+    end
+  end
 
+  path "/employees/{id}/projects_owned" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
+    get "get project that employee is product owner" do
+      tags "Employees"
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :integer, description: "Employees ID"
+
+      response "200", "return all project that employee is product owner" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+        let(:id) { employee.id }
+
+        run_test! do
+          expected = Entities::Project.represent([project])
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "invalid id" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
   end
 end

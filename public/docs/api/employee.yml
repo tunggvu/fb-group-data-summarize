@@ -459,3 +459,66 @@
                   error:
                     code: 404
                     message: Couldn't find Employee with 'id'=0
+
+/employees/{id}/projects_owned:
+  parameters:
+  - name: id
+    in: path
+    schema:
+      type: integer
+    description: Employee ID
+    required: true
+  get:
+    summary: List project that employee is product owner
+    tags:
+    - Employees
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Return project that employee is product owner
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Project'
+            example:
+              - id: 1
+                name: Antonetta Vandervort
+                description:
+                starts_on: '2018-09-18'
+                logo: http://localhost:3000/uploads/avatar.png
+                product_owner:
+                  id: 12
+                  organization_id: 11
+                  name: Dejah Kunde
+                  employee_code: B1210011
+                  email: dejah.kunde@framgia.com
+                  birthday:
+                  phone: 0987654321
+                  avatar: http://localhost:3000/uploads/avatar.png
+
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+            examples:
+              invalid_token:
+                value:
+                  error:
+                    code: 401
+                    message: unauthorized
+
+      404:
+        description: Employee not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              employee:
+                value:
+                  error:
+                    code: 404
+                    message: Couldn't find Employee with 'id'=0

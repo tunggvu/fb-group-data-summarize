@@ -10,12 +10,14 @@ class V1::DeviceAPI < Grape::API
       optional :query, type: String
       optional :device_types, type: Array[Integer]
       optional :project_id, type: Integer
+      optional :organization_id, type: Integer
     end
     get do
       search_params = {
         name_or_os_version_or_serial_code_cont: params[:query],
         device_type_in: params[:device_types],
         project_id_in: params[:project_id],
+        pic_organization_id_in: params[:organization_id],
       }
       devices = Device.includes(:pic, :project).ransack(search_params).result(distinct: true)
       present paginate(devices), with: Entities::Device

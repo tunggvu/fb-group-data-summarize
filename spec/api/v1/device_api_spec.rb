@@ -32,11 +32,13 @@ describe "Device API" do
       parameter name: :query, in: :query, type: :string, description: "Filter device with name, serial code or os version"
       parameter name: "device_types[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter device with multiple device type"
       parameter name: :project_id, in: :query, type: :integer, description: "Filter device with project id"
+      parameter name: :organization_id, in: :query, type: :integer, description: "Filter device with organization id of pic"
 
       let("Emres-Authorization") { "Bearer #{employee_token.token}" }
       let(:query) {}
       let("device_types[]") { [] }
       let(:project_id) {}
+      let(:organization_id) {}
 
       include_examples "unauthenticated"
 
@@ -74,6 +76,15 @@ describe "Device API" do
         end
       end
 
+      response "200", "return devices with params organization_id" do
+        let(:organization_id) { division.id }
+
+        run_test! do |response|
+          expected = Entities::Device.represent [device1, device2]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
       response "200", "return empty devices" do
         let(:query) { device1.name }
         let(:project_id) { 0 }
@@ -88,6 +99,8 @@ describe "Device API" do
         let(:query) { device1.name }
         let(:project_id) { device1.project_id }
         let("device_types[]") { [device1.device_type_before_type_cast] }
+        let(:organization_id) { division.id }
+
 
         run_test! do |response|
           expected = Entities::Device.represent [device1]

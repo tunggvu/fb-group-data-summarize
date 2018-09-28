@@ -33,6 +33,13 @@
           type: integer
       example: [1, 2]
 
+    - name: organization_id
+      in: query
+      description: Filter by organization ID of Pic
+      schema:
+        type: integer
+      example: 1
+
     responses:
       200:
         description: Return all devices filted

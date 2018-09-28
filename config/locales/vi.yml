@@ -1,5 +1,14 @@
 vi:
   hello: "Hello world"
+  activerecord:
+    errors:
+      messages:
+        restrict_dependent_destroy:
+          has_one: "Không thể xóa bản ghi vì có trong một %{record}"
+          has_many: "Không thể xóa bản ghi vì có trong %{record}"
+    attributes:
+      level:
+        requirements: Yêu cầu dự án
   grape:
     errors:
       messages:

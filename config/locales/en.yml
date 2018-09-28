@@ -1,5 +1,14 @@
 en:
   hello: "Hello world"
+  activerecord:
+    errors:
+      messages:
+        restrict_dependent_destroy:
+          has_one: "Cannot delete record because a dependent %{record} exists"
+          has_many: "Cannot delete record because dependent %{record} exist"
+    attributes:
+      level:
+        requirements: requirements
   grape:
     errors:
       format: ! "%{attributes} %{message}"

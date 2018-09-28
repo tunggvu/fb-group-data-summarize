@@ -28,8 +28,12 @@ module BaseAPI
     end
 
     rescue_from ActiveRecord::UnknownAttributeError, ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid,
-      JSON::ParserError, ActiveRecord::RecordNotDestroyed do |e|
+      JSON::ParserError do |e|
       raise_errors e.as_json, Settings.error_formatter.http_code.data_operation
+    end
+
+    rescue_from ActiveRecord::RecordNotDestroyed do |e|
+      raise_errors e.record.errors.full_messages.join(", "), Settings.error_formatter.http_code.data_operation
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|

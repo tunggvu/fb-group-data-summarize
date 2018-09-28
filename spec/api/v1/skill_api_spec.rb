@@ -308,7 +308,7 @@ describe "Skill API" do
           expected = {
             error: {
               code: Settings.error_formatter.http_code.data_operation,
-              message: "Failed to destroy the record"
+              message: I18n.t("activerecord.errors.messages.restrict_dependent_destroy.has_many", record: Level.human_attribute_name(:requirements).downcase)
             }
           }
           expect(response.body).to eq expected.to_json

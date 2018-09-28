@@ -33,6 +33,13 @@ describe "Level API" do
         required: [:name, :rank]
       }
 
+      let(:params) { {
+        name: "Master",
+        rank: 100
+      } }
+
+      include_examples "unauthenticated"
+
       response "400", "missing parameter 'name'" do
         let(:params) { {
           rank: 100
@@ -66,30 +73,8 @@ describe "Level API" do
         end
       end
 
-      response "401", "unauthenticated user" do
-        let(:params) { {
-          name: "Master",
-          rank: 100
-        } }
-        let("Emres-Authorization") { "" }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
-              message: "unauthorized"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "employee cannot create level" do
+      response "403", "employee cannot create level" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { {
-          name: "Master",
-          rank: 100
-        } }
 
         run_test! do
           expected = {
@@ -104,10 +89,6 @@ describe "Level API" do
 
       response "404", "skill not found" do
         let(:skill_id) { 0 }
-        let(:params) { {
-          name: "Master",
-          rank: 100
-        } }
 
         run_test! do
           expected = {
@@ -121,11 +102,6 @@ describe "Level API" do
       end
 
       response "201", "level created" do
-        let(:params) { {
-          name: "Master",
-          rank: 100
-        } }
-
         run_test! do
           expected = Entities::Level.represent skill.levels.last
           expect(response.body).to eq expected.to_json
@@ -156,6 +132,13 @@ describe "Level API" do
       }
 
       let(:id) { level2.id }
+      let(:params) { {
+        name: "Master",
+        rank: 100,
+        logo: "#"
+      } }
+
+      include_examples "unauthenticated"
 
       response "400", "missing parameter 'name'" do
         let(:params) { {
@@ -190,12 +173,8 @@ describe "Level API" do
         end
       end
 
-      response "401", "employee cannot update level" do
+      response "403", "employee cannot update level" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { {
-          name: "Master",
-          rank: 100
-        } }
 
         run_test! do
           expected = {
@@ -208,31 +187,7 @@ describe "Level API" do
         end
       end
 
-      response "401", "unauthenticated user" do
-        let(:params) { {
-          name: "Master",
-          rank: 100
-        } }
-        let("Emres-Authorization") { "" }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
-              message: "unauthorized"
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
       response "200", "level updated" do
-        let(:params) { {
-          name: "Master",
-          rank: 100,
-          logo: "#"
-        } }
-
         run_test! do
           expected = Entities::Level.represent level2.reload
           expect(response.body).to eq expected.to_json
@@ -245,7 +200,7 @@ describe "Level API" do
       consumes "application/json"
       let(:id) { level3.id }
 
-      response "401", "employee cannot delete level" do
+      response "403", "employee cannot delete level" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do

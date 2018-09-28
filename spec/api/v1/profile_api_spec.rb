@@ -14,22 +14,11 @@ describe "Profile API" do
       tags "Profiles"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "200", "Return profile of current user" do
         run_test! do
           expected = Entities::Employee.represent current_user
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "Unauthenticated user" do
-        let("Emres-Authorization") { "" }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
           expect(response.body).to eq expected.to_json
         end
       end
@@ -48,34 +37,18 @@ describe "Profile API" do
         }
       }
 
-      response "200", "Updated profile" do
-        let(:profile) {
-          {
-            phone: "0123456789",
-            avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
-          }
+      let(:profile) {
+        {
+          phone: "0123456789",
+          avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
         }
+      }
+
+      include_examples "unauthenticated"
+
+      response "200", "Updated profile" do
         run_test! do
           expected = Entities::Employee.represent current_user.reload
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "Unauthenticated user" do
-        let("Emres-Authorization") { "" }
-        let(:profile) {
-          {
-            phone: "0123456789",
-            avatar: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png"
-          }
-        }
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
           expect(response.body).to eq expected.to_json
         end
       end
@@ -86,6 +59,7 @@ describe "Profile API" do
             phone: "aaa123456"
           }
         }
+
         run_test! do
           expected = {
             error: {

@@ -243,23 +243,7 @@ describe "Employee API" do
         end
       end
 
-      response "401", "unauthorized" do
-        let("Emres-Authorization") { "" }
-        let(:query) { employee.name }
-        let(:organization_id) { employee.organization_id }
-        let(:skill_id) { skill.id }
-        let("level_ids[]") { [level.id, level2.id] }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
+      include_examples "unauthenticated"
 
       response "404", "return error when pass organization not existed to params organization_id " do
         let(:organization_id) { 0 }
@@ -305,7 +289,7 @@ describe "Employee API" do
         }
       }
 
-      response "401", "member cannot create employee" do
+      response "403", "member cannot create employee" do
         let(:params) {
           {
             name: "New employee",
@@ -478,7 +462,7 @@ describe "Employee API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
-      response "401", "member cannot delete" do
+      response "403", "member cannot delete" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         let(:id) { employee.id }
@@ -538,6 +522,8 @@ describe "Employee API" do
       tags "Employees"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "404", "invalid employee's id" do
         let(:id) { 0 }
 
@@ -552,21 +538,7 @@ describe "Employee API" do
         end
       end
 
-      response "401", "unauthenticated" do
-        let("Emres-Authorization") {}
-
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "user can't view detail effort of employee in other project" do
+      response "403", "user can't view detail effort of employee in other project" do
         let(:another_employee) { FactoryBot.create :employee }
         let(:another_employee_token) { FactoryBot.create :employee_token, employee: another_employee }
         let("Emres-Authorization") { "Bearer #{another_employee_token.token}" }
@@ -576,7 +548,7 @@ describe "Employee API" do
         run_test! do |response|
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
+              code: Settings.error_formatter.http_code.unauthorized,
               message: I18n.t("api_error.unauthorized")
             }
           }

@@ -41,19 +41,7 @@ describe "Project API" do
       let(:organization_id) {}
       consumes "application/json"
 
-      response "401", "unauthorized" do
-        let("Emres-Authorization") { "Bearer" }
-
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
+    include_examples "unauthenticated"
 
       response "200", "Admin can see all projects" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
@@ -192,7 +180,7 @@ describe "Project API" do
         end
       end
 
-      response "401", "Employee cannot create" do
+      response "403", "Employee cannot create" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         let(:params) {
@@ -270,7 +258,7 @@ describe "Project API" do
         end
       end
 
-      response "401", "Employee cannot see project that employee does not belongs to" do
+      response "403", "Employee cannot see project that employee does not belongs to" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { other_project.id }
 
@@ -345,7 +333,7 @@ describe "Project API" do
         end
       end
 
-      response "401", "manager, but not manage product owner cannot update project that product owner created" do
+      response "403", "manager, but not manage product owner cannot update project that product owner created" do
         let("Emres-Authorization") { "Bearer #{other_section_manager_token.token}" }
         let(:id) { other_project.id }
         let(:params) {
@@ -377,7 +365,7 @@ describe "Project API" do
         end
       end
 
-      response "401", "Employee cannot update" do
+      response "403", "Employee cannot update" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:id) { project.id }
         let(:params) {
@@ -424,7 +412,7 @@ describe "Project API" do
         end
       end
 
-      response "401", "employee cannot delete project" do
+      response "403", "employee cannot delete project" do
         let(:id) { project.id }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 

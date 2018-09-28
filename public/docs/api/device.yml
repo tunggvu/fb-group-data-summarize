@@ -43,7 +43,7 @@
               items:
                 $ref: '../schema.yml#/Device'
 
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -110,28 +110,28 @@
                   error:
                     code: 400
                     message: project_id is missing
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Error'
+              $ref: '../schema.yml#/UnauthorizedError'
             examples:
               no_authorization:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               employee:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               po_other_project:
                 summary: po of other project
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       404:
         description: Device not found
@@ -162,7 +162,7 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Device'
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -199,7 +199,7 @@
             name: Macbook Air 2018
             os_version: OS X 10.9
     responses:
-      401:
+      403:
         description: "Unauthorized"
         content:
           application/json:

@@ -26,6 +26,9 @@ describe "Organization API" do
     get "organization tree" do
       tags "Organizations"
       consumes "application/json"
+
+      include_examples "unauthenticated"
+
       response "200", "return application tree" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
@@ -35,21 +38,6 @@ describe "Organization API" do
             Entities::BaseOrganization.represent(division2)
           ]
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
-        end
-      end
-
-      response "401", "unauthorized" do
-
-        let("Emres-Authorization") { nil }
-        let(:id) { section.id }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
         end
       end
     end
@@ -100,7 +88,7 @@ describe "Organization API" do
         end
       end
 
-      response "401", "unauthorized" do
+      response "403", "unauthorized" do
 
         let(:organization) {
           {
@@ -204,7 +192,7 @@ describe "Organization API" do
         end
       end
 
-      response "401", "unauthorized" do
+      response "403", "unauthorized" do
 
         let(:organization) {
           {
@@ -268,7 +256,7 @@ describe "Organization API" do
         end
       end
 
-      response "401", "unauthorized" do
+      response "403", "unauthorized" do
 
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
         let(:id) { section.id }
@@ -319,7 +307,7 @@ describe "Organization API" do
       }
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
-      response "401", "member cannot add employee" do
+      response "403", "member cannot add employee" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:employee2) { FactoryBot.create :employee }
         let(:employee1) { FactoryBot.create :employee }
@@ -340,7 +328,7 @@ describe "Organization API" do
         end
       end
 
-      response "401", "manager of other organization cannot add employee" do
+      response "403", "manager of other organization cannot add employee" do
         let(:manager2) { FactoryBot.create :employee, organization: division }
         let(:manager2_token) { FactoryBot.create :employee_token, employee: manager2 }
 
@@ -434,6 +422,8 @@ describe "Organization API" do
       tags "Organizations"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "200", "admin can delete employee" do
 
         run_test! do |response|
@@ -489,7 +479,7 @@ describe "Organization API" do
         end
       end
 
-      response "401", "employee cannot delete employee" do
+      response "403", "employee cannot delete employee" do
 
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
@@ -503,25 +493,11 @@ describe "Organization API" do
         end
       end
 
-      response "401", "manager of other organization cannot delete employee" do
+      response "403", "manager of other organization cannot delete employee" do
 
         let(:other_manager) { FactoryBot.create :employee, organization: division }
         let(:other_manager_token) { FactoryBot.create :employee_token, employee: other_manager }
         let("Emres-Authorization") { "Bearer #{other_manager_token.token}" }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "unauthorized" do
-
-        let("Emres-Authorization") { "" }
         run_test! do |response|
           expected = {
             error: {

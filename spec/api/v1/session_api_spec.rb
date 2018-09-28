@@ -119,8 +119,8 @@ RSpec.describe "Sessions" do
         end
       end
 
-      response "401", "Unauthorized" do
-        let("Emres-Authorization") { "Bearer" }
+      response "401", "Unauthenticated" do
+        let("Emres-Authorization") { "" }
         let(:params) {
           {
             current_password: "Aa@123456",
@@ -131,8 +131,8 @@ RSpec.describe "Sessions" do
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
+              code: Settings.error_formatter.http_code.unauthenticated,
+              message: I18n.t("api_error.unauthenticated")
             }
           }
           expect(response.body).to eq expected.to_json

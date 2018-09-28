@@ -40,6 +40,8 @@ describe "Effort API" do
       tags "Efforts"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "404", "cannot find project id" do
         let(:project_id) { 0 }
 
@@ -68,19 +70,6 @@ describe "Effort API" do
         end
       end
 
-      response "401", "user hasn't logged in cannot view effort" do
-        let("Emres-Authorization") {}
-
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-        end
-      end
-
       response "200", "members in project can view effort" do
         let("Emres-Authorization") { "Bearer #{member_token.token}" }
 
@@ -91,7 +80,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "members not in project cannot view effort" do
+      response "403", "members not in project cannot view effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|
@@ -159,6 +148,8 @@ describe "Effort API" do
         }
       end
 
+      include_examples "unauthenticated"
+
       response "201", "PO can create effort" do
 
         run_test! do |response|
@@ -203,21 +194,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "user hasn't logged in cannot create effort" do
-        let("Emres-Authorization") { "" }
-
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "employee cannot create effort" do
+      response "403", "employee cannot create effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|
@@ -231,7 +208,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "manager in other division cannot create effort" do
+      response "403", "manager in other division cannot create effort" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
         run_test! do |response|
@@ -424,7 +401,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "employee cannot update effort" do
+      response "403", "employee cannot update effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
@@ -442,7 +419,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "manager in other division cannot update effort" do
+      response "403", "manager in other division cannot update effort" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
         let(:params) {
           {
@@ -466,6 +443,8 @@ describe "Effort API" do
       tags "Efforts"
       consumes "application/json"
       let(:id) { effort.id }
+
+      include_examples "unauthenticated"
 
       response "200", "Admin can delete an effort" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
@@ -495,21 +474,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "user hasn't logged in cannot delete effort" do
-        let("Emres-Authorization") {}
-
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "employee cannot delete an effort" do
+      response "403", "employee cannot delete an effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|
@@ -523,7 +488,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "manager of other division cannot delete an effort" do
+      response "403", "manager of other division cannot delete an effort" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
         run_test! do |response|
@@ -554,6 +519,8 @@ describe "Effort API" do
       let(:employee_id) { member_project.id }
       let(:start_time) { 5.days.ago }
       let(:end_time) { 5.days.from_now }
+
+      include_examples "unauthenticated"
 
       response "200", "return detail effort with correct params" do
 
@@ -591,21 +558,7 @@ describe "Effort API" do
         end
       end
 
-      response "401", "unauthenticated" do
-        let("Emres-Authorization") {}
-
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "user can't view effort of employee in other project" do
+      response "403", "user can't view effort of employee in other project" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|

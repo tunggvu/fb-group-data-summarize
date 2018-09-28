@@ -1,21 +1,3 @@
-UnauthorizedError:
-  type: object
-  properties:
-    error:
-      type: object
-      properties:
-        code:
-          type: integer
-          example: 401
-        message:
-          type: string
-          example: unauthorized
-SuccessMessage:
-  type: object
-  properties:
-    message:
-      type: string
-      example: Delete successfully
 Error:
   type: object
   properties:
@@ -26,6 +8,24 @@ Error:
           type: integer
         message:
           type: string
+UnauthorizedError:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 403
+        message:
+          type: string
+          example: unauthorized
+SuccessMessage:
+  type: object
+  properties:
+    message:
+      type: string
+      example: Delete successfully
 Employee:
   type: object
   properties:

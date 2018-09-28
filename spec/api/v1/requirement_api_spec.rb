@@ -24,6 +24,8 @@ describe "Requirement API" do
       tags "Requirements"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "404", "Phase not found" do
         let(:phase_id) { 0 }
         run_test! do
@@ -44,22 +46,7 @@ describe "Requirement API" do
         end
       end
 
-      response "401", "Unauthorize token" do
-        let(:phase_id) { 0 }
-        let("Emres-Authorization") { "Bearer " }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "employee isn't in project cannot get all requirements" do
+      response "403", "employee isn't in project cannot get all requirements" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -90,7 +77,7 @@ describe "Requirement API" do
         required: [:level_id, :phase_id, :quantity]
       }
 
-      response "401", "employee cannot create requirement" do
+      response "403", "employee cannot create requirement" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -107,7 +94,7 @@ describe "Requirement API" do
         end
       end
 
-      response "401", "manager in other division cannot create requirement" do
+      response "403", "manager in other division cannot create requirement" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
@@ -193,6 +180,10 @@ describe "Requirement API" do
       tags "Requirements"
       consumes "application/json"
 
+      let(:id) { requirement.id }
+
+      include_examples "unauthenticated"
+
       response "404", "requirement not found" do
         let(:id) { 0 }
 
@@ -208,34 +199,16 @@ describe "Requirement API" do
       end
 
       response "200", "return specific requirement in phase" do
-        let(:id) { requirement.id }
-
         run_test! do
           expected = Entities::Requirement.represent(requirement)
           expect(response.body).to eq expected.to_json
         end
       end
 
-      response "401", "Unauthorize token" do
-        let(:id) { requirement.id }
-        let("Emres-Authorization") { "Bearer " }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "employee isn't in project cannot get requirement" do
+      response "403", "employee isn't in project cannot get requirement" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { requirement.id }
 
         run_test! do
           expected = {
@@ -264,7 +237,7 @@ describe "Requirement API" do
 
       let(:id) { requirement.id }
 
-      response "401", "employee cannot update requirement" do
+      response "403", "employee cannot update requirement" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -281,7 +254,7 @@ describe "Requirement API" do
         end
       end
 
-      response "401", "manager in other division cannot update requirement" do
+      response "403", "manager in other division cannot update requirement" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
@@ -361,7 +334,7 @@ describe "Requirement API" do
 
       let(:id) { requirement.id }
 
-      response "401", "employee cannot delete requirement" do
+      response "403", "employee cannot delete requirement" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -377,7 +350,7 @@ describe "Requirement API" do
         end
       end
 
-      response "401", "manager in other division cannot delete requirement" do
+      response "403", "manager in other division cannot delete requirement" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }

@@ -37,7 +37,7 @@ describe "Phase API" do
         end
       end
 
-      response "401", "employee not in project cannot view all phases" do
+      response "403", "employee not in project cannot view all phases" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -76,7 +76,7 @@ describe "Phase API" do
         required: [:name]
       }
 
-      response "401", "employee cannot create phase" do
+      response "403", "employee cannot create phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -93,7 +93,7 @@ describe "Phase API" do
         end
       end
 
-      response "401", "manager in other division cannot create phase" do
+      response "403", "manager in other division cannot create phase" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
@@ -222,7 +222,7 @@ describe "Phase API" do
         end
       end
 
-      response "401", "employee isn't in project cannot view phase" do
+      response "403", "employee isn't in project cannot view phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -256,7 +256,7 @@ describe "Phase API" do
 
       let(:id) { phase1.id }
 
-      response "401", "employee cannot update phase" do
+      response "403", "employee cannot update phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -273,7 +273,7 @@ describe "Phase API" do
         end
       end
 
-      response "401", "manager in other division cannot update phase" do
+      response "403", "manager in other division cannot update phase" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
@@ -379,7 +379,7 @@ describe "Phase API" do
 
       let(:id) { phase1.id }
 
-      response "401", "employee cannot delete phase" do
+      response "403", "employee cannot delete phase" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -396,7 +396,7 @@ describe "Phase API" do
         end
       end
 
-      response "401", "manager in other division cannot delete phase" do
+      response "403", "manager in other division cannot delete phase" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }

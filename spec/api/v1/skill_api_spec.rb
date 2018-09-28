@@ -22,21 +22,9 @@ describe "Skill API" do
       tags "Skills"
       consumes "application/json"
 
-      response "401", "unauthenticated user" do
-        let("Emres-Authorization") { "" }
+      include_examples "unauthenticated"
 
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "401", "unauthorized user" do
+      response "403", "unauthorized user" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do
@@ -75,7 +63,6 @@ describe "Skill API" do
         }
       }
 
-      response "201", "created successfully" do
         let(:params) {
           {
             name: "Ruby on Rails",
@@ -95,6 +82,9 @@ describe "Skill API" do
           }
         }
 
+      include_examples "unauthenticated"
+
+      response "201", "created successfully" do
         run_test! do
           expected = Entities::Skill.represent Skill.last, only: [:id, :name, :logo, :levels]
           expect(response.body).to eq expected.to_json
@@ -102,23 +92,7 @@ describe "Skill API" do
       end
 
       response "400", "missing params name" do
-        let(:params) {
-          {
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                name: "Something",
-                logo: "#",
-                rank: 123
-              },
-              {
-                name: "Something else",
-                logo: "#",
-                rank: 456
-              }
-            ]
-          }
-        }
+        before { params.delete(:name) }
 
         run_test! do
           expected = {
@@ -132,24 +106,7 @@ describe "Skill API" do
       end
 
       response "400", "empty value for params[:name]" do
-        let(:params) {
-          {
-            name: "",
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                name: "Something",
-                logo: "#",
-                rank: 123
-              },
-              {
-                name: "Something else",
-                logo: "#",
-                rank: 456
-              }
-            ]
-          }
-        }
+        before { params[:name] = "" }
 
         run_test! do
           expected = {
@@ -187,28 +144,32 @@ describe "Skill API" do
         }
       }
 
+      let(:id) { skill.id }
+      let(:params) {
+        {
+          name: "Ruby on Rails",
+          logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+          levels: [
+            {
+              id: level.id,
+              name: level.name,
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              rank: level.rank
+            },
+            {
+              id: level2.id,
+              name: level2.name,
+              logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
+              rank: level2.rank
+            }
+          ]
+        }
+      }
+
+      include_examples "unauthenticated"
+
       response "404", "invalid id" do
         let(:id) { 0 }
-        let(:params) {
-          {
-            name: "Ruby on Rails",
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                id: level.id,
-                name: level.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level.rank
-              },
-              {
-                id: level2.id,
-                name: level2.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level2.rank
-              }
-            ]
-          }
-        }
 
         run_test! do
           expected = {
@@ -222,26 +183,7 @@ describe "Skill API" do
       end
 
       response "400", "missing params name" do
-        let(:id) { skill.id }
-        let(:params) {
-          {
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                id: level.id,
-                name: level.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level.rank
-              },
-              {
-                id: level2.id,
-                name: level2.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level2.rank
-              }
-            ]
-          }
-        }
+        before { params.delete(:name) }
 
         run_test! do
           expected = {
@@ -255,7 +197,6 @@ describe "Skill API" do
       end
 
       response "400", "missing params[:levels][:name]" do
-        let(:id) { skill.id }
         let(:params) {
           {
             name: "",
@@ -288,27 +229,7 @@ describe "Skill API" do
       end
 
       response "422", "empty value for params[:name]" do
-        let(:id) { skill.id }
-        let(:params) {
-          {
-            name: "",
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                id: level.id,
-                name: level.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level.rank
-              },
-              {
-                id: level2.id,
-                name: level2.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level2.rank
-              }
-            ]
-          }
-        }
+        before { params[:name] = "" }
 
         run_test! do
           expected = {
@@ -322,33 +243,6 @@ describe "Skill API" do
       end
 
       response "200", "update skill with new level successfully" do
-        let(:id) { skill.id }
-        let(:params) {
-          {
-            name: "Ruby on Rails",
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                id: level.id,
-                name: level.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level.rank
-              },
-              {
-                id: level2.id,
-                name: level2.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level2.rank
-              },
-              {
-                name: "level name",
-                logo: "#",
-                rank: 20
-              }
-            ]
-          }
-        }
-
         run_test! do
           expected = Entities::Skill.represent skill.reload
           expect(response.body).to eq expected.to_json
@@ -356,7 +250,6 @@ describe "Skill API" do
       end
 
       response "200", "delete levels when update skill successfully" do
-        let(:id) { skill.id }
         let(:params) {
           {
             name: "Ruby on Rails",
@@ -393,28 +286,6 @@ describe "Skill API" do
       end
 
       response "200", "update successfully" do
-        let(:id) { skill.id }
-        let(:params) {
-          {
-            name: "Ruby on Rails",
-            logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-            levels: [
-              {
-                id: level.id,
-                name: level.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level.rank
-              },
-              {
-                id: level2.id,
-                name: level2.name,
-                logo: "https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png",
-                rank: level2.rank
-              }
-            ]
-          }
-        }
-
         run_test! do
           expected = Entities::Skill.represent skill.reload
           expect(response.body).to eq expected.to_json
@@ -427,8 +298,11 @@ describe "Skill API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Skill ID"
 
+      let(:id) { skill.id }
+
+      include_examples "unauthenticated"
+
       response "422", "unable to delete when having association" do
-        let(:id) { skill.id }
         let!(:requirement) { FactoryBot.create :requirement, level: level }
         run_test! do
           expected = {
@@ -442,8 +316,6 @@ describe "Skill API" do
       end
 
       response "200", "delete successfully" do
-        let(:id) { skill.id }
-
         run_test! do
           expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json

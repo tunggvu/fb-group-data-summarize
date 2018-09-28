@@ -33,29 +33,18 @@ describe "Device API" do
       parameter name: "device_types[]", in: :query, type: :array, collectionFormat: :multi, items: { type: :integer }, description: "Filter device with multiple device type"
       parameter name: :project_id, in: :query, type: :integer, description: "Filter device with project id"
 
-      let(:"Emres-Authorization") { "Bearer #{employee_token.token}" }
+      let("Emres-Authorization") { "Bearer #{employee_token.token}" }
       let(:query) {}
       let("device_types[]") { [] }
       let(:project_id) {}
+
+      include_examples "unauthenticated"
 
       response "200", "return all devices without params" do
 
         run_test! do |response|
           expected = Entities::Device.represent [device1, device2]
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
-        end
-      end
-
-      response "401", "unauthorized" do
-        let("Emres-Authorization") { nil }
-        run_test! do |response|
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
         end
       end
 
@@ -115,27 +104,30 @@ describe "Device API" do
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
-          name: {type: :string, description: "Device name"},
-          serial_code: {type: :string, description: "Device serial code"},
-          os_version: {type: :string, description: "Os of device"},
-          device_type: {type: :integer, description: "Device type 1 2 3"},
-          pic_id: {type: :integer, description: "Person in charge"},
-          project_id: {type: :integer, description: "project id of pic"},
+          name: { type: :string, description: "Device name" },
+          serial_code: { type: :string, description: "Device serial code" },
+          os_version: { type: :string, description: "Os of device" },
+          device_type: { type: :integer, description: "Device type 1 2 3" },
+          pic_id: { type: :integer, description: "Person in charge" },
+          project_id: { type: :integer, description: "project id of pic" },
         }
       }
 
-      response "401", "member cannot create device" do
-        let("Emres-Authorization") { nil }
-        let(:params) {
-          {
-            name: "Macbook air 2018",
-            serial_code: "3242345542354353",
-            device_type: 1,
-            os_version: "Window10",
-            project_id: project1.id,
-            pic_id: employee.id,
-          }
+      let(:params) {
+        {
+          name: "Macbook Air 2018",
+          serial_code: "22243423423",
+          device_type: 1,
+          os_version: "Window10",
+          project_id: project1.id,
+          pic_id: employee.id
         }
+      }
+
+      include_examples "unauthenticated"
+
+      response "403", "member cannot create device" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do
           expected = {
@@ -149,17 +141,6 @@ describe "Device API" do
       end
 
       response "201", "Po created device successfully" do
-        let(:params) {
-          {
-            name: "Macbook Air 2018",
-            serial_code: "22243423423",
-            device_type: 1,
-            os_version: "Window10",
-            project_id: project1.id,
-            pic_id: employee.id
-          }
-        }
-
         run_test! do
           expected = Entities::Device.represent Device.last
           expect(response.body).to eq expected.to_json
@@ -245,19 +226,7 @@ describe "Device API" do
       tags "Devices"
       consumes "application/json"
 
-      response "401", "unauthenticated user" do
-        let("Emres-Authorization") { "" }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
+      include_examples "unauthenticated"
 
       response "404", "device not found" do
         let(:id) { 0 }
@@ -294,23 +263,20 @@ describe "Device API" do
         }
       }
 
-      response "401", "unauthorized product_owner/pic" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { {
-          name: "Test name"
-        } }
+      let(:params) { {
+        name: "Test name",
+        os_version: "Ubuntu 18.04"
+      } }
 
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.unauthenticated,
-            message: I18n.t("api_error.unauthorized")
-          }
-        }
+      include_examples "unauthenticated"
+
+      response "403", "unauthorized product_owner/pic" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
+              code: Settings.error_formatter.http_code.unauthorized,
               message: I18n.t("api_error.unauthorized")
             }
           }
@@ -320,16 +286,6 @@ describe "Device API" do
 
       response "404", "device not found" do
         let(:id) { 0 }
-        let(:params) { {
-          os_version: "Ubuntu 16.04"
-        } }
-
-        examples "application/json" => {
-          error: {
-            code: Settings.error_formatter.http_code.record_not_found,
-            message: I18n.t("api_error.invalid_id", model: Device.name, id: 0)
-          }
-        }
 
         run_test! do
           expected = {
@@ -343,38 +299,6 @@ describe "Device API" do
       end
 
       response "200", "PO Update device successful" do
-        let(:params) { {
-          os_version: "Ubuntu 18.04"
-        } }
-
-        examples "application/json" => [
-          {
-            id: 1,
-            name: "laptop 0",
-            serial_code: "546031702833217",
-            device_type: "laptop",
-            os_version: "Tyrell Jenkins",
-            project: {
-              id: 3,
-              name: "Stanford Carroll",
-              description: nil,
-              starts_on: "2018-09-15",
-              logo: "/uploads/avatar.png",
-              product_owner_id: 2
-            },
-            pic: {
-              id: 251,
-              organization_id: 39,
-              name: "Chasity Bauch",
-              employee_code: "B1210250",
-              email: "chasity.bauch@framgia.com",
-              birthday: nil,
-              phone: "0987654321",
-              avatar: "/uploads/avatar.png"
-            }
-          }
-        ]
-
         run_test! do
           expected = Entities::Device.represent device1.reload
           expect(response.body).to eq expected.to_json
@@ -384,36 +308,6 @@ describe "Device API" do
 
       response "200", "PIC Update device successful" do
         let("Emres-Authorization") { "Bearer #{pic1_token.token}" }
-        let(:params) { {
-          os_version: "Ubuntu 18.04"
-        } }
-
-        examples "application/json" => [
-          {
-            id: 1,
-            name: "laptop 0",
-            serial_code: "546031702833217",
-            device_type: "laptop",
-            os_version: "Tyrell Jenkins",
-            project: {
-              id: 3,
-              name: "Stanford Carroll",
-              description: nil,
-              starts_on: "2018-09-15",
-              logo: "/uploads/avatar.png"
-            },
-            pic: {
-              id: 251,
-              organization_id: 39,
-              name: "Chasity Bauch",
-              employee_code: "B1210250",
-              email: "chasity.bauch@framgia.com",
-              birthday: nil,
-              phone: "0987654321",
-              avatar: "/uploads/avatar.png"
-            }
-          }
-        ]
 
         run_test! do
           expected = Entities::Device.represent device1.reload

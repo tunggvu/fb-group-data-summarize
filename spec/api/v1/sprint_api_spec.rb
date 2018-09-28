@@ -40,6 +40,8 @@ describe "SprintAPI" do
       tags "Sprints"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "404", "project not found" do
         let(:project_id) { 0 }
 
@@ -75,20 +77,8 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "not login" do
-        let("Emres-Authorization") {}
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthorized,
-              message: I18n.t("api_error.unauthorized")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
 
-      response "401", "employee isn't in project cannot view all sprints" do
+      response "403", "employee isn't in project cannot view all sprints" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -96,7 +86,7 @@ describe "SprintAPI" do
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.not_authorized_error,
+              code: Settings.error_formatter.http_code.unauthorized,
               message: I18n.t("api_error.unauthorized")
             }
           }
@@ -108,6 +98,8 @@ describe "SprintAPI" do
     post "Create new sprint" do
       tags "Sprints"
       consumes "application/json"
+
+      include_examples "unauthenticated"
 
       parameter name: :params, in: :body, schema: {
         type: :object,
@@ -236,7 +228,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "employee cannot create sprint" do
+      response "403", "employee cannot create sprint" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|
@@ -250,7 +242,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "manager in other division cannot create sprint" do
+      response "403", "manager in other division cannot create sprint" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
 
@@ -348,6 +340,8 @@ describe "SprintAPI" do
       tags "Sprints"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "404", "sprint not found" do
         let(:id) { 0 }
 
@@ -365,7 +359,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "employee isn't in project cannot get information specific sprint" do
+      response "403", "employee isn't in project cannot get information specific sprint" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -385,6 +379,8 @@ describe "SprintAPI" do
     patch "update sprint" do
       tags "Sprints"
       consumes "application/json"
+
+      include_examples "unauthenticated"
 
       parameter name: :params, in: :body, schema: {
         type: :object,
@@ -406,7 +402,7 @@ describe "SprintAPI" do
         }
       end
 
-      response "401", "employee cannot update sprint" do
+      response "403", "employee cannot update sprint" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
@@ -422,7 +418,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "manager in other division cannot update sprint" do
+      response "403", "manager in other division cannot update sprint" do
         let(:div2) { FactoryBot.create :organization, :division }
         let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
         let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
@@ -566,6 +562,8 @@ describe "SprintAPI" do
       tags "Sprints"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       parameter name: :id, in: :path, type: :integer, description: "Sprint ID"
 
       response "200", "delete successfully" do
@@ -588,7 +586,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "employee cannot delete sprint" do
+      response "403", "employee cannot delete sprint" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|
@@ -602,7 +600,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "manager of other division cannot delete sprint" do
+      response "403", "manager of other division cannot delete sprint" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
         run_test! do |response|
@@ -630,6 +628,8 @@ describe "SprintAPI" do
       tags "Sprints"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "404", "sprint not found" do
         let(:id) { 0 }
 
@@ -654,7 +654,7 @@ describe "SprintAPI" do
         end
       end
 
-      response "401", "employee isn't in project cannot get information specific sprint" do
+      response "403", "employee isn't in project cannot get information specific sprint" do
         let(:employee) { FactoryBot.create :employee }
         let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }

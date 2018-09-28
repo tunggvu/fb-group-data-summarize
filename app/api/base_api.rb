@@ -9,44 +9,37 @@ module BaseAPI
     default_format :json
 
     rescue_from Grape::Exceptions::ValidationErrors, ActiveRecord::RecordNotUnique do |e|
-      message = { error: { code: Settings.error_formatter.http_code.validation_errors,
-        message: e.full_messages[0].to_s } }
-      error! message, Settings.error_formatter.http_code.validation_errors
+      raise_errors e.full_messages[0].to_s, Settings.error_formatter.http_code.validation_errors
     end
 
-    rescue_from APIError::Base, JWT::VerificationError, JWT::DecodeError, Pundit::NotAuthorizedError do |e|
+    rescue_from APIError::Base, JWT::VerificationError, JWT::DecodeError do |e|
       error_key =
         if e.is_a? APIError::Base
           e.class.name.demodulize.underscore
         else
-          :unauthorized
+          :unauthenticated
         end
       http_code = Settings.error_formatter.http_code.public_send error_key
-      message = {
-        error: {
-          code: http_code,
-          message: I18n.t(error_key, scope: "api_error")
-        }
-      }
-      error! message, http_code
+      raise_errors I18n.t(error_key, scope: "api_error"), http_code
+    end
+
+    rescue_from Pundit::NotAuthorizedError do |e|
+      raise_errors I18n.t("unauthorized", scope: "api_error"), 403
     end
 
     rescue_from ActiveRecord::UnknownAttributeError, ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid,
       JSON::ParserError, ActiveRecord::RecordNotDestroyed do |e|
-      message = { error: { code: Settings.error_formatter.http_code.data_operation, message: e.as_json } }
-      error! message, Settings.error_formatter.http_code.data_operation
+      raise_errors e.as_json, Settings.error_formatter.http_code.data_operation
     end
 
     rescue_from ActiveRecord::RecordNotFound do |e|
-      message = { error: { code: Settings.error_formatter.http_code.record_not_found, message: I18n.t("api_error.invalid_id", model: e.model, id: e.id) } }
-      error! message, Settings.error_formatter.http_code.record_not_found
+      raise_errors I18n.t("api_error.invalid_id", model: e.model, id: e.id), Settings.error_formatter.http_code.record_not_found
     end
 
     helpers Pundit
     helpers do
       def authenticate!
-        raise APIError::Unauthorized unless EmployeeToken.verify(access_token_header)
-        raise APIError::Unauthenticated unless current_user
+        raise APIError::Unauthenticated unless current_user || EmployeeToken.verify(access_token_header)
       end
 
       def current_user

@@ -19,6 +19,7 @@ en:
   api_error:
     wrong_email_password: "wrong email password"
     unauthorized: "unauthorized"
+    unauthenticated: "unauthenticated"
     missing_params: "%{params} is missing"
     invalid_params: "Validation failed: %{params} is invalid"
     taken_params: "Validation failed: %{params} has already been taken"

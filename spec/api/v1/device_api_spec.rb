@@ -3,6 +3,8 @@
 require "swagger_helper"
 
 describe "Device API" do
+  let(:admin) { create :employee, :admin, organization: nil }
+  let(:admin_token) { create :employee_token, employee: admin }
   let(:division) { create(:organization, :division, name: "Division 1") }
   let(:section) { create(:organization, :section, parent: division) }
   let(:employee) { create :employee, organization: section }
@@ -13,15 +15,28 @@ describe "Device API" do
   let(:project1) { create :project, product_owner: product_owner1 }
   let(:project2) { create :project, product_owner: product_owner2 }
   let(:pic1) { create :employee, organization: division }
+  let(:pic2) { create :employee, organization: division }
+  let(:pic3) { create :employee, organization: division }
   let(:pic1_token) { create :employee_token, employee: pic1 }
   let(:po1_token) { create :employee_token, employee: product_owner1 }
-  let!(:device1) { create(:device, :laptop, name: "Device 1", pic: product_owner1, project: project1) }
-  let!(:device2) { create(:device, :pc, name: "Device 2", pic: product_owner2, project: project2) }
+  let!(:device1) { create :device, :laptop, :skip_callback, name: "Device 1", project: project1 }
+  let!(:device2) { create :device, :pc, :skip_callback, name: "Device 2", project: project2 }
+  let(:skill) { create :skill }
+  let(:level) { create :level, skill: skill }
+  let(:employee_level1) { create :employee_level, employee: pic1, level: level }
+  let(:employee_level2) { create :employee_level, employee: pic2, level: level }
+  let(:employee_level3) { create :employee_level, employee: pic3, level: level }
+  let(:sprint1) { create :sprint, project: project1, starts_on: project1.starts_on, ends_on: 7.days.from_now }
+  let(:sprint2) { create :sprint, project: project2, starts_on: project2.starts_on, ends_on: 7.days.from_now }
+  let!(:effort1) { create :effort, sprint: sprint1, employee_level: employee_level1, effort: 80 }
+  let!(:effort2) { create :effort, sprint: sprint2, employee_level: employee_level2, effort: 30 }
+  let!(:effort3) { create :effort, sprint: sprint1, employee_level: employee_level3, effort: 50 }
+
 
   before do
-    device1.update_attributes! pic: pic1
+    device1.update_attribute :pic, pic1
+    device1.requests.create!(request_pic: product_owner1, project: project1, requester: product_owner1)
   end
-
 
   path "/devices" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
@@ -312,8 +327,12 @@ describe "Device API" do
       end
 
       response "200", "PO Update device successful" do
+        let(:params) { {
+          os_version: "Ubuntu 18.04"
+        } }
+
         run_test! do
-          expected = Entities::Device.represent device1.reload
+          expected = Entities::DeviceDetail.represent device1.reload
           expect(response.body).to eq expected.to_json
           expect(device1.os_version).to eq "Ubuntu 18.04"
         end
@@ -321,11 +340,188 @@ describe "Device API" do
 
       response "200", "PIC Update device successful" do
         let("Emres-Authorization") { "Bearer #{pic1_token.token}" }
+        let(:params) { {
+          os_version: "Ubuntu 18.04"
+        } }
 
         run_test! do
-          expected = Entities::Device.represent device1.reload
+          expected = Entities::DeviceDetail.represent device1.reload
           expect(response.body).to eq expected.to_json
           expect(device1.os_version).to eq "Ubuntu 18.04"
+        end
+      end
+
+      response "200", "Admin Update device successful" do
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+        let(:params) {
+          {
+            os_version: "Ubuntu 18.04"
+          }
+        }
+
+        run_test! do
+          expected = Entities::DeviceDetail.represent device1.reload
+          expect(response.body).to eq expected.to_json
+          expect(device1.os_version).to eq "Ubuntu 18.04"
+        end
+      end
+    end
+  end
+
+  path "/projects/{project_id}/devices/{id}/requests" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :project_id, in: :path, type: :integer, description: "Project ID"
+    parameter name: :id, in: :path, type: :integer, description: "Device ID"
+    let("Emres-Authorization") { "Bearer #{po1_token.token}" }
+    let(:project_id) { project1.id }
+    let(:id) { device1.id }
+
+    post "Create request when change owner of device" do
+      tags "Devices"
+      consumes "application/json"
+
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          request_pic: {type: :integer, description: "PIC of Request"},
+          request_project: {type: :integer, description: "Project id of Rquest"}
+        },
+        required: [:request_pic, :request_project]
+      }
+
+      let(:params) {
+        {
+          request_pic: pic3.id,
+          request_project: project1.id
+        }
+      }
+
+      include_examples "unauthenticated"
+
+      response "201", "Create request successful" do
+        run_test! do
+          expected = Entities::Request.represent Request.last
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "Missing params request_pic" do
+        let(:params) {
+          {
+            request_project: project1.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.missing_params", params: "request_pic")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "Missing params request_project" do
+        let(:params) {
+          {
+            request_pic: pic1.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.missing_params", params: "request_project")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "403", "unauthorized product_owner/pic/admin" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "User doesn't have the right to do" do
+        let("Emres-Authorization") { "Bearer #{pic1_token.token}" }
+        let(:params) { {
+          request_pic: pic2.id,
+          request_project: project2.id
+        } }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.device_unchangeable")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "Device not found" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Device.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Request pic must belong to project" do
+        let(:params) {
+          {
+            request_pic: employee.id,
+            request_project: project1.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.pic_in_project")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Request pic and project aren't change" do
+        let(:params) {
+          {
+            request_pic: pic1.id,
+            request_project: project1.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.device_nothing_change")
+            }
+          }
+          expect(response.body).to eq expected.to_json
         end
       end
     end

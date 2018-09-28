@@ -17,6 +17,7 @@ class Device < ApplicationRecord
   validates :project_id, presence: true
 
   private
+
   def update_po_create
     self.pic = project.product_owner
   end

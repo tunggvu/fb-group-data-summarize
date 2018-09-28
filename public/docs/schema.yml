@@ -20,6 +20,30 @@ UnauthorizedError:
         message:
           type: string
           example: unauthorized
+MissingParamsError:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Employee is missing
+DataOperationError:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 422
+        message:
+          type: string
+          example: Request pic must belong to project
 SuccessMessage:
   type: object
   properties:
@@ -89,32 +113,17 @@ Project:
       allOf:
         - $ref: '#/Employee'
 Device:
-  type: object
-  properties:
-    id:
-      type: integer
-      description: Device id
-      example: 1
-    name:
-      type: string
-      description: Device's name
-      example: Macbook Air 2020
-    serial_code:
-      description: Device's serial code
-      type: string
-      example: Some description
-    device_type:
-      type: integer
-      description: Type of device
-      example: laptop
-    pic:
-      description: Persion in charge
-      allOf:
-        - $ref: '#/Employee'
-    project:
-      description: Project ID
-      allOf:
-        - $ref: '#/Project'
+  allOf:
+    - $ref: '#/BaseDevice'
+    - type: object
+      properties:
+        project:
+          type: object
+          description: Project of device
+          properties:
+            product_owner_id:
+              type: integer
+              description: Product owner ID
 Effort:
   type: object
   properties:
@@ -322,3 +331,80 @@ Phase:
       type: date
       description: End date of phase
       example: 2018-02-01
+BaseProject:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Project ID
+    name:
+      type: string
+      description: Project's name
+    description:
+      type: string
+      description: Project's description
+    starts_on:
+      type: date
+      description: Start time of project
+    logo:
+      type: string
+      description: Path to logo
+Request:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Request's id
+    status:
+      type: string
+      description: Request's status
+    modified_date:
+      description: Request's modified date
+      type: string
+    project:
+      description: Request Project
+      allOf:
+        - $ref: '#/BaseProject'
+    request_pic:
+      description: Request's persion in charge
+      allOf:
+        - $ref: '#/Employee'
+    requester:
+      description: Requester
+      allOf:
+        - $ref: '#/Employee'
+BaseDevice:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Device id
+    name:
+      type: string
+      description: Device's name
+    serial_code:
+      description: Device's serial code
+      type: string
+    device_type:
+      type: integer
+      description: Type of device
+    pic:
+      description: Persion in charge
+      allOf:
+        - $ref: '#/Employee'
+DeviceDetail:
+  allOf:
+    - $ref: '#/BaseDevice'
+    - type: object
+      properties:
+        project:
+          type: object
+          description: Project of device
+          allOf:
+            - $ref: '#/BaseProject'
+        history:
+          type: array
+          description: All of request
+          items:
+            allOf:
+              - $ref: '#/Request'

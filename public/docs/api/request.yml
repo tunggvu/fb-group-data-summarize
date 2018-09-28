@@ -1,0 +1,127 @@
+/projects/{project_id}/devices/{id}/requests:
+  parameters:
+  - name: project_id
+    in: path
+    schema:
+      type: interger
+    required: true
+    description: Project ID
+  - name: ID
+    in: path
+    schema:
+      type: interger
+    required: true
+    description: Device ID
+  post:
+    summary: Create request when change owner of device
+    tags:
+    - Requests
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            request_project:
+              type: integer
+              description: Project ID
+            request_pic:
+              type: integer
+              description: Request PIC ID
+          example:
+            request_project: 1
+            request_pic: 1
+    responses:
+      201:
+        description: Create request successful
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Request'
+            example:
+              id: 417
+              status: "pending"
+              modified_date: "2018-09-27"
+              project:
+                id: 3
+                name: "Stanford Carroll"
+                description: null
+                starts_on: "2018-09-15"
+                logo: "http://localhost:3000/uploads/avatar.png"
+              request_pic:
+                id: 6
+                organization_id: 5
+                name: "Jose Quigley I"
+                employee_code: "B1210005"
+                email: "jose.quigley.i@framgia.com"
+                birthday: null
+                phone: "0987654321"
+                avatar: "http://localhost:3000/uploads/avatar.png"
+              requester:
+                id: 251
+                organization_id: 39
+                name: "Chasity Bauch"
+                employee_code: "B1210250"
+                email: "chasity.bauch@framgia.com"
+                birthday: null
+                phone: "0987654321"
+                avatar: "http://localhost:3000/uploads/avatar.png"
+      400:
+        description: Missing params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/MissingParamsError'
+            examples:
+              missing_request_pic:
+                value:
+                  error:
+                    code: 400
+                    message: Employee is missing
+              missing_project:
+                value:
+                  error:
+                    code: 400
+                    message: Project is missing
+
+      401:
+        description: "Unauthorized"
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Record not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              device_not_found:
+                value:
+                  error:
+                    code: 404
+                    message: Couldn't find Device with 'id'=0
+      422:
+        description: Data operation
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/DataOperationError'
+            examples:
+              pic_must_belong_to_project:
+                value:
+                  error:
+                    code: 422
+                    message: "Validation failed: Request PIC doesn't belongs to Request Project"
+              nothing_change:
+                value:
+                  error:
+                    code: 422
+                    message: Project and PIC aren't change
+              cant_create:
+                value:
+                  error:
+                    code: 422
+                    message: "Validation failed: You don't have the right to do this"

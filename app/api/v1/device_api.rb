@@ -36,12 +36,15 @@ class V1::DeviceAPI < Grape::API
         optional :os_version, type: String
       end
 
-      patch do
+      before do
         device = Device.find(params[:id])
         authorize device, :device_owner?
+      end
 
+      patch do
+        device = Device.includes(requests: [:request_pic, :requester, :project]).find(params[:id])
         device.update_attributes! declared(params, include_missing: false)
-        present device, with: Entities::Device
+        present device, with: Entities::DeviceDetail
       end
     end
 
@@ -58,5 +61,32 @@ class V1::DeviceAPI < Grape::API
       authorize Project.find(params[:project_id]), :product_owner?
       present Device.create!(declared(params).to_h), with: Entities::Device
     end
+  end
+
+  resources :projects do
+    before { authenticate! }
+
+    route_param :project_id do
+      resources :devices do
+        route_param :id do
+          resource :requests do
+            desc "Create request when change owner of device"
+            params do
+              requires :request_project, type: Integer
+              requires :request_pic, type: Integer
+            end
+            post do
+              @device = Device.find(params[:id])
+              authorize @device, :device_owner?
+
+              present Request.create!(status: :pending, modified_date: Date.current,
+                project_id: params[:request_project], request_pic_id: params[:request_pic],
+                requester: current_user, device: @device), with: Entities::Request
+            end
+          end
+        end
+      end
+    end
+
   end
 end

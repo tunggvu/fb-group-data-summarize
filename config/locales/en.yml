@@ -38,6 +38,9 @@ en:
     wrong_current_password: "wrong current password"
     invalid_time_sprint: "Validation failed: Sprint time must be in phase time"
     effort_employee_must_be_unique_in_sprint: "Validation failed: Employee has already been found in sprint."
+    pic_in_project: "Validation failed: Person in charge doesn't belongs to Request Project"
+    device_nothing_change: "Validation failed: Project and PIC aren't change"
+    device_unchangeable: "Validation failed: You don't have the right to do this"
   models:
     sprint:
       invalid_starts_on_ends_on: "must be after the starts on"
@@ -46,6 +49,10 @@ en:
       invalid_sprint_time: "Sprint time must be in phase time"
     effort:
       employee_must_be_unique_in_sprint: "Employee has already been found in sprint."
+    request:
+      pic_in_project: "doesn't belongs to Request Project"
+      device_unchangeable: "You don't have the right to do this"
+      device_nothing_change: "Project and PIC aren't change"
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
   success: "Success"

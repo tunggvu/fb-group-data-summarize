@@ -15,5 +15,15 @@ FactoryBot.define do
     trait :pc do
       device_type :pc
     end
+
+    trait :skip_callback do
+      after(:build) do |instance|
+        instance.class.skip_callback(:create, :after, :create_first_request)
+      end
+
+      after(:create) do |instance|
+        instance.class.set_callback(:create, :after, :create_first_request)
+      end
+    end
   end
 end

@@ -31,9 +31,16 @@ vi:
     invalid: "%{params} không hợp lệ"
     wrong_current_password: "Sai mật khẩu hiện tại"
     effort_employee_must_be_unique_in_sprint: "Xác thực không thành công: Nhân viên đã tồn tại trong sprint."
+    pic_in_project: "Xác thực không thành công: Person in charge không thuộc dự án"
+    device_nothing_change: "Xác thực không thành công: Dự án và người chịu trách nhiệm không thay đổi"
+    device_unchangeable: "Xác thực không thành công: Bạn không có quyền làm điều này"
   models:
     effort:
       employee_must_be_unique_in_sprint: "Nhân viên đã tồn tại trong sprint."
+    request:
+      pic_in_project: "không thuộc dự án"
+      device_unchangeable: "Bạn không có quyền làm điều này"
+      device_nothing_change: "Dự án và người chịu trách nhiệm không thay đổi"
   delete_success: "Xóa thành công"
   log_out: "Bạn đã đăng xuất!"
   success: "Thành công"

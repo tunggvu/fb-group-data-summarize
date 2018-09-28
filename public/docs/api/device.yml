@@ -168,8 +168,57 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Device'
-      403:
+              $ref: '../schema.yml#/DeviceDetail'
+            example:
+              id: 1
+              name: "laptop 0"
+              serial_code: "546031702833217"
+              device_type: "laptop"
+              os_version: "Tyrell Jenkins"
+              project:
+                id: 3
+                name: "Stanford Carroll"
+                description: null
+                starts_on: "2018-09-15"
+                logo: "http://localhost:3000/uploads/avatar.png"
+              pic:
+                id: 251
+                organization_id: 39
+                name: "Chasity Bauch"
+                employee_code: "B1210250"
+                email: "chasity.bauch@framgia.com"
+                birthday: nil
+                phone: "0987654321"
+                avatar: "/uploads/avatar.png"
+              history:
+                - id: 416
+                  status: "pending"
+                  modified_date: "2018-09-26"
+                  project:
+                    id: 3
+                    name: "Stanford Carroll"
+                    description: null
+                    starts_on: "2018-09-15"
+                    logo: "http://localhost:3000/uploads/avatar.png"
+                    request_pic:
+                      id: 6,
+                      organization_id: 5
+                      name: "Jose Quigley I"
+                      employee_code: "B1210005"
+                      email: "jose.quigley.i@framgia.com"
+                      birthday: null
+                      phone: "0987654321"
+                      avatar: "http://localhost:3000/uploads/avatar.png"
+                    requester:
+                      id: 251
+                      organization_id: 39
+                      name": "Chasity Bauch"
+                      employee_code: "B1210250"
+                      email: "chasity.bauch@framgia.com"
+                      birthday: null
+                      phone: "0987654321"
+                      avatar: "http://localhost:3000/uploads/avatar.png"
+      401:
         description: Unauthorized
         content:
           application/json:
@@ -227,4 +276,53 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Device'
+              $ref: '../schema.yml#/DeviceDetail'
+            example:
+              id: 1
+              name: "laptop 0"
+              serial_code: "546031702833217"
+              device_type: "laptop"
+              os_version: "Tyrell Jenkins"
+              project:
+                id: 3
+                name: "Stanford Carroll"
+                description: null
+                starts_on: "2018-09-15"
+                logo: "http://localhost:3000/uploads/avatar.png"
+              pic:
+                id: 251
+                organization_id: 39
+                name: "Chasity Bauch"
+                employee_code: "B1210250"
+                email: "chasity.bauch@framgia.com"
+                birthday: nil
+                phone: "0987654321"
+                avatar: "/uploads/avatar.png"
+              history:
+                - id: 416
+                  status: "pending"
+                  modified_date: "2018-09-26"
+                  project:
+                      id: 3
+                      name: "Stanford Carroll"
+                      description: null
+                      starts_on: "2018-09-15"
+                      logo: "http://localhost:3000/uploads/avatar.png"
+                      request_pic:
+                        id: 6,
+                        organization_id: 5
+                        name: "Jose Quigley I"
+                        employee_code: "B1210005"
+                        email: "jose.quigley.i@framgia.com"
+                        birthday: null
+                        phone: "0987654321"
+                        avatar: "http://localhost:3000/uploads/avatar.png"
+                      requester:
+                        id: 251
+                        organization_id: 39
+                        name": "Chasity Bauch"
+                        employee_code: "B1210250"
+                        email: "chasity.bauch@framgia.com"
+                        birthday: null
+                        phone: "0987654321"
+                        avatar: "http://localhost:3000/uploads/avatar.png"

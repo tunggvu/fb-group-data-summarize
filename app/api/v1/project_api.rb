@@ -62,6 +62,13 @@ class V1::ProjectAPI < Grape::API
         project.destroy!
         { message: I18n.t("delete_success") }
       end
+
+      desc "Get employees in project"
+      get :employees do
+        project = Project.find params[:id]
+        authorize project, :view?
+        present project.employees, with: Entities::Employee
+      end
     end
   end
 end

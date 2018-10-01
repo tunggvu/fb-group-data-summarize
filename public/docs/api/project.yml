@@ -509,3 +509,41 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+/projects/{id}/employees:
+  get:
+    summary: Get employees of specific project
+    tags:
+    - Projects
+    consumes:
+    - application/json
+    parameters:
+      - name: "name"
+        in: path
+        schema:
+          type: integer
+        description: Project Name
+    responses:
+      200:
+        description: Show employees of project
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schema.yml#/Employee'
+      401:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: project not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 404
+                message: Couldn't find Project with 'id'=0

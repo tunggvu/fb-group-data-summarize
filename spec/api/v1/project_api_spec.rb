@@ -21,8 +21,13 @@ describe "Project API" do
   let(:employee) { FactoryBot.create :employee }
   let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
 
-  let!(:project) { FactoryBot.create(:project, product_owner: admin) }
+  let(:sprint) { FactoryBot.create :sprint, project: project, phase: phase }
+  let(:employee_level) { FactoryBot.create :employee_level, employee: employee }
+  let(:phase) { FactoryBot.create :phase, project: project }
+
+  let!(:project) { FactoryBot.create(:project, product_owner: other_section_manager) }
   let!(:other_project) { FactoryBot.create :project, product_owner: group_leader }
+  let!(:effort) { FactoryBot.create :effort, employee_level: employee_level, sprint: sprint }
 
   before do
     group.update_attributes! manager_id: group_leader.id
@@ -421,6 +426,65 @@ describe "Project API" do
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
               message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
+
+  path "/projects/{id}/employees" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+
+    get "Get employees in project" do
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :integer, description: "Project ID"
+
+      response "200", "Amdin, GL above and PO can see all employee" do
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+        let(:id) { project.id }
+        run_test! do
+          expected = [Entities::Employee.represent(employee)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "Employee in project can see" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+        let(:id) { project.id }
+        run_test! do
+          expected = [Entities::Employee.represent(employee)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "403", "Employee not in project can't see employee in project" do
+        let(:employee_1) { FactoryBot.create :employee }
+        let(:employee_token_1) { FactoryBot.create :employee_token, employee: employee_1 }
+        let("Emres-Authorization") { "Bearer #{employee_token_1.token}" }
+        let(:id) { project.id }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "project not found" do
+        let(:id) { 0 }
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Project.name, id: id)
             }
           }
           expect(response.body).to eq expected.to_json

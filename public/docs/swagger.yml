@@ -61,6 +61,8 @@ paths:
     $ref: api/project.yml#/~1projects
   /projects/{id}:
     $ref: api/project.yml#/~1projects~1{id}
+  /projects/{id}/employees:
+    $ref: api/project.yml#/~1projects~1{id}~1employees
   /projects/{project_id}/phases:
     $ref: api/phase.yml#/~1projects~1{project_id}~1phases
   /projects/{project_id}/phases/{id}:

@@ -42,6 +42,7 @@
             example:
               id: 417
               status: "pending"
+              request_type: "assign"
               modified_date: "2018-09-27"
               project:
                 id: 3

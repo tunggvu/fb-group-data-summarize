@@ -4,12 +4,14 @@ class Request < ApplicationRecord
   attr_reader :confirmation_token
 
   enum status: { pending: 1, approved: 2, rejected: 3 }
+  enum request_type: { assign: 1, borrow: 2 }
 
   belongs_to :device
   belongs_to :project
   belongs_to :request_pic, class_name: Employee.name
   belongs_to :requester, class_name: Employee.name
 
+  validates :request_type, presence: true
   validate :valid_pic?, :change_owner?, :can_update_pic?
 
   before_create :generate_confirmation_digest, if: :pending?

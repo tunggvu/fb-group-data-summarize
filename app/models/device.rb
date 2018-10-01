@@ -10,7 +10,7 @@ class Device < ApplicationRecord
   belongs_to :project
   belongs_to :pic, class_name: Employee.name, optional: true
 
-  has_many :requests
+  has_many :requests, -> { order(id: :desc) }
 
   validates :name, presence: true
   validates :serial_code, presence: true

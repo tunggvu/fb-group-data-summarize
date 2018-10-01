@@ -12,6 +12,7 @@ Device.all.each do |device|
       r.project = project
       r.request_pic = project.employees.sample
       r.requester = project.product_owner
+      r.request_type = Request.request_types[:assign]
       r.modified_date = (MAX_DAY_AGO - n).days.ago
       r.status = n == MAX_TIME ? Request.statuses[:pending] : statuses[statuses.keys.sample]
     end

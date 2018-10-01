@@ -78,7 +78,6 @@ class V1::DeviceAPI < Grape::API
             post do
               @device = Device.find(params[:id])
               authorize @device, :device_owner?
-
               present Request.create!(status: :pending, modified_date: Date.current,
                 project_id: params[:request_project], request_pic_id: params[:request_pic],
                 requester: current_user, device: @device), with: Entities::Request
@@ -87,6 +86,5 @@ class V1::DeviceAPI < Grape::API
         end
       end
     end
-
   end
 end

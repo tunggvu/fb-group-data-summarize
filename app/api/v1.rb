@@ -19,6 +19,7 @@ class V1 < Grape::API
   mount LevelAPI
   mount EffortAPI
   mount DeviceAPI
+  mount RequestAPI
 
   desc "Return the current API version - V1."
   get do

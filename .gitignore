@@ -24,6 +24,7 @@ config/application.yml
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/credentials.yml.enc
 
 config/settings.local.yml
 config/settings/*.local.yml

@@ -16,8 +16,12 @@ module APIError
 
   class TokenExpired < APIError::Base; end
 
+  class InvalidEmailToken < APIError::Base; end
+
   class WrongCurrentPassword < APIError::Base; end
 
   class WrongEmailPassword < APIError::Base; end
+
+  class SendEmailError < APIError::Base; end
 
 end

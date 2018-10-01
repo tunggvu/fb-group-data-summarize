@@ -2,22 +2,51 @@
 require "sendgrid-ruby"
 
 class UserMailer < ApplicationMailer
-  def send_mail(user, subject, content_value)
-    from = SendGrid::Email.new(email: "emres@framgia.com")
-    to = SendGrid::Email.new(email: user.email)
+  class << self
+    def send_device_assignment_request(request)
+      requester = request.requester
+      request_pic = request.request_pic
+      device = request.device
+      data = {
+        personalizations: [
+          {
+            to: [
+              {
+                email: request_pic.email,
+                name: request_pic.name
+              }
+            ],
+            dynamic_template_data: {
+              "title": I18n.t("email.device_assignment.title"),
+              "announcement":
+                I18n.t("email.device_assignment.announcement", requester: requester.name, device: device.name),
+              "accept_link": request.update_request_link("approved"),
+              "reject_link": request.update_request_link("rejected"),
+              "accept_btn": I18n.t("email.device_assignment.accept"),
+              "reject_btn": I18n.t("email.device_assignment.reject")
+            }
+          }
+        ],
+        from: {
+          email: ENV["DEFAULT_EMAIL_FROM"]
+        },
+        mail_settings: {
+          sandbox_mode: {
+            enable: !Rails.env.production?
+          }
+        },
+        template_id: Settings.template.device_assignment.id,
+      }
+      send_mail(data)
 
-    #TODO setting content full later
-    content = SendGrid::Content.new(type: "text/plain", value: content_value)
-
-    mail = SendGrid::Mail.new(from, subject, to, content)
-
-    unless Rails.env.production?
-      mail_settings = SendGrid::MailSettings.new
-      mail_settings.sandbox_mode = SendGrid::SandBoxMode.new(enable: true)
-      mail.mail_settings = mail_settings
     end
 
-    sg = SendGrid::API.new(api_key: ENV["SENDGRID_API_KEY"])
-    response = sg.client.mail._("send").post(request_body: mail.to_json)
+    def send_mail(data)
+      # TODO: đẩy master.key lên server
+      sg = SendGrid::API.new(api_key: Rails.application.credentials.sendgrid_api_key || "")
+      response = sg.client.mail._("send").post(request_body: data)
+      # TODO: bắt lỗi đầy đủ của Sengrid, custom dưới dạng 6xx
+      raise APIError::SendEmailError if response.status_code == "400"
+    end
   end
 end

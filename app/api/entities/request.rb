@@ -7,5 +7,6 @@ module Entities
     expose :project, with: Entities::BaseProject
     expose :request_pic, with: Entities::Employee
     expose :requester, with: Entities::Employee
+    expose :device, with: Entities::Device
   end
 end

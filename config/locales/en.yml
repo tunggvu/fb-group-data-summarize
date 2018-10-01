@@ -50,6 +50,8 @@ en:
     pic_in_project: "Validation failed: Person in charge doesn't belongs to Request Project"
     device_nothing_change: "Validation failed: Project and PIC aren't change"
     device_unchangeable: "Validation failed: You don't have the right to do this"
+    email_can_not_be_sent: "Email can't be sent because of some invalid email informations"
+    invalid_email_token: "Verify token is invalid or has been expired"
   models:
     sprint:
       invalid_starts_on_ends_on: "must be after the starts on"
@@ -65,3 +67,9 @@ en:
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
   success: "Success"
+  email:
+    device_assignment:
+      title: "Device Assignment Request"
+      announcement: "%{requester} assigned device %{device} for you. Do you want to accept this request?"
+      accept: "Accept"
+      reject: "Reject"

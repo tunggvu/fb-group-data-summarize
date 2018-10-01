@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Request < ApplicationRecord
+  attr_reader :confirmation_token
+
   enum status: { pending: 1, approved: 2, rejected: 3 }
 
   belongs_to :device
@@ -10,7 +12,34 @@ class Request < ApplicationRecord
 
   validate :valid_pic?, :change_owner?, :can_update_pic?
 
+  before_create :generate_confirmation_digest, if: :pending?
+
+  class << self
+    def new_token
+      SecureRandom.urlsafe_base64
+    end
+
+    def digest(string)
+      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
+      BCrypt::Password.create(string, cost: cost)
+    end
+  end
+
+  def authenticate?(token)
+    return false unless confirmation_digest
+    BCrypt::Password.new(confirmation_digest).is_password?(token)
+  end
+
+  def update_request_link(status)
+    ENV["HOST_DOMAIN"] + "/requests/#{id}/#{status}?confirmation_token=#{confirmation_token}"
+  end
+
   private
+
+  def generate_confirmation_digest
+    @confirmation_token = Request.new_token
+    self.confirmation_digest = Request.digest(confirmation_token)
+  end
 
   def valid_pic?
     return if project.product_owner == request_pic || project.employees.include?(request_pic)

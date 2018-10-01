@@ -23,6 +23,8 @@ error_formatter:
     unauthenticated: 401
     decode_error: 401
     verification_error: 401
+    send_email_error: 400
+    invalid_email_token: 401
 
 validations:
   strings:
@@ -53,3 +55,7 @@ paginate:
     skill: 6
     sprint: 5
     device: 15
+
+template:
+  device_assignment:
+    id: "d-7f046195d53749768c47ed7e2bb51305"

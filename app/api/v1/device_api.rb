@@ -52,8 +52,8 @@ class V1::DeviceAPI < Grape::API
     params do
       requires :name, type: String, allow_blank: false
       requires :serial_code, type: String, allow_blank: false
-      requires :project_id, type: Integer
-      requires :device_type, type: Integer
+      requires :project_id, type: Integer, allow_blank: false
+      requires :device_type, type: Integer, allow_blank: false
       optional :pic_id, type: Integer
       optional :os_version, type: String
     end

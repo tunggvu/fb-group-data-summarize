@@ -84,13 +84,12 @@
                   error:
                     code: 400
                     message: Project is missing
-
-      401:
-        description: "Unauthorized"
-        content:
-          application/json:
-            schema:
-              $ref: '../schema.yml#/UnauthorizedError'
+        401:
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '../schema.yml#/UnauthorizedError'
       404:
         description: Record not found
         content:
@@ -125,3 +124,73 @@
                   error:
                     code: 422
                     message: "Validation failed: You don't have the right to do this"
+
+/requests/{id}/accepted:
+  parameters:
+  - name: ID
+    in: path
+    schema:
+      type: integer
+    required: true
+    description: Request ID
+  - name: confirmation_token
+    in: query
+    schema:
+      type: string
+    required: false
+    description: confirmation_token
+  get:
+    summary: Update request status after requester pic accepted it
+    tags:
+    - Requests
+    responses:
+      200:
+        description: request has been updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Request'
+      400:
+        description: email can't be sent
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SendEmailError'
+      401:
+        description: verify token is invalid or has been expired
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SendEmailError'
+
+/requests/{id}/rejected:
+  parameters:
+  - name: ID
+    in: path
+    schema:
+      type: integer
+    required: true
+    description: Request ID
+  - name: confirmation_token
+    in: query
+    schema:
+      type: string
+    required: false
+    description: confirmation_token
+  get:
+    summary: Update request status after requester pic rejected it
+    tags:
+    - Requests
+    responses:
+      200:
+        description: request has been updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Request'
+      400:
+        description: Email can't be sent
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SendEmailError'

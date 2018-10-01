@@ -19,8 +19,8 @@ describe "Device API" do
   let(:pic3) { create :employee, organization: division }
   let(:pic1_token) { create :employee_token, employee: pic1 }
   let(:po1_token) { create :employee_token, employee: product_owner1 }
-  let!(:device1) { create :device, :laptop, :skip_callback, name: "Device 1", project: project1 }
-  let!(:device2) { create :device, :pc, :skip_callback, name: "Device 2", project: project2 }
+  let!(:device1) { create(:device, :laptop, name: "Device 1", pic: product_owner1, project: project1) }
+  let!(:device2) { create(:device, :pc, name: "Device 2", pic: product_owner2, project: project2) }
   let(:skill) { create :skill }
   let(:level) { create :level, skill: skill }
   let(:employee_level1) { create :employee_level, employee: pic1, level: level }
@@ -31,7 +31,7 @@ describe "Device API" do
   let!(:effort1) { create :effort, sprint: sprint1, employee_level: employee_level1, effort: 80 }
   let!(:effort2) { create :effort, sprint: sprint2, employee_level: employee_level2, effort: 30 }
   let!(:effort3) { create :effort, sprint: sprint1, employee_level: employee_level3, effort: 50 }
-
+  ENV["HOST_DOMAIN"] = "emres@framgia.com"
 
   before do
     device1.update_attribute :pic, pic1
@@ -148,7 +148,7 @@ describe "Device API" do
           device_type: 1,
           os_version: "Window10",
           project_id: project1.id,
-          pic_id: employee.id
+          pic_id: pic1.id
         }
       }
 

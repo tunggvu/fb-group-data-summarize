@@ -55,24 +55,39 @@ RSpec.describe Employee, type: :model do
     end
   end
 
-  describe ".with_total_efforts_max_values" do
+  context ".with_total_efforts_* " do
     let(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
     let(:employee1) { FactoryBot.create :employee, organization: division }
     let(:employee2) { FactoryBot.create :employee, organization: division }
-    let(:employees) { [employee1, employee1] }
-    let(:total_effort1) { FactoryBot.create :total_effort, employee: employee1, value: 30, start_time: 2.days.ago, end_time: 2.days.from_now }
-    let(:total_effort2) { FactoryBot.create :total_effort, employee: employee2, value: 90, start_time: 2.days.ago, end_time: 2.days.from_now }
+    let!(:total_effort1) { FactoryBot.create :total_effort, employee: employee1, value: 30, start_time: 2.days.ago, end_time: 2.days.from_now }
+    let!(:total_effort2) { FactoryBot.create :total_effort, employee: employee2, value: 90, start_time: 2.days.ago, end_time: 2.days.from_now }
 
-    it "should return array employees that max_total_effort is small than params" do
-      expect(Employee.joins(:total_efforts).with_total_efforts_max_values(50)).to include employee1
+    describe ".with_total_efforts_lt" do
+      it "should return array employees that max_total_effort is small than params" do
+        expect(Employee.joins(:total_efforts).with_total_efforts_lt(50)).to include employee1
+      end
+
+      it "should return array employees that max_total_effort is small than params" do
+        expect(Employee.joins(:total_efforts).with_total_efforts_lt(10)).to be_empty
+      end
+
+      it "should return array employees that max_total_effort is small than params" do
+        expect(Employee.joins(:total_efforts).with_total_efforts_lt(95)).to include employee2, employee1
+      end
     end
 
-    it "should return array employees that max_total_effort is small than params" do
-      expect(Employee.joins(:total_efforts).with_total_efforts_max_values(10)).to eq([])
-    end
+    describe ".with_total_efforts_gt" do
+      it "should return array employees that max_total_effort is greater than 50" do
+        expect(Employee.joins(:total_efforts).with_total_efforts_gt(50)).to include employee2
+      end
 
-    it "should return array employees that max_total_effort is small than params" do
-      expect(Employee.joins(:total_efforts).with_total_efforts_max_values(95)).to include employee2, employee1
+      it "should return array employees that max_total_effort is greater than 110" do
+        expect(Employee.joins(:total_efforts).with_total_efforts_gt(110)).to be_empty
+      end
+
+      it "should return array employees that max_total_effort is greater than 20" do
+        expect(Employee.joins(:total_efforts).with_total_efforts_gt(20)).to include employee2, employee1
+      end
     end
   end
 end

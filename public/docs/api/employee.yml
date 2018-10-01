@@ -54,7 +54,13 @@
 
       - name: total_effort_lt
         in: query
-        description: Filter employees with total effort
+        description: Filter employees with total effort less than
+        schema:
+          type: integer
+
+      - name: total_effort_gt
+        in: query
+        description: Filter employees with total effort greater than
         schema:
           type: integer
 

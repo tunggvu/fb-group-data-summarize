@@ -42,6 +42,7 @@ describe "Employee API" do
       parameter name: :project_id, in: :query, type: :integer, description: "Filter employees with project id"
       parameter name: :start_time, in: :query, type: :date, required: false
       parameter name: :total_effort_lt, in: :query, type: :integer, required: false
+      parameter name: :total_effort_gt, in: :query, type: :integer, required: false
       parameter name: :end_time, in: :query, type: :date, required: false
 
       let("Emres-Authorization") { "Bearer #{admin_token.token}" }
@@ -54,6 +55,7 @@ describe "Employee API" do
       let(:project_id) {}
       let(:start_time) {}
       let(:total_effort_lt) {}
+      let(:total_effort_gt) {}
       let(:end_time) {}
 
       consumes "application/json"
@@ -94,6 +96,33 @@ describe "Employee API" do
         end
       end
 
+      context "with total_effort_gt" do
+        let!(:total_effort_employee) { FactoryBot.create :total_effort, employee: employee, start_time: 2.days.ago, end_time: 2.days.from_now, value: 50 }
+        let!(:total_effort_manager) { FactoryBot.create :total_effort, employee: manager, start_time: 2.days.ago, end_time: 2.days.from_now, value: 80 }
+
+        response "200", "return empty with start time, end time and total_effort_gt" do
+          let(:start_time) { 2.days.ago }
+          let(:end_time) { 2.days.from_now }
+          let(:total_effort_gt) { 90 }
+
+          run_test! do |response|
+            expected = []
+            expect(response.body).to eq expected.to_json
+          end
+        end
+
+        response "200", "return empty with start time, end time, total_effort_lt and total_effort_gt" do
+          let(:start_time) { 10.days.ago }
+          let(:end_time) { 10.days.from_now }
+          let(:total_effort_gt) { 20 }
+          let(:total_effort_lt) { 40 }
+
+          run_test! do |response|
+            expected = []
+            expect(response.body).to eq expected.to_json
+          end
+        end
+      end
       response "200", "will ignore all paramaters which employee cannot use and returns all employees" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:start_time) { 2.days.ago }
@@ -208,7 +237,7 @@ describe "Employee API" do
         run_test! do |response|
           expected = [
             Entities::Employee.represent(manager)
-           ]
+          ]
           expect(response.body).to eq expected.to_json
         end
       end

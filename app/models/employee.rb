@@ -28,7 +28,9 @@ class Employee < ApplicationRecord
     eager_load(:total_efforts).where("start_time < ? and end_time > ?", end_time, start_time)
   end
 
-  scope :with_total_efforts_max_values, ->(total_effort_lt) { group(:id).having('max("value") < ?', total_effort_lt) }
+  scope :with_total_efforts_lt, ->(total_effort_lt) { group(:id).having('max("value") < ?', total_effort_lt) if total_effort_lt.present? }
+
+  scope :with_total_efforts_gt, ->(total_effort_gt) { group(:id).having('max("value") > ?', total_effort_gt) if total_effort_gt.present? }
 
   has_secure_password validations: false
 

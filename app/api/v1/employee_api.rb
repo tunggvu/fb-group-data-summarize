@@ -16,6 +16,7 @@ class V1::EmployeeAPI < Grape::API
       optional :start_time, type: Date
       optional :end_time, type: Date
       optional :total_effort_lt, type: Integer
+      optional :total_effort_gt, type: Integer
       optional :ids, type: Array[Integer]
     end
 
@@ -39,8 +40,10 @@ class V1::EmployeeAPI < Grape::API
 
       if params[:start_time] && params[:end_time]
         employee_efforts = employees.with_total_efforts_in_period(params[:start_time], params[:end_time])
-        employees = if params[:total_effort_lt]
-                      emp_ids = employee_efforts.with_total_efforts_max_values(params[:total_effort_lt]).select(:id)
+        employees = if params[:total_effort_lt] || params[:total_effort_gt]
+                      emp_ids = employee_efforts.with_total_efforts_lt(params[:total_effort_lt])
+                                                .with_total_efforts_gt(params[:total_effort_gt])
+                                                .select(:id)
                       employee_efforts.where(id: emp_ids)
                     else
                       employee_efforts

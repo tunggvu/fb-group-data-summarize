@@ -8,6 +8,18 @@ Error:
           type: integer
         message:
           type: string
+UnauthenticatedError:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: unauthenticated
 UnauthorizedError:
   type: object
   properties:
@@ -127,11 +139,11 @@ Project:
     starts_on:
       type: date
       description: Start time of project
-      example: 2018-01-01
+      example: "2018-01-01"
     logo:
       type: string
       description: Path to logo
-      example: 2018-02-01
+      example: "2018-02-01"
     product_owner:
       description: Project owner of project
       allOf:
@@ -270,11 +282,11 @@ SprintMember:
     starts_on:
       type: date
       description: Start date of sprint
-      example: 2018-01-01
+      example: "2018-01-01"
     ends_on:
       type: date
       description: End date of sprint
-      example: 2018-02-01
+      example: "2018-02-01"
     members:
       description: Efforts of sprint
       allOf:
@@ -293,11 +305,11 @@ Sprint:
     starts_on:
       type: date
       description: Start date of sprint
-      example: 2018-01-01
+      example: "2018-01-01"
     ends_on:
       type: date
       description: End date of sprint
-      example: 2018-02-01
+      example: "2018-02-01"
 Session:
   type: object
   properties:
@@ -350,11 +362,11 @@ Phase:
     starts_on:
       type: date
       description: Start date of phase
-      example: 2018-01-01
+      example: "2018-01-01"
     ends_on:
       type: date
       description: End date of phase
-      example: 2018-02-01
+      example: "2018-02-01"
 BaseProject:
   type: object
   properties:

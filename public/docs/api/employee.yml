@@ -100,8 +100,8 @@
                   - employee_name: Queenie Harris IV
                     employee_id: 2
                     total_efforts:
-                      - start_time: 2018-08-28
-                        end_time: 2018-08-30
+                      - start_time: "2018-08-28"
+                        end_time: "2018-08-30"
                         value: 25
               invalid_time:
                 summary: invalid start/end time, total_effort_lt
@@ -125,7 +125,7 @@
                   error:
                     code: 400
                     message: input_time empty
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -143,6 +143,12 @@
                   error:
                     code: 404
                     message: Couldn't find Organization with 'id'= 0
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   post:
     summary: Create employee
     tags:
@@ -198,7 +204,7 @@
               error:
                 code: 400
                 message: email missing params
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -221,6 +227,12 @@
                   error:
                     code: 422
                     message: "Validation failed: Email has already been taken"
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /employees/{id}:
   parameters:
   - name: id
@@ -243,7 +255,7 @@
           application/json:
             schema:
               $ref: "../schema.yml#/Employee"
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -261,6 +273,12 @@
                   error:
                     code: 404
                     message: Couldn't find Employee with 'id'=0
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   delete:
     summary: Delete specific employee
     tags:
@@ -364,7 +382,7 @@
                   error:
                     code: 404
                     message: end_time is invalid
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -374,13 +392,13 @@
               invalid_token:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               user_other_project:
                 summary: user in other project
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       404:
         description: Employee not found
@@ -394,7 +412,12 @@
                   error:
                     code: 404
                     message: Couldn't find Employee with 'id'=0
-
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /employees/{id}/skills:
   parameters:
   - name: id
@@ -435,7 +458,7 @@
                   skill_id: 1
                   logo: "/uploads/avatar.png"
 
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -445,13 +468,13 @@
               invalid_token:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               user_other_project:
                 summary: user in other project
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       404:
         description: Employee not found
@@ -465,7 +488,12 @@
                   error:
                     code: 404
                     message: Couldn't find Employee with 'id'=0
-
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /employees/{id}/projects_owned:
   parameters:
   - name: id
@@ -491,7 +519,7 @@
               - id: 1
                 name: Antonetta Vandervort
                 description:
-                starts_on: '2018-09-18'
+                starts_on: "2018-09-18"
                 logo: http://localhost:3000/uploads/avatar.png
                 product_owner:
                   id: 12
@@ -503,7 +531,7 @@
                   phone: 0987654321
                   avatar: http://localhost:3000/uploads/avatar.png
 
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -513,9 +541,8 @@
               invalid_token:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
-
       404:
         description: Employee not found
         content:
@@ -528,3 +555,9 @@
                   error:
                     code: 404
                     message: Couldn't find Employee with 'id'=0
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

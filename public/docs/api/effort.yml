@@ -1,17 +1,58 @@
 /efforts:
+  parameters:
+  - name: employee_id
+    in: query
+    schema:
+      type: integer
+    description: Employee ID
+    required: true
+  - name: start_time
+    in: query
+    schema:
+      type: date
+    description: start time to query effort
+    required: true
+  - name: end_time
+    in: query
+    schema:
+      type: date
+    description: end time to query effort
+    required: true
   get:
-    summary: All efforts
+    summary: Detail effort of a employee
     tags:
     - Efforts
     responses:
       200:
-        description: Return all efforts
+        description: Return all efforts of employee in a period of time
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: '../schema.yml#/Effort'
+                type: object
+                properties:
+                  effort:
+                    type: integer
+                    description: Effort value
+                  project_name:
+                    type: string
+                    description: Project name
+                  employee_id:
+                    type: integer
+                    description: Employee ID
+                  start_time:
+                    type: date
+                    description: Start time of effort's sprint
+                  end_time:
+                    type: date
+                    description: End time of effort's sprint
+                example:
+                  effort: 100
+                  project_name: Emres
+                  employee_id: 1
+                  start_time: "2018-01-01"
+                  end_time: "2018-02-01"
       400:
         description: Invalid params
         content:
@@ -31,7 +72,7 @@
                   error:
                     code: 400
                     message: start_time empty
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -49,6 +90,12 @@
                   error:
                     code: 404
                     message: Couldn't find Employee with 'id'= 0
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /projects/{project_id}/sprints/{sprint_id}/efforts:
   parameters:
   - name: project_id
@@ -91,12 +138,18 @@
                   error:
                     code: 404
                     message: Couldn't find Sprint with 'id'= 0
-      401:
+      403:
         description: Unauthorization
         content:
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   post:
     summary: Create effort of employee in a sprint
     tags:
@@ -169,7 +222,7 @@
                 summary: Skip Create nvalid employee ID and Level Id
               empty_param_employee:
                 value: []
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -179,17 +232,17 @@
               not login:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               employee:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               manager in other division:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       400:
         description: empty/missing params
@@ -222,6 +275,12 @@
                 value:
                   code: 422
                   messages: 'Validation failed: Employee has already been found in sprint'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /projects/{project_id}/sprints/{sprint_id}/efforts/{id}:
   parameters:
   - name: id
@@ -294,7 +353,7 @@
                   error:
                     code: 400
                     message: effort is empty
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -304,14 +363,20 @@
               employee:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               manager:
                 summary: manager in orther division
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   delete:
     summary: Delete effort of employee in a sprint
     tags:
@@ -336,7 +401,7 @@
                 summary: manager of PO
                 value:
                   message: Delete successfully
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -345,14 +410,20 @@
             examples:
               guess:
                 value:
-                  code: 401
+                  code: 403
                   message: unauthorized
               employee:
                 value:
-                  code: 401
+                  code: 403
                   message: unauthorized
               manager_other:
                 summary: manager of other division
                 value:
-                  code: 401
+                  code: 403
                   message: unauthorized
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

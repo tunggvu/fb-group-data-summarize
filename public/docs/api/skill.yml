@@ -4,7 +4,7 @@
     tags:
       - Skills
     responses:
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -13,11 +13,11 @@
             examples:
               unauthenticated:
                 error:
-                  code: 401
+                  code: 403
                   message: unauthorized
               unauthorized:
                 error:
-                  code: 401
+                  code: 403
                   message: unauthorized
       200:
         description: return all skills
@@ -49,6 +49,12 @@
                   logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
                   rank: -29289828
                   skill_id: 24437180
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   post:
     summary: Create skill
     tags:
@@ -128,6 +134,12 @@
                   error:
                     code: 400
                     message: name is empty
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /skills/{id}:
   parameters:
     - name: id
@@ -275,6 +287,12 @@
                       logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
                       rank: -27562324
                       skill_id: 63219058
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   delete:
     summary: Delete skill
     tags:
@@ -296,3 +314,9 @@
           application/json:
             schema:
               $ref: '../schema.yml#/SuccessMessage'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

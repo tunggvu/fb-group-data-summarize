@@ -46,7 +46,7 @@ describe "Project API" do
       let(:organization_id) {}
       consumes "application/json"
 
-    include_examples "unauthenticated"
+      include_examples "unauthenticated"
 
       response "200", "Admin can see all projects" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
@@ -157,14 +157,16 @@ describe "Project API" do
         required: [:name, :product_owner_id]
       }
 
-      response "201", "Admin can create" do
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-        let(:params) { {
-          name: "Project 1",
-          product_owner_id: admin.id,
-          starts_on: 3.days.ago
-        } }
+      let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+      let(:params) { {
+        name: "Project 1",
+        product_owner_id: admin.id,
+        starts_on: 3.days.ago
+      } }
 
+      include_examples "unauthenticated"
+
+      response "201", "Admin can create" do
         run_test! do |response|
           expected = Entities::Project.represent Project.last
           expect(response.body).to eq expected.to_json
@@ -173,11 +175,6 @@ describe "Project API" do
 
       response "201", "Manager can create a project" do
         let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
-        let(:params) { {
-          name: "Project 1",
-          product_owner_id: admin.id,
-          starts_on: 3.days.ago
-        } }
 
         run_test! do |response|
           expected = Entities::Project.represent Project.last
@@ -187,14 +184,6 @@ describe "Project API" do
 
       response "403", "Employee cannot create" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-
-        let(:params) {
-          {
-            name: "Project 1",
-            product_owner_id: admin.id,
-            starts_on: 3.days.ago
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -208,10 +197,10 @@ describe "Project API" do
       end
 
       response "400", "missing param name" do
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:params) {
           { product_owner_id: 1 }
         }
+
         run_test! do |response|
           expected = {
             error: {
@@ -227,14 +216,21 @@ describe "Project API" do
 
   path "/projects/{id}" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Project ID"
+
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+    let(:id) { project.id }
 
     get "Get information of specific project" do
       tags "Projects"
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer, description: "Project ID"
+
+
+      include_examples "unauthenticated"
+
       response "200", "Admin can see any project" do
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         let(:id) { other_project.id }
+
         run_test! do
           expected = Entities::ProjectDetail.represent(other_project)
           expect(response.body).to eq expected.to_json
@@ -243,7 +239,6 @@ describe "Project API" do
 
       response "200", "Manager can see any project" do
         let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
-        let(:id) { project.id }
         run_test! do
           expected = Entities::ProjectDetail.represent(project)
           expect(response.body).to eq expected.to_json
@@ -255,7 +250,6 @@ describe "Project API" do
         let(:employee_level) { FactoryBot.create :employee_level, employee: employee }
         let(:sprint) { FactoryBot.create :sprint, project: project }
         let!(:effort) { FactoryBot.create :effort, employee_level: employee_level, sprint: sprint }
-        let(:id) { project.id }
 
         run_test! do
           expected = Entities::ProjectDetail.represent(project)
@@ -280,7 +274,6 @@ describe "Project API" do
 
       response "404", "project not found" do
         let(:id) { 0 }
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
         run_test! do |response|
           expected = {
@@ -306,17 +299,20 @@ describe "Project API" do
           starts_on: { type: :date, description: "Project start time" }
         }
       }
-      parameter name: :id, in: :path, type: :integer, description: "Project ID"
+
+      let(:params) {
+        { name: "Project name", description: "Project description", product_owner_id: group_leader.id }
+      }
+
+      include_examples "unauthenticated"
 
       response "200", "product owner can update project that product owner created" do
         let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
         let(:id) { other_project.id }
-        let(:params) {
-          { name: "Manager's Project", description: "Project description", product_owner_id: group_leader.id }
-        }
+
         run_test! do |response|
           expected = other_project.reload
-          expect(expected.name).to eq "Manager's Project"
+          expect(expected.name).to eq "Project name"
           expect(expected.description).to eq "Project description"
           expect(expected.product_owner).to eq group_leader
           expect(response.body).to eq Entities::Project.represent(expected).to_json
@@ -326,12 +322,10 @@ describe "Project API" do
       response "200", "manager of product owner can update project that product owner created" do
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
         let(:id) { other_project.id }
-        let(:params) {
-          { name: "Manager's Project", description: "Project description", product_owner_id: group_leader.id }
-        }
+
         run_test! do |response|
           expected = other_project.reload
-          expect(expected.name).to eq "Manager's Project"
+          expect(expected.name).to eq "Project name"
           expect(expected.description).to eq "Project description"
           expect(expected.product_owner).to eq group_leader
           expect(response.body).to eq Entities::Project.represent(expected).to_json
@@ -341,9 +335,7 @@ describe "Project API" do
       response "403", "manager, but not manage product owner cannot update project that product owner created" do
         let("Emres-Authorization") { "Bearer #{other_section_manager_token.token}" }
         let(:id) { other_project.id }
-        let(:params) {
-          { name: "Manager's Project", description: "Project description", product_owner_id: group_leader.id }
-        }
+
         run_test! do |response|
           expected = {
             error: {
@@ -356,26 +348,20 @@ describe "Project API" do
       end
 
       response "200", "admin can update a project" do
-        let(:id) { project.id }
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-        let(:params) {
-          { name: "Employee's Project", description: "Project description", product_owner_id: employee.id }
-        }
+
         run_test! do |response|
           expected = project.reload
-          expect(expected.name).to eq "Employee's Project"
+          expect(expected.name).to eq "Project name"
           expect(expected.description).to eq "Project description"
-          expect(expected.product_owner).to eq employee
+          expect(expected.product_owner).to eq group_leader
           expect(response.body).to eq Entities::Project.represent(expected).to_json
         end
       end
 
       response "403", "Employee cannot update" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { project.id }
-        let(:params) {
-          { name: "Test Project", product_owner_id: employee.id }
-        }
+
         run_test! do |response|
           expected = {
             error: {
@@ -391,12 +377,10 @@ describe "Project API" do
     delete "Delete project" do
       tags "Projects"
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer, description: "Project ID"
+
+      include_examples "unauthenticated"
 
       response "200", "admin delete successfully" do
-        let(:id) { project.id }
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-
         run_test! do
           expected = {
             message: I18n.t("delete_success")
@@ -406,8 +390,8 @@ describe "Project API" do
       end
 
       response "200", "manager delete successfully" do
-        let(:id) { other_project.id }
         let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
+        let(:id) { other_project.id }
 
         run_test! do
           expected = {
@@ -418,7 +402,6 @@ describe "Project API" do
       end
 
       response "403", "employee cannot delete project" do
-        let(:id) { project.id }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|
@@ -436,14 +419,16 @@ describe "Project API" do
 
   path "/projects/{id}/employees" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Project ID"
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+    let(:id) { project.id }
 
     get "Get employees in project" do
       consumes "application/json"
-      parameter name: :id, in: :path, type: :integer, description: "Project ID"
+
+      include_examples "unauthenticated"
 
       response "200", "Amdin, GL above and PO can see all employee" do
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-        let(:id) { project.id }
         run_test! do
           expected = [Entities::Employee.represent(employee)]
           expect(response.body).to eq expected.to_json
@@ -452,7 +437,7 @@ describe "Project API" do
 
       response "200", "Employee in project can see" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { project.id }
+
         run_test! do
           expected = [Entities::Employee.represent(employee)]
           expect(response.body).to eq expected.to_json
@@ -463,7 +448,6 @@ describe "Project API" do
         let(:employee_1) { FactoryBot.create :employee }
         let(:employee_token_1) { FactoryBot.create :employee_token, employee: employee_1 }
         let("Emres-Authorization") { "Bearer #{employee_token_1.token}" }
-        let(:id) { project.id }
 
         run_test! do
           expected = {
@@ -478,7 +462,6 @@ describe "Project API" do
 
       response "404", "project not found" do
         let(:id) { 0 }
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
 
         run_test! do |response|
           expected = {

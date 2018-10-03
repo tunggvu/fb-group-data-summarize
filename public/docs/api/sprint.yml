@@ -34,7 +34,7 @@
                   error:
                     code: 404
                     message: Couldn't find Phase with 'id'=0
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -44,12 +44,12 @@
               not login:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               employee isn't in project:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       200:
         description: return all sprint
@@ -59,6 +59,12 @@
               type: array
               items:
                 $ref: '../schema.yml#/Sprint'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   post:
     summary: Create new sprint
     tags:
@@ -103,8 +109,8 @@
               - efforts
           example:
             name: Sprint 1
-            starts_on: 2018-07-25
-            ends_on: 2018-08-04
+            starts_on: "2018-01-01"
+            ends_on: "2018-02-01"
             efforts:
               - effort: 98
                 employee_id: 5
@@ -121,8 +127,8 @@
                 value:
                   id: 1
                   name: Sprint 1
-                  starts_on: '2018-07-25'
-                  ends_on: '2018-08-04'
+                  starts_on: "2018-01-01"
+                  ends_on: "2018-02-01"
                   members:
                     - effort: 100
                       name: Administator
@@ -140,8 +146,8 @@
                 value:
                   id: 1
                   name: Sprint 1
-                  starts_on: '2018-07-25'
-                  ends_on: '2018-08-04'
+                  starts_on: "2018-01-01"
+                  ends_on: "2018-02-01"
       400:
         description: empty/missing params
         content:
@@ -176,12 +182,18 @@
                   error:
                     code: 422
                     message: 'Validation failed: Ends on must be after starts on next sprint'
-      401:
+      403:
         description: employee or manager in other division cannot create sprint
         content:
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /projects/{project_id}/phases/{phase_id}/sprints/{id}:
   parameters:
   - name: project_id
@@ -226,9 +238,9 @@
             example:
               id: 1
               name: sprint 1
-              starts_on: '2018-07-19'
-              ends_on: '2018-07-20'
-      401:
+              starts_on: "2018-01-01"
+              ends_on: "2018-02-01"
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -238,13 +250,19 @@
               employee not in project:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               not login:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   patch:
     summary: update sprint
     tags:
@@ -266,10 +284,10 @@
                 description: Ends on of sprint
           example:
             name: sprint 3
-            starts_on: '2018-12-15'
-            ends_on: '2018-12-18'
+            starts_on: "2018-01-01"
+            ends_on: "2018-02-01"
     responses:
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -279,12 +297,12 @@
               employee:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               manager in other division:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       200:
         description: PO and PO's managers can update sprint
@@ -341,6 +359,12 @@
                   error:
                     code: 422
                     message: "Validation failed: Ends on must be after starts on next sprint"
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   delete:
     summary: Delete sprint
     tags:
@@ -352,7 +376,7 @@
           appication/json:
             schema:
               $ref: '../schema.yml#/SuccessMessage'
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -362,13 +386,19 @@
               employee:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               manager of other div:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /sprints/{id}/employees:
   parameters:
   - name: id
@@ -391,7 +421,7 @@
               type: array
               items:
                 $ref: '../schema.yml#/EmployeeLevel'
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -401,12 +431,12 @@
               employee not in project and can't view:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               not login:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       404:
         description: sprint not found
@@ -418,3 +448,9 @@
               error:
                 code: 404
                 message: Couldn't find Sprint with 'id'=0
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

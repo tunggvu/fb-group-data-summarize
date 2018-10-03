@@ -68,9 +68,11 @@ RSpec.describe "Sessions" do
       consumes "application/json"
       parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
 
-      response "200", "with valid token" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+      let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
+      include_examples "unauthenticated"
+
+      response "200", "with valid token" do
         run_test! do |response|
           expected = { message: I18n.t("log_out") }
           expect(response.body).to eq expected.to_json
@@ -99,8 +101,24 @@ RSpec.describe "Sessions" do
         required: ["current_password", "new_password"]
       }
 
+      let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+      let(:params) {
+        {
+          current_password: employee.password,
+          new_password: "Aa@123456798"
+        }
+      }
+
+      include_examples "unauthenticated"
+
+      response "200", "Change Password success with valid new password" do
+        run_test! do |response|
+          expected = { message: I18n.t("success") }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
       response "400", "new password is wrong format " do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
             current_password: employee.password,
@@ -119,28 +137,7 @@ RSpec.describe "Sessions" do
         end
       end
 
-      response "401", "Unauthenticated" do
-        let("Emres-Authorization") { "" }
-        let(:params) {
-          {
-            current_password: "Aa@123456",
-            new_password: "Aa@123456"
-          }
-        }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.unauthenticated,
-              message: I18n.t("api_error.unauthenticated")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
       response "400", "Wrong current password" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) {
           {
             current_password: "Aa@23450",
@@ -155,21 +152,6 @@ RSpec.describe "Sessions" do
               message: I18n.t("api_error.wrong_current_password")
             }
           }
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "200", "Change Password success with valid new password" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) {
-          {
-            current_password: employee.password,
-            new_password: "Aa@123456798"
-          }
-        }
-
-        run_test! do |response|
-          expected = { message: I18n.t("success") }
           expect(response.body).to eq expected.to_json
         end
       end

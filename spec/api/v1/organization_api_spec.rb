@@ -56,17 +56,19 @@ describe "Organization API" do
         required: [:name, :manager_id, :level]
       }
 
-      response "201", "created an organization" do
-
-        let(:organization) {
-          {
-             name: "Test Organization",
-             manager_id: manager.id,
-             level: 2,
-             parent_id: Organization.first.id
-          }
+      let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+      let(:organization) {
+        {
+           name: "Test Organization",
+           manager_id: manager.id,
+           level: 2,
+           parent_id: Organization.first.id
         }
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+      }
+
+      include_examples "unauthenticated"
+
+      response "201", "created an organization" do
         run_test! do |response|
           expected = Entities::BaseOrganization.represent Organization.last
           expect(response.body).to eq expected.to_json
@@ -74,9 +76,8 @@ describe "Organization API" do
       end
 
       response "400", "validation failed" do
-
         let(:organization) { { manager_id: 100, level: 4 } }
-        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+
         run_test! do |response|
           expected = {
             error: {
@@ -89,15 +90,8 @@ describe "Organization API" do
       end
 
       response "403", "unauthorized" do
-
-        let(:organization) {
-          {
-            name: "Test Organization",
-             manager_id: 100,
-             level: 4
-          }
-        }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
         run_test! do |response|
           expected = {
             error: {
@@ -119,9 +113,12 @@ describe "Organization API" do
       tags "Organizations"
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
-      response "200", "returns the organization information" do
 
-        let(:id) { division2.id }
+      let(:id) { division2.id }
+
+      include_examples "unauthenticated"
+
+      response "200", "returns the organization information" do
         run_test! do |response|
           expected = Entities::Organization.represent division2
           expect(response.body).to eq expected.to_json
@@ -129,8 +126,8 @@ describe "Organization API" do
       end
 
       response "404", "returns invalid id error" do
-
         let(:id) { 0 }
+
         run_test! do |response|
           expected = {
             error: {
@@ -158,17 +155,20 @@ describe "Organization API" do
       }
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
+      let(:organization) {
+        {
+          name: "Test Section",
+          manager_id: employee.id,
+          level: 3,
+          parent_id: division.id
+        }
+      }
+      let(:id) { section.id }
+
+      include_examples "unauthenticated"
+
       response "200", "updated an organization" do
 
-        let(:organization) {
-          {
-            name: "Test Section",
-            manager_id: employee.id,
-            level: 3,
-            parent_id: division.id
-          }
-        }
-        let(:id) { section.id }
         run_test! do |response|
           expected = Entities::BaseOrganization.represent section.reload
           expect(response.body).to eq expected.to_json
@@ -176,11 +176,13 @@ describe "Organization API" do
       end
 
       response "400", "validation failed" do
-
-        let(:organization) { { manager_id: 100,
-                               level: 3 }
+        let(:organization) {
+          {
+            manager_id: 100,
+            level: 3
+          }
         }
-        let(:id) { section.id }
+
         run_test! do |response|
           expected = {
             error: {
@@ -193,16 +195,8 @@ describe "Organization API" do
       end
 
       response "403", "unauthorized" do
-
-        let(:organization) {
-          {
-            name: "Test Organization",
-            manager_id: manager.id,
-            level: 1
-          }
-        }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { division2.id }
+
         run_test! do |response|
           expected = {
             error: {
@@ -215,16 +209,8 @@ describe "Organization API" do
       end
 
       response "404", "not found organization" do
-
-        let(:organization) {
-          {
-            name: "Test Organization",
-            manager_id: manager.id,
-            level: :clan,
-            parent_id: Organization.first.id
-          }
-        }
         let(:id) { 0 }
+
         run_test! do |response|
           expected = {
             error: {
@@ -242,10 +228,13 @@ describe "Organization API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
-      response "200", "deleted an organization" do
+      let(:id) { division2.id }
 
-        let(:id) { division2.id }
+      include_examples "unauthenticated"
+
+      response "200", "deleted an organization" do
         let!(:other_employee) { FactoryBot.create :employee, organization: division2 }
+
         run_test! do |response|
           expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json
@@ -257,9 +246,8 @@ describe "Organization API" do
       end
 
       response "403", "unauthorized" do
-
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
-        let(:id) { section.id }
+
         run_test! do |response|
           expected = {
             error: {
@@ -307,15 +295,18 @@ describe "Organization API" do
       }
       parameter name: :id, in: :path, type: :integer, description: "Organization ID"
 
+      let(:employee2) { FactoryBot.create :employee }
+      let(:employee1) { FactoryBot.create :employee }
+      let(:employees) {
+        {
+          employees: [employee1.id, employee2.id]
+        }
+      }
+
+      include_examples "unauthenticated"
+
       response "403", "member cannot add employee" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:employee2) { FactoryBot.create :employee }
-        let(:employee1) { FactoryBot.create :employee }
-        let(:employees) {
-          {
-            employees: [employee1.id, employee2.id]
-          }
-        }
 
         run_test! do
           expected = {
@@ -332,18 +323,9 @@ describe "Organization API" do
         let(:manager2) { FactoryBot.create :employee, organization: division }
         let(:manager2_token) { FactoryBot.create :employee_token, employee: manager2 }
 
-        before do
-          division.update manager_id: manager2.id
-        end
+        before { division.update manager_id: manager2.id }
 
         let("Emres-Authorization") { "Bearer #{manager2_token.token}" }
-        let(:employee2) { FactoryBot.create :employee }
-        let(:employee1) { FactoryBot.create :employee }
-        let(:employees) {
-          {
-            employees: [employee1.id, employee2.id]
-          }
-        }
 
         run_test! do
           expected = {
@@ -372,13 +354,6 @@ describe "Organization API" do
 
       response "200", "admin can add employee" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-        let(:employee2) { FactoryBot.create :employee }
-        let(:employee1) { FactoryBot.create :employee }
-        let(:employees) {
-          {
-            employees: [employee1.id, employee2.id]
-          }
-        }
 
         run_test! do |response|
           expected = [
@@ -391,13 +366,6 @@ describe "Organization API" do
 
       response "200", "manager of organization can add employee" do
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
-        let(:employee2) { FactoryBot.create :employee }
-        let(:employee1) { FactoryBot.create :employee }
-        let(:employees) {
-          {
-            employees: [employee1.id, employee2.id]
-          }
-        }
 
         run_test! do
           expected = [

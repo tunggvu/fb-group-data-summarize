@@ -31,7 +31,7 @@
                 - id: 1
                   name: Project 1
                   logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-                  starts_on: 2018-08-08
+                  starts_on: "2018-08-08"
                   description: Description of project 1
                   product_owner:
                     id: 1
@@ -39,13 +39,13 @@
                     name: Employee
                     employee_code: B120000
                     email: employee@framgia.com
-                    birthday: 2018-1-1
+                    birthday: "2018-01-01"
                     phone: "0123456789"
                     avatar: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
                 - id: 2
                   name: Project 2
                   logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-                  starts_on: 2018-08-08
+                  starts_on: "2018-08-08"
                   description: Description of project 2
                   product_owner:
                     id: 1
@@ -53,7 +53,7 @@
                     name: Employee
                     employee_code: B120000
                     email: employee@framgia.com
-                    birthday: 2018-1-1
+                    birthday: "2018-01-01"
                     phone: "0123456789"
                     avatar: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
               manager can see all projects:
@@ -61,7 +61,7 @@
                 - id: 1
                   name: Project 1
                   logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-                  starts_on: 2018-08-08
+                  starts_on: "2018-08-08"
                   description: Description of project 1
                   product_owner:
                     id: 1
@@ -69,13 +69,13 @@
                     name: Employee
                     employee_code: B120000
                     email: employee@framgia.com
-                    birthday: 2018-1-1
+                    birthday: "2018-01-01"
                     phone: "0123456789"
                     avatar: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
                 - id: 2
                   name: Project 2
                   logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-                  starts_on: 2018-08-08
+                  starts_on: "2018-08-08"
                   description: Description of project 2
                   product_owner:
                     id: 1
@@ -83,7 +83,7 @@
                     name: Employee
                     employee_code: B120000
                     email: employee@framgia.com
-                    birthday: 2018-1-1
+                    birthday: "2018-01-01"
                     phone: "0123456789"
                     avatar: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
               employee can see all projects:
@@ -91,7 +91,7 @@
                 - id: 1
                   name: Project 1
                   logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-                  starts_on: 2018-08-08
+                  starts_on: "2018-08-08"
                   description: Description of project 1
                   product_owner:
                     id: 1
@@ -99,13 +99,13 @@
                     name: Employee
                     employee_code: B120000
                     email: employee@framgia.com
-                    birthday: 2018-1-1
+                    birthday: "2018-01-01"
                     phone: "0123456789"
                     avatar: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
                 - id: 2
                   name: Project 2
                   logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-                  starts_on: 2018-08-08
+                  starts_on: "2018-08-08"
                   description: Description of project 2
                   product_owner:
                     id: 1
@@ -113,10 +113,10 @@
                     name: Employee
                     employee_code: B120000
                     email: employee@framgia.com
-                    birthday: 2018-1-1
+                    birthday: "2018-01-01"
                     phone: "0123456789"
                     avatar: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -132,6 +132,12 @@
               error:
                 code: 404
                 message: "Couldn't find Organization with 'id'=0"
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   post:
     summary: Create a project
     tags:
@@ -159,7 +165,7 @@
           example:
             name: Project
             product_owner_id: 1
-            start_ons: 2018-1-1
+            start_ons: "2018-01-01"
     responses:
       201:
         description: "Create a project"
@@ -173,7 +179,7 @@
                   id: 11
                   name: Project 1
                   description: Description of project 1
-                  starts_on: '2018-07-12'
+                  starts_on: "2018-07-12"
                   logo: "/uploads/avatar.png"
                   product_owner:
                     id: 1
@@ -181,7 +187,7 @@
                     name: Administator
                     employee_code: B1210000
                     email: admin@framgia.com
-                    birthday: 1/1/2018
+                    birthday: "2018-07-12"
                     phone: 0987654321
                     avatar: "/uploads/avatar.png"
               admin can create project:
@@ -197,10 +203,10 @@
                     name: Administator
                     employee_code: B1210000
                     email: admin@framgia.com
-                    birthday: 1/1/2018
+                    birthday: "2018-07-12"
                     phone: 0987654321
                     avatar: "/uploads/avatar.png"
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -216,6 +222,12 @@
               error:
                 code: 400
                 message: name is missing
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /projects/{id}:
   get:
     summary: Get information of specific project
@@ -241,14 +253,14 @@
                 name: Project 1
                 logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
                 description: Description
-                starts_on: '2018-08-10'
+                starts_on: "2018-07-12"
                 product_owner:
                   id: 1
                   organization_id: 1
                   name: Employee
                   employee_code: B120000
                   email: employee@framgia.com
-                  birthday: 1/1/2018
+                  birthday: "2018-07-12"
                   phone: '0123456789'
                   avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
                 current_sprint:
@@ -271,8 +283,8 @@
                   sprints:
                   - id: 1
                     name: sprint 1
-                    starts_on: '2018-08-10'
-                    ends_on: '2018-08-20'
+                    starts_on: "2018-07-12"
+                    ends_on: "2018-08-20"
                     members:
                     - id: 339
                       effort: 80
@@ -302,14 +314,14 @@
                 name: Project 1
                 logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
                 description: Description
-                starts_on: '2018-08-10'
+                starts_on: "2018-07-12"
                 product_owner:
                   id: 1
                   organization_id: 1
                   name: Employee
                   employee_code: B120000
                   email: employee@framgia.com
-                  birthday: 1/1/2018
+                  birthday: "2018-07-12"
                   phone: '0123456789'
                   avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
                 current_sprint:
@@ -332,8 +344,8 @@
                   sprints:
                   - id: 1
                     name: sprint 1
-                    starts_on: '2018-08-10'
-                    ends_on: '2018-08-20'
+                    starts_on: "2018-07-12"
+                    ends_on: "2018-08-12"
                     members:
                     - id: 339
                       effort: 80
@@ -363,14 +375,14 @@
                 name: Project 1
                 logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
                 description: Description
-                starts_on: '2018-08-10'
+                starts_on: "2018-07-12"
                 product_owner:
                   id: 1
                   organization_id: 1
                   name: Employee
                   employee_code: B120000
                   email: employee@framgia.com
-                  birthday: 1/1/2018
+                  birthday: "2018-07-12"
                   phone: '0123456789'
                   avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
                 current_sprint:
@@ -393,8 +405,8 @@
                   sprints:
                   - id: 1
                     name: sprint 1
-                    starts_on: '2018-08-10'
-                    ends_on: '2018-08-20'
+                    starts_on: "2018-07-12"
+                    ends_on: "2018-08-12"
                     members:
                     - id: 339
                       effort: 80
@@ -420,7 +432,7 @@
                           name: Junior
                           rank: 1
                           logo: "#"
-      401:
+      403:
         description: Unaithorized
         content:
           application/json:
@@ -436,6 +448,12 @@
               error:
                 code: 404
                 message: Couldn't find Project with 'id'=0
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   patch:
     summary: Update an project
     tags:
@@ -470,7 +488,7 @@
             name: Phase 1
             description: Something
             product_owner_id: 1
-            starts_on: 2018-01-01
+            starts_on: "2018-07-12"
     responses:
       200:
         description: admin can update a project
@@ -478,12 +496,18 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Project'
-      401:
+      403:
         description: Employee cannot update
         content:
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   delete:
     summary: Delete project
     tags:
@@ -503,12 +527,18 @@
           application/json:
             schema:
               $ref: '../schema.yml#/SuccessMessage'
-      401:
+      403:
         description: employee cannot delete project
         content:
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /projects/{id}/employees:
   get:
     summary: Get employees of specific project
@@ -531,7 +561,7 @@
               type: array
               items:
                 $ref: '../schema.yml#/Employee'
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -547,3 +577,9 @@
               error:
                 code: 404
                 message: Couldn't find Project with 'id'=0
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

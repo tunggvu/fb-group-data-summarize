@@ -22,7 +22,7 @@
               error:
                 code: 404
                 message: Couldn't find Project with 'id'=0
-      401:
+      403:
         description: employee not in project cannot view all phases
         content:
           application/json:
@@ -36,6 +36,12 @@
               type: array
               items:
                 $ref: '../schema.yml#/Phase'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   post:
     summary: Create new phase
     tags:
@@ -61,10 +67,10 @@
             name
           example:
             name: Phase 1
-            starts_on: 2018-01-01
-            ends_on: 2018-02-01
+            starts_on: "2018-01-01"
+            ends_on: "2018-02-01"
     responses:
-      401:
+      403:
         description: manager in other division cannot create phase
         content:
           application/json:
@@ -86,6 +92,12 @@
               error:
                 code: 400
                 message: ends_on is empty
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /projects/{project_id}/phases/{id}:
   parameters:
   - name: project_id
@@ -121,12 +133,18 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Phase'
-      401:
+      403:
         description: employee isn't in project cannot view phase
         content:
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   patch:
     summary: update phase
     tags:
@@ -151,10 +169,10 @@
           required: name
           example:
             name: Phase 1
-            starts_on: 2018-01-01
-            ends_on: 2018-02-01
+            starts_on: "2018-01-01"
+            ends_on: "2018-02-01"
     responses:
-      401:
+      403:
         description: manager in other division cannot update phase
         content:
           application/json:
@@ -176,6 +194,12 @@
               error:
                 code: 400
                 message: ends_on is empty
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   delete:
     summary: delete phase
     tags:
@@ -183,7 +207,7 @@
     consumes:
     - application/json
     responses:
-      401:
+      403:
         description: manager in other division cannot delete phase
         content:
           application/json:
@@ -195,3 +219,9 @@
           application/json:
             schema:
               $ref: '../schema.yml#/SuccessMessage'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

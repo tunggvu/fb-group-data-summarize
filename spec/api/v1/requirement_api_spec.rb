@@ -3,16 +3,27 @@
 require "swagger_helper"
 
 describe "Requirement API" do
-  let(:requirement) { FactoryBot.create :requirement }
-  let!(:section) { FactoryBot.create :organization, :section }
-  let!(:group) { FactoryBot.create :organization, :clan, parent: section }
-  let!(:group_leader) { FactoryBot.create :employee, organization: group }
-  let!(:group_leader_token) { FactoryBot.create :employee_token, employee: group_leader }
-  let!(:project) { FactoryBot.create :project, product_owner: group_leader }
-  let!(:phase1) { FactoryBot.create :phase, project: project }
-  let!(:phase2) { FactoryBot.create :phase, project: project }
-  let!(:level1) { FactoryBot.create :level }
-  let!(:level2) { FactoryBot.create :level }
+  let(:employee) { FactoryBot.create :employee }
+  let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
+
+  let(:div2) { FactoryBot.create :organization, :division }
+  let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
+  let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
+
+  let(:section) { FactoryBot.create :organization, :section }
+  let(:section_manager) { FactoryBot.create :employee, organization: section }
+  let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
+
+  let(:group) { FactoryBot.create :organization, :clan, parent: section }
+  let(:group_leader) { FactoryBot.create :employee, organization: group }
+  let(:group_leader_token) { FactoryBot.create :employee_token, employee: group_leader }
+
+  let(:project) { FactoryBot.create :project, product_owner: group_leader }
+  let(:phase1) { FactoryBot.create :phase, project: project }
+  let(:phase2) { FactoryBot.create :phase, project: project }
+  let(:level1) { FactoryBot.create :level }
+  let(:level2) { FactoryBot.create :level }
+
   let!(:requirement) { FactoryBot.create :requirement, phase: phase1, level: level1 }
   path "/phases/{phase_id}/requirements" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
@@ -77,11 +88,12 @@ describe "Requirement API" do
         required: [:level_id, :phase_id, :quantity]
       }
 
+      let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
+
+      include_examples "unauthenticated"
+
       response "403", "employee cannot create requirement" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
 
         run_test! do
           expected = {
@@ -95,11 +107,7 @@ describe "Requirement API" do
       end
 
       response "403", "manager in other division cannot create requirement" do
-        let(:div2) { FactoryBot.create :organization, :division }
-        let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
-        let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -115,10 +123,7 @@ describe "Requirement API" do
       end
 
       response "201", "manager of PO can create requirement" do
-        let!(:section_manager) { FactoryBot.create :employee, organization: section }
-        let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -130,8 +135,6 @@ describe "Requirement API" do
       end
 
       response "201", "PO can create requirement" do
-        let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
-
         run_test! do
           requirement = Requirement.last
           expected = Entities::Requirement.represent(requirement)
@@ -236,12 +239,12 @@ describe "Requirement API" do
       }
 
       let(:id) { requirement.id }
+      let(:params) { { level_id: level2.id, quantity: 6 } }
+
+      include_examples "unauthenticated"
 
       response "403", "employee cannot update requirement" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { { level_id: level2.id, quantity: 6 } }
 
         run_test! do
           expected = {
@@ -255,11 +258,7 @@ describe "Requirement API" do
       end
 
       response "403", "manager in other division cannot update requirement" do
-        let(:div2) { FactoryBot.create :organization, :division }
-        let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
-        let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { level_id: level2.id, quantity: 6 } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -275,10 +274,7 @@ describe "Requirement API" do
       end
 
       response "200", "manager of PO can update phase" do
-        let!(:section_manager) { FactoryBot.create :employee, organization: section }
-        let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { level_id: level2.id, quantity: 6 } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -290,8 +286,6 @@ describe "Requirement API" do
       end
 
       response "200", "PO can update phase" do
-        let(:params) { { level_id: level2.id, quantity: 6 } }
-
         run_test! do
           requirement = Requirement.find_by(phase_id: phase1.id, level_id: level2.id, quantity: 6)
           expected = Entities::Requirement.represent(requirement)
@@ -334,9 +328,9 @@ describe "Requirement API" do
 
       let(:id) { requirement.id }
 
+      include_examples "unauthenticated"
+
       response "403", "employee cannot delete requirement" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do
@@ -351,9 +345,6 @@ describe "Requirement API" do
       end
 
       response "403", "manager in other division cannot delete requirement" do
-        let(:div2) { FactoryBot.create :organization, :division }
-        let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
-        let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
@@ -370,8 +361,6 @@ describe "Requirement API" do
       end
 
       response "200", "manager of PO can delete requirement" do
-        let!(:section_manager) { FactoryBot.create :employee, organization: section }
-        let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
         before { section.update_attributes! manager_id: section_manager.id }
@@ -384,8 +373,6 @@ describe "Requirement API" do
       end
 
       response "200", "PO can deleted a requirement" do
-        let(:id) { requirement.id }
-
         run_test! do
           expected = { message: I18n.t("delete_success") }
           expect(response.body).to eq expected.to_json

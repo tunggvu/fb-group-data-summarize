@@ -318,17 +318,19 @@ describe "Employee API" do
         }
       }
 
-      response "403", "member cannot create employee" do
-        let(:params) {
-          {
-            name: "New employee",
-            employee_code: "B123456",
-            email: "new_employee@framgia.com",
-            organization_id: group.id,
-            password: "Aa@123456"
-          }
+      let(:params) {
+        {
+          name: "New employee",
+          employee_code: "B123456",
+          email: "new_employee@framgia.com",
+          organization_id: group.id,
+          password: "Aa@123456"
         }
+      }
 
+      include_examples "unauthenticated"
+
+      response "403", "member cannot create employee" do
         run_test! do
           expected = {
             error: {
@@ -342,15 +344,6 @@ describe "Employee API" do
 
       response "201", "admin create successfully" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-        let(:params) {
-          {
-            name: "New employee",
-            employee_code: "B123456",
-            email: "new_employee@framgia.com",
-            organization_id: group.id,
-            password: "Aa@123456"
-          }
-        }
 
         run_test! do
           expected = Entities::Employee.represent Employee.last
@@ -360,15 +353,6 @@ describe "Employee API" do
 
       response "201", "manager create successfully" do
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
-        let(:params) {
-          {
-            name: "New employee",
-            employee_code: "B123456",
-            email: "new_employee@framgia.com",
-            organization_id: group.id,
-            password: "Aa@123456"
-          }
-        }
 
         run_test! do
           expected = Entities::Employee.represent Employee.last
@@ -460,10 +444,11 @@ describe "Employee API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
-      response "200", "return one employee" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { employee.id }
+      let(:id) { employee.id }
 
+      include_examples "unauthenticated"
+
+      response "200", "return one employee" do
         run_test! do
           expected = Entities::Employee.represent employee,
             only: [:id, :organization_id, :name, :employee_code, :email, :birthday, :phone, :avatar]
@@ -491,11 +476,12 @@ describe "Employee API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
+      let(:employee2) { FactoryBot.create :employee, organization: group }
+      let(:id) { employee2.id }
+
+      include_examples "unauthenticated"
+
       response "403", "member cannot delete" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-
-        let(:id) { employee.id }
-
         run_test! do
           expected = {
             error: {
@@ -507,11 +493,8 @@ describe "Employee API" do
         end
       end
 
-      let(:employee2) { FactoryBot.create :employee, organization: group }
       response "200", "manager can delete" do
         let("Emres-Authorization") { "Bearer #{manager_token.token}" }
-
-        let(:id) { employee2.id }
 
         run_test! do
           expected = {
@@ -523,8 +506,6 @@ describe "Employee API" do
 
       response "200", "admin can delete" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-
-        let(:id) { employee2.id }
 
         run_test! do
           expected = {
@@ -654,10 +635,11 @@ describe "Employee API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
-      response "200", "return all skill of employee" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { employee.id }
+      let(:id) { employee.id }
 
+      include_examples "unauthenticated"
+
+      response "200", "return all skill of employee" do
         run_test! do
           expected = Entities::EmployeeSkill.represent(employee, employee_id: employee.id)
           expect(response.body).to eq expected.to_json
@@ -689,10 +671,11 @@ describe "Employee API" do
       consumes "application/json"
       parameter name: :id, in: :path, type: :integer, description: "Employees ID"
 
-      response "200", "return all project that employee is product owner" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { employee.id }
+      let(:id) { employee.id }
 
+      include_examples "unauthenticated"
+
+      response "200", "return all project that employee is product owner" do
         run_test! do
           expected = Entities::Project.represent([project])
           expect(response.body).to eq expected.to_json

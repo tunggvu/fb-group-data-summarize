@@ -325,13 +325,16 @@ describe "Effort API" do
         }
       }
 
+      let(:params) {
+        {
+          effort: 50
+        }
+      }
+
+      include_examples "unauthenticated"
+
       response "200", "Admin can update effort" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-        let(:params) {
-          {
-            effort: 50
-          }
-        }
 
         run_test! do |response|
           expected = Entities::Effort.represent sprint.efforts
@@ -342,11 +345,6 @@ describe "Effort API" do
 
       response "200", "manager of PO can update effort" do
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) {
-          {
-            effort: 50
-          }
-        }
 
         run_test! do |response|
           expected = Entities::Effort.represent sprint.efforts
@@ -356,12 +354,6 @@ describe "Effort API" do
       end
 
       response "200", "PO can update effort" do
-        let(:params) {
-          {
-            effort: 50
-          }
-        }
-
         run_test! do |response|
           expected = Entities::Effort.represent sprint.efforts
           expect(response.body).to eq expected.to_json
@@ -403,11 +395,6 @@ describe "Effort API" do
 
       response "403", "employee cannot update effort" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) {
-          {
-            effort: rand(1..100)
-          }
-        }
 
         run_test! do |response|
           expected = {
@@ -421,11 +408,6 @@ describe "Effort API" do
 
       response "403", "manager in other division cannot update effort" do
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) {
-          {
-            effort: rand(1..100)
-          }
-        }
 
         run_test! do |response|
           expected = {

@@ -3,7 +3,14 @@
 require "swagger_helper"
 
 describe "Phase API" do
+  let(:employee) { FactoryBot.create :employee }
+  let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
   let(:section) { FactoryBot.create :organization, :section }
+  let(:section_manager) { FactoryBot.create :employee, organization: section }
+  let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
+  let(:div2) { FactoryBot.create :organization, :division }
+  let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
+  let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
   let(:group) { FactoryBot.create :organization, :clan, parent: section }
   let(:group_leader) { FactoryBot.create :employee, organization: group }
   let(:group_leader_token) { FactoryBot.create :employee_token, employee: group_leader }
@@ -23,6 +30,8 @@ describe "Phase API" do
       tags "Phases"
       consumes "application/json"
 
+      include_examples "unauthenticated"
+
       response "404", "project not found" do
         let(:project_id) { 0 }
 
@@ -38,8 +47,6 @@ describe "Phase API" do
       end
 
       response "403", "employee not in project cannot view all phases" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do
@@ -54,7 +61,6 @@ describe "Phase API" do
       end
 
       response "200", "return all phases in project" do
-
         run_test! do
           expected = Entities::Phase.represent(project.phases)
           expect(response.body).to eq expected.to_json
@@ -76,11 +82,12 @@ describe "Phase API" do
         required: [:name]
       }
 
+      let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
+
+      include_examples "unauthenticated"
+
       response "403", "employee cannot create phase" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         run_test! do
           expected = {
@@ -94,11 +101,7 @@ describe "Phase API" do
       end
 
       response "403", "manager in other division cannot create phase" do
-        let(:div2) { FactoryBot.create :organization, :division }
-        let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
-        let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -114,10 +117,7 @@ describe "Phase API" do
       end
 
       response "201", "manager of PO can create phase" do
-        let(:section_manager) { FactoryBot.create :employee, organization: section }
-        let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -128,8 +128,6 @@ describe "Phase API" do
       end
 
       response "201", "PO can create phase" do
-        let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
-
         run_test! do
           expected = Entities::Phase.represent Phase.last
           expect(response.body).to eq expected.to_json
@@ -200,10 +198,13 @@ describe "Phase API" do
     parameter name: :id, in: :path, type: :integer, description: "Phase ID"
     let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
     let(:project_id) { project.id }
+    let(:id) { phase1.id }
 
     get "specific phase in project" do
       tags "Phases"
       consumes "application/json"
+
+      include_examples "unauthenticated"
 
       response "404", "phase not found" do
         let(:id) { 0 }
@@ -214,8 +215,6 @@ describe "Phase API" do
       end
 
       response "200", "return specific phase in project" do
-        let(:id) { phase1.id }
-
         run_test! do
           expected = Entities::Phase.represent phase1
           expect(response.body).to eq expected.to_json
@@ -223,10 +222,7 @@ describe "Phase API" do
       end
 
       response "403", "employee isn't in project cannot view phase" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:id) { phase1.id }
 
         run_test! do
           expected = {
@@ -255,12 +251,12 @@ describe "Phase API" do
       }
 
       let(:id) { phase1.id }
+      let(:params) { { name: "phase 3", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
+
+      include_examples "unauthenticated"
 
       response "403", "employee cannot update phase" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-        let(:params) { { name: "phase 3" } }
 
         run_test! do
           expected = {
@@ -274,11 +270,7 @@ describe "Phase API" do
       end
 
       response "403", "manager in other division cannot update phase" do
-        let(:div2) { FactoryBot.create :organization, :division }
-        let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
-        let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
-        let(:params) { { name: "phase 2" } }
 
         before { div2.update_attributes! manager_id: div2_manager.id }
 
@@ -294,10 +286,7 @@ describe "Phase API" do
       end
 
       response "200", "manager of PO can update phase" do
-        let(:section_manager) { FactoryBot.create :employee, organization: section }
-        let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
-        let(:params) { { name: "phase 3", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
 
         before { section.update_attributes! manager_id: section_manager.id }
 
@@ -308,8 +297,6 @@ describe "Phase API" do
       end
 
       response "200", "PO can update phase" do
-        let(:params) { { name: "phase 4", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
-
         run_test! do
           expected = Entities::Phase.represent phase1.reload
           expect(response.body).to eq expected.to_json
@@ -379,9 +366,9 @@ describe "Phase API" do
 
       let(:id) { phase1.id }
 
+      include_examples "unauthenticated"
+
       response "403", "employee cannot delete phase" do
-        let(:employee) { FactoryBot.create :employee }
-        let(:employee_token) { FactoryBot.create :employee_token, employee: employee }
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         let(:params) { { name: "phase 3" } }
 
@@ -397,9 +384,7 @@ describe "Phase API" do
       end
 
       response "403", "manager in other division cannot delete phase" do
-        let(:div2) { FactoryBot.create :organization, :division }
-        let(:div2_manager) { FactoryBot.create :employee, organization: div2 }
-        let(:div2_manager_token) { FactoryBot.create :employee_token, employee: div2_manager }
+
         let("Emres-Authorization") { "Bearer #{div2_manager_token.token}" }
         let(:params) { { name: "phase 2" } }
 
@@ -417,8 +402,6 @@ describe "Phase API" do
       end
 
       response "200", "manager of PO can delete phase" do
-        let(:section_manager) { FactoryBot.create :employee, organization: section }
-        let(:section_manager_token) { FactoryBot.create :employee_token, employee: section_manager }
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
         before { section.update_attributes! manager_id: section_manager.id }

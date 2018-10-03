@@ -12,12 +12,18 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Employee'
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   patch:
     summary: Update current user profile
     tags:
@@ -46,7 +52,7 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Employee'
-      401:
+      403:
         description: Unauthorized
         content:
           application/json:
@@ -62,3 +68,9 @@
               error:
                 code: 400
                 message: phone is invalid
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

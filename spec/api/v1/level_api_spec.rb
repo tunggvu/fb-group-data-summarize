@@ -200,6 +200,8 @@ describe "Level API" do
       consumes "application/json"
       let(:id) { level3.id }
 
+      include_examples "unauthenticated"
+
       response "403", "employee cannot delete level" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 

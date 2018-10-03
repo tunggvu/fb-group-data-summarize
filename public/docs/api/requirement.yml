@@ -30,7 +30,7 @@
               type: array
               items:
                 $ref: '../schema.yml#/Requirement'
-      401:
+      403:
         description: employee isn't in project cannot get all requirements
         content:
           application/json:
@@ -40,13 +40,19 @@
               employee not in project cannot get requirements:
                 value:
                   error:
-                  code: 401
+                  code: 403
                   message: unauthorized
               unauthorize token:
                 value:
                   error:
-                  code: 401
+                  code: 403
                   message: unauthorized
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   post:
     summary: Create new requirement
     tags:
@@ -76,7 +82,7 @@
         - phase_id
         - quantity
     responses:
-      401:
+      403:
         description: manager in other division cannot create requirement
         content:
           application/json:
@@ -86,12 +92,12 @@
               employee cannot create requirement:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               manager in other division cannot create requirement:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       201:
         description: Manager or PO can create requirement
@@ -109,6 +115,12 @@
               error:
                 code: 400
                 message: level_id is empty
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
 /phases/{phase_id}/requirements/{id}:
   parameters:
   - name: phase_id
@@ -144,12 +156,18 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Requirement'
-      401:
+      403:
         description: employee isn't in project cannot get requirement
         content:
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   patch:
     summary: update requirement
     tags:
@@ -173,7 +191,7 @@
         - level_id
         - quantity
     responses:
-      401:
+      403:
         description: cannot update requirement
         content:
           application/json:
@@ -183,12 +201,12 @@
               manager in other division cannot update requirement:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
               employee cannot update requirement:
                 value:
                   error:
-                    code: 401
+                    code: 403
                     message: unauthorized
       200:
         description: PO can update requirement
@@ -216,6 +234,12 @@
               error:
                 code: 422
                 message: 'Validation failed: Level must exist'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
   delete:
     summary: delete requirement
     tags:
@@ -223,7 +247,7 @@
     consumes:
     - application/json
     responses:
-      401:
+      403:
         description: manager in other division cannot delete requirement
         content:
           application/json:
@@ -235,3 +259,9 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthorizedError'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

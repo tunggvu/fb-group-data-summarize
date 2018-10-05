@@ -64,7 +64,7 @@ SendEmailError:
       properties:
         code:
           type: integer
-          example: 400
+          example: 600
         message:
           type: string
           example: Email can't be sent because of some invalid email informations

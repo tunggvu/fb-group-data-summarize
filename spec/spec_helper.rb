@@ -14,6 +14,7 @@
 # it.
 #
 Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
+require "aasm/rspec"
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|

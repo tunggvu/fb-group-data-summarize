@@ -131,7 +131,13 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
-/requests/{id}/accepted:
+      600:
+        description: Email can't be sent
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/SendEmailError'
+/requests/{id}/confirm:
   parameters:
   - name: ID
     in: path
@@ -156,20 +162,14 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Request'
-      400:
-        description: email can't be sent
-        content:
-          application/json:
-            schema:
-              $ref: '../schema.yml#/SendEmailError'
       401:
         description: verify token is invalid or has been expired
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/SendEmailError'
+              $ref: '../schema.yml#/InvalidEmailToken'
 
-/requests/{id}/rejected:
+/requests/{id}/reject:
   parameters:
   - name: ID
     in: path
@@ -194,15 +194,9 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Request'
-      400:
-        description: Email can't be sent
-        content:
-          application/json:
-            schema:
-              $ref: '../schema.yml#/SendEmailError'
       401:
         description: verify token is invalid or has been expired
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/SendEmailError'
+              $ref: '../schema.yml#/InvalidEmailToken'

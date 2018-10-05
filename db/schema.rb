@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_28_090446) do
+ActiveRecord::Schema.define(version: 2018_10_03_022418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -138,7 +138,6 @@ ActiveRecord::Schema.define(version: 2018_09_28_090446) do
     t.date "modified_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "request_type", default: 1, null: false
     t.index ["device_id"], name: "index_requests_on_device_id"
     t.index ["project_id"], name: "index_requests_on_project_id"
     t.index ["request_pic_id"], name: "index_requests_on_request_pic_id"

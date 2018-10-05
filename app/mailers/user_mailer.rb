@@ -20,9 +20,9 @@ class UserMailer < ApplicationMailer
               "title": I18n.t("email.device_assignment.title"),
               "announcement":
                 I18n.t("email.device_assignment.announcement", requester: requester.name, device: device.name),
-              "accept_link": request.update_request_link("approved"),
-              "reject_link": request.update_request_link("rejected"),
-              "accept_btn": I18n.t("email.device_assignment.accept"),
+              "accept_link": request.update_request_link("confirm"),
+              "reject_link": request.update_request_link("reject"),
+              "accept_btn": I18n.t("email.device_assignment.confirm"),
               "reject_btn": I18n.t("email.device_assignment.reject")
             }
           }
@@ -38,12 +38,11 @@ class UserMailer < ApplicationMailer
         template_id: Settings.template.device_assignment.id,
       }
       send_mail(data)
-
     end
 
     def send_mail(data)
       # TODO: đẩy master.key lên server
-      sg = SendGrid::API.new(api_key: Rails.application.credentials.sendgrid_api_key || "")
+      sg = SendGrid::API.new(api_key: ENV["SENDGRID_API_KEY"] || "")
       response = sg.client.mail._("send").post(request_body: data)
       # TODO: bắt lỗi đầy đủ của Sengrid, custom dưới dạng 6xx
       raise APIError::SendEmailError if response.status_code == "400"

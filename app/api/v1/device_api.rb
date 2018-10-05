@@ -54,7 +54,6 @@ class V1::DeviceAPI < Grape::API
       requires :serial_code, type: String, allow_blank: false
       requires :project_id, type: Integer, allow_blank: false
       requires :device_type, type: Integer, allow_blank: false
-      optional :pic_id, type: Integer
       optional :os_version, type: String
     end
     post do
@@ -76,11 +75,13 @@ class V1::DeviceAPI < Grape::API
               requires :request_pic, type: Integer
             end
             post do
-              @device = Device.find(params[:id])
-              authorize @device, :device_owner?
-              present Request.create!(status: :pending, modified_date: Date.current,
+              device = Device.find(params[:id])
+              authorize device, :device_owner?
+              request = Request.create!(status: :approved, modified_date: Date.current,
                 project_id: params[:request_project], request_pic_id: params[:request_pic],
-                requester: current_user, device: @device), with: Entities::Request
+                requester: current_user, device: device)
+              UserMailer.send_device_assignment_request(request)
+              present request, with: Entities::Request
             end
           end
         end

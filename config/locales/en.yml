@@ -70,6 +70,6 @@ en:
   email:
     device_assignment:
       title: "Device Assignment Request"
-      announcement: "%{requester} assigned device %{device} for you. Do you want to accept this request?"
-      accept: "Accept"
+      announcement: "%{requester} has requested to assign device %{device} for you. Please confirm this request when you take the device, or reject it if you don't want to."
+      confirm: "Confirm"
       reject: "Reject"

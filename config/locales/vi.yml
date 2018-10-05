@@ -58,6 +58,6 @@ vi:
   email:
     device_assignment:
       title: "Yêu cầu chuyển giao thiết bị"
-      announcement: "%{requester} đã chuyển giao thiết bị %{device} cho bạn. Bạn có đồng ý với yêu cầu này không?"
-      accept: "Chấp nhận"
+      announcement: "%{requester} đã yêu cầu chuyển giao thiết bị %{device} cho bạn. Vui lòng xác nhận lại khi bạn nhận được thiết bị, hoặc từ chối nếu bạn không muốn chấp nhận yêu cầu này."
+      confirm: "Xác nhận"
       reject: "Từ chối"

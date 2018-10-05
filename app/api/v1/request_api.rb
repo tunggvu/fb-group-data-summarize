@@ -9,15 +9,10 @@ class V1::RequestAPI < Grape::API
       params do
         optional :confirmation_token, type: String
       end
-      get :accepted do
+      get :confirm do
         confirmation_token = params[:confirmation_token]
-        if confirmation_token && @assignment_request.authenticate?(confirmation_token)
-          @assignment_request.update!(status: :approved, confirmation_digest: nil)
-          @assignment_request.device.update!(pic: @assignment_request.request_pic)
-          present @assignment_request, with: Entities::Request
-        else
-          raise APIError::InvalidEmailToken
-        end
+        @assignment_request.confirm!(:confirmed, confirmation_token)
+        present @assignment_request, with: Entities::Request
       end
 
       desc "Requested PIC reject device assignment request"
@@ -25,14 +20,10 @@ class V1::RequestAPI < Grape::API
         optional :confirmation_token, type: String
       end
 
-      get :rejected do
+      get :reject do
         confirmation_token = params[:confirmation_token]
-        if confirmation_token && @assignment_request.authenticate?(confirmation_token)
-          @assignment_request.update!(status: :rejected, confirmation_digest: nil)
-          present @assignment_request, with: Entities::Request
-        else
-          raise APIError::InvalidEmailToken
-        end
+        @assignment_request.reject!(:rejected, confirmation_token)
+        present @assignment_request, with: Entities::Request
       end
     end
   end

@@ -14,3 +14,9 @@ RSpec.shared_examples "unauthenticated" do
     end
   end
 end
+
+RSpec.shared_examples "null digest" do
+  it "should have null confirmation digest" do
+    expect(request.reload.confirmation_digest).to be_nil
+  end
+end

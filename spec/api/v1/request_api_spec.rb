@@ -13,21 +13,21 @@ describe "Request API" do
   let(:employee_level) { create :employee_level, employee: pic, level: level }
   let(:sprint) { create :sprint, project: project, starts_on: project.starts_on, ends_on: 7.days.from_now }
   let!(:effort) { create :effort, sprint: sprint, employee_level: employee_level, effort: 80 }
-  let!(:device) { create :device, :laptop, pic: pic, project: project }
+  let(:device) { create :device, :laptop, pic: pic, project: project }
   let(:cf_token) { "cf_token" }
-  let!(:last_request) { Request.last }
+  let!(:request) { device.requests.create request_pic: pic, project: project, requester: product_owner, status: :approved }
   ENV["HOST_DOMAIN"] = "emres.framgia.vn"
 
 
   before do
-    last_request.update confirmation_digest: Request.digest(cf_token)
+    request.update confirmation_digest: Request.digest(cf_token)
   end
 
-  path "/requests/{id}/accepted" do
+  path "/requests/{id}/confirm" do
     parameter name: :id, in: :path, type: :integer, description: "Request ID"
     parameter name: :confirmation_token, in: :query, type: :string, description: "Confirmation token"
 
-    let(:id) { last_request.id }
+    let(:id) { request.id }
     let(:confirmation_token) {}
 
     get "Update request's status for device assignment when user accept it" do
@@ -38,10 +38,10 @@ describe "Request API" do
         let(:confirmation_token) { cf_token }
 
         run_test! do
-          expected = Entities::Request.represent last_request.reload
+          expected = Entities::Request.represent request.reload
           expect(response.body).to eq expected.to_json
-          expect(last_request.status).to eq "approved"
-          expect(last_request.confirmation_digest).to be_nil
+          expect(request.status).to eq "confirmed"
+          expect(request.confirmation_digest).to be_nil
         end
       end
 
@@ -72,11 +72,11 @@ describe "Request API" do
     end
   end
 
-  path "/requests/{id}/rejected" do
+  path "/requests/{id}/reject" do
     parameter name: :id, in: :path, type: :integer, description: "Request ID"
     parameter name: :confirmation_token, in: :query, type: :string, description: "Confirmation token"
 
-    let(:id) { last_request.id }
+    let(:id) { request.id }
     let(:confirmation_token) {}
 
     get "Update request's status for device assignment when user reject it" do
@@ -87,10 +87,10 @@ describe "Request API" do
         let(:confirmation_token) { cf_token }
 
         run_test! do
-          expected = Entities::Request.represent last_request.reload
+          expected = Entities::Request.represent request.reload
           expect(response.body).to eq expected.to_json
-          expect(last_request.status).to eq "rejected"
-          expect(last_request.confirmation_digest).to be_nil
+          expect(request.status).to eq "rejected"
+          expect(request.confirmation_digest).to be_nil
         end
       end
 

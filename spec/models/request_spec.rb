@@ -19,7 +19,7 @@ RSpec.describe Request, type: :model do
   let(:project3) { FactoryBot.create :project, product_owner: product_owner2 }
   let(:pic1) { FactoryBot.create :employee, organization: division }
   let(:pic2) { FactoryBot.create :employee, organization: division }
-  let(:device1) { FactoryBot.create :device, :laptop, :skip_callback, name: "Device 1", project: project1 }
+  let(:device1) { FactoryBot.create :device, :laptop, name: "Device 1", project: project1 }
   let(:skill) { FactoryBot.create :skill }
   let(:level) { FactoryBot.create :level, skill: skill }
   let(:employee_level1) { FactoryBot.create :employee_level, employee: pic1, level: level }
@@ -30,7 +30,7 @@ RSpec.describe Request, type: :model do
 
   before do
     device1.update_attribute :pic, pic1
-    device1.requests.create!(request_pic: product_owner1, project: project1, requester: product_owner1)
+    device1.requests.create!(request_pic: product_owner1, project: project1, requester: product_owner1, status: :approved)
   end
 
   describe "#valid_pic?" do
@@ -120,6 +120,46 @@ RSpec.describe Request, type: :model do
       it "should valid if request project belongs to product owner" do
         expect(request1).to be_valid
       end
+    end
+  end
+
+  describe "aasm" do
+    let(:request) { device1.requests.last }
+    let(:token) { "token" }
+
+    before do
+      request.update confirmation_digest: Request.digest(token)
+    end
+
+    context ".approve" do
+      before do
+        request.update status: :pending
+        request.approve!(:approved, token)
+      end
+
+      include_examples "null digest"
+    end
+
+    context ".confirm" do
+      before do
+        request.update status: :approved
+        request.confirm!(:confirmed, token)
+      end
+
+      include_examples "null digest"
+
+      it "should update device pic" do
+        expect(request.device.pic).to eq(request.request_pic)
+      end
+    end
+
+    context ".reject" do
+      before do
+        request.update status: :approved
+        request.reject!(:rejected, token)
+      end
+
+      include_examples "null digest"
     end
   end
 end

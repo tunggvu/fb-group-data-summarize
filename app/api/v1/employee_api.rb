@@ -110,9 +110,18 @@ class V1::EmployeeAPI < Grape::API
       end
 
       resource :projects_owned do
-        desc "List project that employee is product owner"
+        desc "List projects that employee is product owner"
         get do
           present @employee.projects.includes(:product_owner), with: Entities::Project
+        end
+      end
+
+      resource :organizations_owned do
+        desc "List organizations that employee is manager"
+        get do
+          org = Organization.find_by(manager_id: @employee.id)
+          organizations_owner = org.nil? ? [] : org.subtree
+          present organizations_owner, with: Entities::Organizations
         end
       end
     end

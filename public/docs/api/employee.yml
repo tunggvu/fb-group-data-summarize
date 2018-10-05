@@ -561,3 +561,26 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
+/employee/{id}/organizations_owned:
+  parameters:
+  - name: id
+    in: path
+    schema:
+      type: integer
+    description: Employee ID
+    required: true
+  get:
+    summary: List organizations that employee is manager
+    tags:
+    - Employee
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Return all organizations that employee is manager
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../schema.yml#/Employee'

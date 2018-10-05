@@ -90,4 +90,24 @@ RSpec.describe Employee, type: :model do
       end
     end
   end
+
+  describe "#role" do
+    let(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
+    let(:section) { FactoryBot.create(:organization, :section, name: "Section 1") }
+    let(:employee1) { FactoryBot.create :employee, organization: division }
+    let(:employee2) { FactoryBot.create :employee, organization: section }
+
+    before do
+      division.update_attributes(manager: employee1)
+      section.update_attributes(manager: employee2)
+    end
+
+    it "should return 'DIVISION_MANAGER'" do
+      expect(employee1.role).to eq("DIVISION_MANAGER")
+    end
+
+    it "should return 'SECTION_MANAGER'" do
+      expect(employee2.role).to eq("SECTION_MANAGER")
+    end
+  end
 end

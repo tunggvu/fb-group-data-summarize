@@ -697,4 +697,58 @@ describe "Employee API" do
       end
     end
   end
+
+  path "/employees/{id}/organizations_owned" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
+    get "get organizations that employee is manager" do
+      tags "Employees"
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :integer, description: "Employees ID"
+
+      let(:id) { employee.id }
+      let(:division_2) { FactoryBot.create(:organization, :division, name: "Division 2") }
+      let!(:section_2) { FactoryBot.create(:organization, :section, name: "Section 2", parent: division_2) }
+      let!(:clan_2) { FactoryBot.create(:organization, :clan, name: "Clan 2", parent: section_2) }
+      let!(:employee_3) { FactoryBot.create :employee }
+
+      include_examples "unauthenticated"
+
+      before do
+        employee.update_attributes(organization_id: division_2.id)
+        division_2.update_attributes(manager_id: employee.id)
+      end
+
+      response "200", "return all organizations that employee is manager" do
+        run_test! do
+          expected = Entities::Organizations.represent([division_2, section_2, clan_2])
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      response "200", "return nill organizations that employee is manager" do
+        let(:id) { employee_3.id }
+
+        run_test! do
+          expected = Entities::Organizations.represent([])
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "invalid id" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
 end

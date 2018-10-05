@@ -44,6 +44,21 @@ class Employee < ApplicationRecord
     TotalEffort.create(employee_id: id, start_time: Date.today, end_time: "31/12/9999", value: 0)
   end
 
+  def role
+    return "ADMIN" if is_admin?
+    return "EMPLOYEE" unless Organization.find_by(manager_id: id)
+
+    roles = {
+      Organization.levels[:division] => "DIVISION_MANAGER",
+      Organization.levels[:section] => "SECTION_MANAGER",
+      Organization.levels[:clan] => "GROUP_LEADER",
+      Organization.levels[:team] => "TEAM_LEADER"
+    }
+    key = organization.level_before_type_cast
+
+    roles[key]
+  end
+
   class << self
     def authenticate!(email, password)
       employee = Employee.find_by email: email

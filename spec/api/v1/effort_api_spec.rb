@@ -3,6 +3,8 @@
 require "swagger_helper"
 
 describe "Effort API" do
+  let(:skill) { create :skill }
+  let(:level) { create :level, skill: skill }
   let(:div2) { create :organization, :division }
   let(:div2_manager) { create :employee, organization: div2 }
   let(:div2_manager_token) { create :employee_token, employee: div2_manager }
@@ -20,7 +22,7 @@ describe "Effort API" do
   let(:sprint) { create :sprint, project: project }
   let!(:effort) { create :effort, sprint: sprint }
   let(:employee_level) { create :employee_level }
-  let(:employee_level_member_project) { create :employee_level, employee: member_project }
+  let(:employee_level_member_project) { create :employee_level, employee: member_project, level: level }
   let!(:another_effort) { create :effort, sprint: sprint, employee_level: employee_level_member_project }
   let(:admin) { FactoryBot.create :employee, :admin, organization: nil }
   let(:admin_token) { FactoryBot.create :employee_token, employee: admin }
@@ -497,6 +499,9 @@ describe "Effort API" do
       parameter name: :employee_id, in: :query, type: :integer, description: "Id of employee"
       parameter name: :start_time, in: :query, type: :string, description: "Start time to filter"
       parameter name: :end_time, in: :query, type: :string, description: "End time to filter"
+      parameter name: :skill_id, in: :query, type: :integer, required: false
+      parameter name: :project_id, in: :query, type: :integer, required: false
+      parameter name: :organization_id, in: :query, type: :integer, required: false
 
       let(:employee_id) { member_project.id }
       let(:start_time) { 5.days.ago }
@@ -504,9 +509,36 @@ describe "Effort API" do
 
       include_examples "unauthenticated"
 
-      response "200", "return detail effort with correct params" do
+      response "200", "return detail effort with no additional params" do
 
         run_test! do |response|
+          expected = [Entities::EffortDetail.represent(another_effort)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return detail effort with param skill_id" do
+        let(:skill_id) { skill.id }
+
+        run_test! do
+          expected = [Entities::EffortDetail.represent(another_effort)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return detail effort with param project_id" do
+        let(:project_id) { project.id }
+
+        run_test! do
+          expected = [Entities::EffortDetail.represent(another_effort)]
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return detail effort with param organization_id" do
+        let(:organization_id) { group.id }
+
+        run_test! do
           expected = [Entities::EffortDetail.represent(another_effort)]
           expect(response.body).to eq expected.to_json
         end

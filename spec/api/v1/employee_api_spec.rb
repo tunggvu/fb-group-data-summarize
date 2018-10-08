@@ -3,7 +3,8 @@
 require "swagger_helper"
 
 describe "Employee API" do
-  let(:employee) { FactoryBot.create :employee }
+  let(:organization) { FactoryBot.create :organization }
+  let(:employee) { FactoryBot.create :employee, organization: organization }
   let(:skill) { FactoryBot.create :skill }
   let(:level) { FactoryBot.create :level, skill: skill }
   let(:level2) { FactoryBot.create :level, skill: skill }
@@ -520,13 +521,19 @@ describe "Employee API" do
   path "/employees/{id}/efforts" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     parameter name: :id, in: :path, type: :integer, description: "Id of employee"
-    parameter name: :start_time, in: :query, type: :Date, description: "Start time to filter"
-    parameter name: :end_time, in: :query, type: :Date, description: "End time to filter"
+    parameter name: :start_time, in: :query, type: :date, description: "Start time to filter"
+    parameter name: :end_time, in: :query, type: :date, description: "End time to filter"
+    parameter name: :skill_id, in: :query, type: :integer, required: false
+    parameter name: :project_id, in: :query, type: :integer, required: false
+    parameter name: :organization_id, in: :query, type: :integer, required: false
 
     let("Emres-Authorization") { "Bearer #{manager_token.token}" }
     let(:id) { employee.id }
     let(:start_time) {}
     let(:end_time) {}
+    let(:skill_id) {}
+    let(:project_id) {}
+    let(:organization_id) {}
 
     get "Detail efforts by employee" do
       tags "Employees"
@@ -617,6 +624,39 @@ describe "Employee API" do
       response "200", "return detail effort by employee" do
         let(:start_time) { 5.days.from_now }
         let(:end_time) { 10.days.from_now }
+
+        run_test! do
+          expected = Entities::EffortDetailWithProject.represent([effort, effort2])
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return detail effort of employee with param skill_id" do
+        let(:start_time) { 5.days.from_now }
+        let(:end_time) { 10.days.from_now }
+        let(:skill_id) { skill.id }
+
+        run_test! do
+          expected = Entities::EffortDetailWithProject.represent([effort, effort2])
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return detail effort of employee with param project_id" do
+        let(:start_time) { 5.days.from_now }
+        let(:end_time) { 10.days.from_now }
+        let(:project_id) { project.id }
+
+        run_test! do
+          expected = Entities::EffortDetailWithProject.represent([effort, effort2])
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "200", "return detail effort of employee with param organization_id" do
+        let(:start_time) { 5.days.from_now }
+        let(:end_time) { 10.days.from_now }
+        let(:organization_id) { organization.id }
 
         run_test! do
           expected = Entities::EffortDetailWithProject.represent([effort, effort2])

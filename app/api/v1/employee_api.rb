@@ -83,9 +83,19 @@ class V1::EmployeeAPI < Grape::API
         params do
           requires :start_time, type: Date, allow_blank: false
           requires :end_time, type: Date, allow_blank: false
+          optional :skill_id, type: Integer
+          optional :project_id, type: Integer
+          optional :organization_id, type: Integer
         end
         get do
-          effort_detail = @employee.efforts.relate_to_period(params[:start_time], params[:end_time])
+          search_params = {
+            employee_level_level_skill_id_eq: params[:skill_id],
+            employee_level_employee_organization_id_eq: params[:organization_id],
+            sprint_project_id_eq: params[:project_id]
+          }
+
+          effort_ids = Effort.relate_to_period(params[:start_time], params[:end_time]).ransack(search_params).result(distinct: true).select(:id)
+          effort_detail = @employee.efforts.where(id: effort_ids)
           effort_detail.includes(sprint: :project).each { |effort| authorize effort.project, :view? }
           present effort_detail.includes(sprint: :project, employee_level: [level: :skill]), with: Entities::EffortDetailWithProject
         end

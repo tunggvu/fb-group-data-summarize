@@ -12,5 +12,6 @@ BACKEND_HOST: "http://localhost:3000"
 EMRES_DATABASE_USERNAME: "postgres"
 EMRES_DATABASE_PASSWORD: ""
 EMRES_DATABASE_HOSTNAME: "localhost"
-
 SENDGRID_API_KEY: ""
+DEFAULT_EMAIL_FROM: "tester@framgia.com"
+HOST_DOMAIN: "emres.framgia.com"

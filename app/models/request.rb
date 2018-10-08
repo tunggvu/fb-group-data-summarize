@@ -15,6 +15,7 @@ class Request < ApplicationRecord
   validate :valid_pic?, :change_owner?, :can_update_pic?
 
   before_create :generate_confirmation_digest
+  after_create :send_request_email, if: proc { request_pic != project.product_owner }
 
   class << self
     def new_token
@@ -52,6 +53,11 @@ class Request < ApplicationRecord
   end
 
   private
+
+  def send_request_email
+    return if ENV["SEND_EMAIL"].try(:upcase) == "FALSE"
+    UserMailer.send_device_assignment_request(self)
+  end
 
   def generate_confirmation_digest
     @confirmation_token = Request.new_token

@@ -57,7 +57,7 @@ class V1::DeviceAPI < Grape::API
       optional :os_version, type: String
     end
     post do
-      authorize Project.find(params[:project_id]), :product_owner?
+      authorize Project.find(params[:project_id]), :project_manager?
       present Device.create!(declared(params).to_h), with: Entities::Device
     end
   end
@@ -80,7 +80,6 @@ class V1::DeviceAPI < Grape::API
               request = Request.create!(status: :approved, modified_date: Date.current,
                 project_id: params[:request_project], request_pic_id: params[:request_pic],
                 requester: current_user, device: device)
-              UserMailer.send_device_assignment_request(request)
               present request, with: Entities::Request
             end
           end

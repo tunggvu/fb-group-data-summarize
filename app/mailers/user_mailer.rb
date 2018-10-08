@@ -12,7 +12,7 @@ class UserMailer < ApplicationMailer
           {
             to: [
               {
-                email: request_pic.email,
+                email: Rails.env.production? ? request_pic.email : ENV["DEFAULT_EMAIL_TO"],
                 name: request_pic.name
               }
             ],
@@ -29,11 +29,6 @@ class UserMailer < ApplicationMailer
         ],
         from: {
           email: ENV["DEFAULT_EMAIL_FROM"]
-        },
-        mail_settings: {
-          sandbox_mode: {
-            enable: !Rails.env.production?
-          }
         },
         template_id: Settings.template.device_assignment.id,
       }

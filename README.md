@@ -5,6 +5,8 @@
 Create Data:
 * `rake db:seed_fu`
 
+Create Data Without Send Email(recommended):
+* `SEND_EMAIL=false rails db:seed_fu`
 ### Configure environments
 The default environment file is `config/application.yml`.
 
@@ -20,7 +22,7 @@ application.
   after that generate API key in https://app.sendgrid.com/settings/api_keys
 ## Documentation
 * Read more at `public/docs`
-
+* Accept from local server `localhost:3000/docs`
 ## Build Docker Image
 
 #### Create data folder for postgres

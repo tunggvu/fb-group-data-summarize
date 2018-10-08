@@ -69,10 +69,12 @@ paths:
     $ref: api/phase.yml#/~1projects~1{project_id}~1phases~1{id}
   /profile:
     $ref: api/profile.yml#/~1profile
-  /requests/{id}/accepted:
-    $ref: api/request.yml#/~1requests~1{id}~1accepted
-  /requests/{id}/rejected:
-    $ref: api/request.yml#/~1requests~1{id}~1rejected
+  /requests/{id}/confirm:
+    $ref: api/request.yml#/~1requests~1{id}~1confirm
+  /requests/{id}/reject:
+    $ref: api/request.yml#/~1requests~1{id}~1reject
+  /requests/{id}/approve:
+    $ref: api/request.yml#/~1requests~1{id}~1approve
   /phases/{phase_id}/requirements:
     $ref: api/requirement.yml#/~1phases~1{phase_id}~1requirements
   /phases/{phase_id}/requirements/{id}:

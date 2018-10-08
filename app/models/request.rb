@@ -12,7 +12,9 @@ class Request < ApplicationRecord
   belongs_to :request_pic, class_name: Employee.name
   belongs_to :requester, class_name: Employee.name
 
-  validate :valid_pic?, :change_owner?, :can_update_pic?
+  validate :valid_pic?, :change_owner?
+  validate :can_update_pic?, if: :approved?
+  validate :can_borrow_device?, if: :pending?
 
   before_create :generate_confirmation_digest
   after_create :send_request_email, if: proc { request_pic != project.product_owner }
@@ -56,7 +58,7 @@ class Request < ApplicationRecord
 
   def send_request_email
     return if ENV["SEND_EMAIL"].try(:upcase) == "FALSE"
-    UserMailer.send_device_assignment_request(self)
+    UserMailer.send_device_request(self)
   end
 
   def generate_confirmation_digest
@@ -81,6 +83,11 @@ class Request < ApplicationRecord
     return if requester == device.pic && project == project_of_device &&
       project.employees.include?(requester)
     return if requester == project_of_device.product_owner && requester == project.product_owner
+    errors.add :base, I18n.t("models.request.device_unchangeable")
+  end
+
+  def can_borrow_device?
+    return if requester.is_admin? || requester.projects.include?(project)
     errors.add :base, I18n.t("models.request.device_unchangeable")
   end
 

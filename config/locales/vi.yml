@@ -58,6 +58,11 @@ vi:
   email:
     device_assignment:
       title: "Yêu cầu chuyển giao thiết bị"
-      announcement: "%{requester} đã yêu cầu chuyển giao thiết bị %{device} cho bạn. Vui lòng xác nhận lại khi bạn nhận được thiết bị, hoặc từ chối nếu bạn không muốn chấp nhận yêu cầu này."
+      announcement: "%{requester} đã yêu cầu chuyển giao thiết bị %{device} cho bạn trong dự án %{project}. Vui lòng xác nhận lại khi bạn nhận được thiết bị, hoặc từ chối nếu bạn không muốn chấp nhận yêu cầu này."
+      confirm: "Xác nhận"
+      reject: "Từ chối"
+    device_borrow:
+      title: "Yêu cầu mượn thiết bị"
+      announcement: "%{requester} đã yêu cầu mượn %{device} cho dự án %{project}. Vui lòng xác nhận nếu bạn đồng ý, hoặc từ chối nếu bạn không muốn chấp nhận yêu cầu này."
       confirm: "Xác nhận"
       reject: "Từ chối"

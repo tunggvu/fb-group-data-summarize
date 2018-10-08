@@ -59,6 +59,10 @@ class Employee < ApplicationRecord
     roles[key]
   end
 
+  def is_other_product_owner?(params_project)
+    projects.present? && !projects.include?(params_project)
+  end
+
   class << self
     def authenticate!(email, password)
       employee = Employee.find_by email: email

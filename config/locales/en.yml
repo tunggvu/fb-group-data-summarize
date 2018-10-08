@@ -70,6 +70,11 @@ en:
   email:
     device_assignment:
       title: "Device Assignment Request"
-      announcement: "%{requester} has requested to assign device %{device} for you. Please confirm this request when you take the device, or reject it if you don't want to."
+      announcement: "%{requester} has requested to assign device %{device} for you in %{project} project. Please confirm this request when you take the device, or reject it if you don't want to."
       confirm: "Confirm"
+      reject: "Reject"
+    device_borrow:
+      title: "Device Borrow Request"
+      announcement: "%{requester} has requested to borrow device %{device} for %{project} project. Please approve this request when you accept, or reject it if you don't want to."
+      confirm: "Approve"
       reject: "Reject"

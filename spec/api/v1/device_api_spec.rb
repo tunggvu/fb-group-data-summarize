@@ -12,6 +12,7 @@ describe "Device API" do
   let(:product_owner2) { create :employee, organization: division }
   let(:employee_token) { create :employee_token, employee: employee }
   let(:po1_token) { create :employee_token, employee: product_owner1 }
+  let(:po2_token) { create :employee_token, employee: product_owner2 }
   let(:project1) { create :project, product_owner: product_owner1 }
   let(:project2) { create :project, product_owner: product_owner2 }
   let(:pic1) { create :employee, organization: division }
@@ -35,7 +36,7 @@ describe "Device API" do
 
   before do
     device1.update_attribute :pic, pic1
-    device1.requests.create!(request_pic: product_owner1, project: project1, requester: product_owner1)
+    device1.requests.create!(request_pic: product_owner1, project: project1, requester: product_owner1, status: :approved)
   end
 
   path "/devices" do
@@ -507,6 +508,165 @@ describe "Device API" do
       end
 
       response "422", "Request pic and project aren't change" do
+        let(:params) {
+          {
+            request_pic: pic1.id,
+            request_project: project1.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.device_nothing_change")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
+
+  path "/devices/{id}/requests" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Device ID"
+    let("Emres-Authorization") { "Bearer #{po2_token.token}" }
+    let(:id) { device1.id }
+
+    post "Create request when borrow the device" do
+      tags "Devices"
+      consumes "application/json"
+
+      parameter name: :params, in: :body, schema: {
+        type: :object,
+        properties: {
+          request_pic: {type: :integer, description: "PIC of Request"},
+          request_project: {type: :integer, description: "Project id of Rquest"}
+        },
+        required: [:request_pic, :request_project]
+      }
+
+      let(:params) {
+        {
+          request_pic: pic2.id,
+          request_project: project2.id
+        }
+      }
+
+      include_examples "unauthenticated"
+
+      response "201", "Create request successful" do
+        run_test! do
+          expected = Entities::Request.represent Request.last
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "Missing params request_pic" do
+        let(:params) {
+          {
+            request_project: project2.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.missing_params", params: "request_pic")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "400", "Missing params request_project" do
+        let(:params) {
+          {
+            request_pic: pic2.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.missing_params", params: "request_project")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "403", "unauthorized other product_owner/admin" do
+        let("Emres-Authorization") { "Bearer #{po1_token.token}" }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "User doesn't have the right to do" do
+        let("Emres-Authorization") { "Bearer #{po2_token.token}" }
+        let(:params) { {
+          request_pic: pic3.id,
+          request_project: project1.id
+        } }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.device_unchangeable")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "Device not found" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Device.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Request pic must belong to project" do
+        let(:params) {
+          {
+            request_pic: employee.id,
+            request_project: project2.id
+          }
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.pic_in_project")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Request pic and project aren't change" do
+        let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+
         let(:params) {
           {
             request_pic: pic1.id,

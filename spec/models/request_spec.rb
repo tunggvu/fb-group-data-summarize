@@ -23,20 +23,23 @@ RSpec.describe Request, type: :model do
   let(:skill) { FactoryBot.create :skill }
   let(:level) { FactoryBot.create :level, skill: skill }
   let(:employee_level1) { FactoryBot.create :employee_level, employee: pic1, level: level }
+  let(:employee_level2) { FactoryBot.create :employee_level, employee: pic2, level: level }
   let(:sprint1) { FactoryBot.create :sprint, project: project1, starts_on: project1.starts_on, ends_on: 7.days.from_now }
   let!(:effort1) { FactoryBot.create :effort, sprint: sprint1, employee_level: employee_level1, effort: 80 }
   let(:sprint2) { FactoryBot.create :sprint, project: project2, starts_on: project2.starts_on, ends_on: 7.days.from_now }
   let!(:effort2) { FactoryBot.create :effort, sprint: sprint2, employee_level: employee_level1, effort: 30 }
+  let(:sprint3) { FactoryBot.create :sprint, project: project3, starts_on: project3.starts_on, ends_on: 7.days.from_now }
+  let!(:effort3) { FactoryBot.create :effort, sprint: sprint3, employee_level: employee_level2, effort: 30 }
 
   before do
     device1.update_attribute :pic, pic1
-    device1.requests.create!(request_pic: product_owner1, project: project1, requester: product_owner1, status: :approved)
+    device1.requests.create!(request_pic: product_owner1, project: project1, requester: product_owner1, status: :confirmed)
   end
 
   describe "#valid_pic?" do
     context "pic belongs to project" do
       let(:request) {
-        FactoryBot.build :request, device: device1, project: project1, request_pic: product_owner1, requester: product_owner1
+        FactoryBot.build :request, device: device1, project: project1, request_pic: product_owner1, requester: product_owner1, status: :approved
       }
 
       it "should valid" do
@@ -46,7 +49,7 @@ RSpec.describe Request, type: :model do
 
     context "pic doesn't belong to project" do
       let(:request) {
-        FactoryBot.build :request, device: device1, project: project1, request_pic: pic2, requester: product_owner1
+        FactoryBot.build :request, device: device1, project: project1, request_pic: pic2, requester: product_owner1, status: :approved
       }
 
       it "should invalid" do
@@ -58,7 +61,7 @@ RSpec.describe Request, type: :model do
   describe "#change_owner?" do
     context "pic or project changes" do
       let(:request) {
-        FactoryBot.build :request, device: device1, project: project1, request_pic: product_owner1, requester: product_owner1
+        FactoryBot.build :request, device: device1, project: project1, request_pic: product_owner1, requester: product_owner1, status: :approved
       }
 
       it "should valid" do
@@ -68,7 +71,7 @@ RSpec.describe Request, type: :model do
 
     context "pic and project don't change" do
       let(:request) {
-        FactoryBot.build :request, device: device1, project: project1, request_pic: pic1, requester: product_owner1
+        FactoryBot.build :request, device: device1, project: project1, request_pic: pic1, requester: product_owner1, status: :approved
       }
 
       it "should invalid" do
@@ -80,10 +83,10 @@ RSpec.describe Request, type: :model do
   describe "#can_update_pic?" do
     context "if requester is pic" do
       let(:request1) {
-        FactoryBot.build :request, device: device1, project: project1, request_pic: product_owner1, requester: pic1
+        FactoryBot.build :request, device: device1, project: project1, request_pic: product_owner1, requester: pic1, status: :approved
       }
       let(:request2) {
-        FactoryBot.build :request, device: device1, project: project1, request_pic: pic2, requester: pic1
+        FactoryBot.build :request, device: device1, project: project1, request_pic: pic2, requester: pic1, status: :approved
       }
 
       it "should valid if request_pic belongs to project of device" do
@@ -97,10 +100,10 @@ RSpec.describe Request, type: :model do
 
     context "if requester is product owner" do
       let(:request1) {
-        FactoryBot.build :request, device: device1, project: project2, request_pic: pic1, requester: product_owner1
+        FactoryBot.build :request, device: device1, project: project2, request_pic: pic1, requester: product_owner1, status: :approved
       }
       let(:request2) {
-        FactoryBot.build :request, device: device1, project: project3, request_pic: pic1, requester: product_owner1
+        FactoryBot.build :request, device: device1, project: project3, request_pic: pic1, requester: product_owner1, status: :approved
       }
 
       it "should valid if request project belongs to product owner" do
@@ -114,10 +117,40 @@ RSpec.describe Request, type: :model do
 
     context "if requester is admin" do
       let(:request1) {
-        FactoryBot.build :request, device: device1, project: project2, request_pic: pic1, requester: admin
+        FactoryBot.build :request, device: device1, project: project2, request_pic: pic1, requester: admin, status: :approved
       }
 
       it "should valid if request project belongs to product owner" do
+        expect(request1).to be_valid
+      end
+    end
+  end
+
+  describe "#can_borrow_device?" do
+    context "if requester is other product owner" do
+      let(:request1) {
+        FactoryBot.build :request, device: device1, project: project3, request_pic: pic2, requester: product_owner2, status: :pending
+      }
+
+      let(:request2) {
+        FactoryBot.build :request, device: device1, project: project2, request_pic: pic1, requester: product_owner2, status: :pending
+      }
+
+      it "should valid if request project belongs to product owner" do
+        expect(request1).to be_valid
+      end
+
+      it "should invalid if request project doesn't belong to product owner" do
+        expect(request2).to be_invalid
+      end
+    end
+
+    context "if requester is admin" do
+      let(:request1) {
+        FactoryBot.build :request, device: device1, project: project2, request_pic: pic1, requester: admin, status: :pending
+      }
+
+      it "should valid" do
         expect(request1).to be_valid
       end
     end

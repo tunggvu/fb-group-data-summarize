@@ -35,16 +35,30 @@ class V1::DeviceAPI < Grape::API
         optional :name, type: String
         optional :os_version, type: String
       end
-
-      before do
+      patch do
         device = Device.find(params[:id])
         authorize device, :device_owner?
-      end
-
-      patch do
         device = Device.includes(requests: [:request_pic, :requester, :project]).find(params[:id])
         device.update_attributes! declared(params, include_missing: false)
         present device, with: Entities::DeviceDetail
+      end
+
+      resource :requests do
+        desc "Borrow device"
+        params do
+          requires :request_project, type: Integer
+          requires :request_pic, type: Integer
+        end
+        post do
+          device = Device.find(params[:id])
+          authorize device, :user_can_borrow?
+
+          request = Request.create!(status: :pending, modified_date: Date.current,
+            project_id: params[:request_project], request_pic_id: params[:request_pic],
+            requester: current_user, device: device)
+          UserMailer.send_device_request(request)
+          present request, with: Entities::Request
+        end
       end
     end
 

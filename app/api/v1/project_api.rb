@@ -24,6 +24,7 @@ class V1::ProjectAPI < Grape::API
       requires :name, type: String, allow_blank: false
       requires :product_owner_id, type: Integer, allow_blank: false
       optional :starts_on, type: Date
+      optional :logo, type: String
     end
     post do
       authorize :project, :executive?

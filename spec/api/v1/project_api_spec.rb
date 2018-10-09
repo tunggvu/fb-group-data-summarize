@@ -152,7 +152,8 @@ describe "Project API" do
         properties: {
           name: { type: :string, description: "Project name" },
           product_owner_id: { type: :integer, description: "Product owner" },
-          starts_on: { type: :date, description: "Project start time" }
+          starts_on: { type: :date, description: "Project start time" },
+          logo: { type: :string, description: "Project logo" }
         },
         required: [:name, :product_owner_id]
       }
@@ -161,7 +162,8 @@ describe "Project API" do
       let(:params) { {
         name: "Project 1",
         product_owner_id: admin.id,
-        starts_on: 3.days.ago
+        starts_on: 3.days.ago,
+        logo: "something"
       } }
 
       include_examples "unauthenticated"

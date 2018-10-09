@@ -159,6 +159,9 @@
               starts_on:
                 type: date
                 description: "Project start time"
+              logo:
+                type: string
+                description: "Project logo encode base64"
           required:
           - name
           - product_owner_id
@@ -166,6 +169,7 @@
             name: Project
             product_owner_id: 1
             start_ons: "2018-01-01"
+            logo: "data:image/png;base64,something"
     responses:
       201:
         description: "Create a project"

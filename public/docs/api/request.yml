@@ -136,7 +136,6 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
-
 /requests/{id}/confirm:
   parameters:
   - name: ID

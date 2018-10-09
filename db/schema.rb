@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_03_022418) do
+ActiveRecord::Schema.define(version: 2018_10_09_031204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,15 +45,6 @@ ActiveRecord::Schema.define(version: 2018_10_03_022418) do
     t.bigint "level_id"
     t.index ["employee_id"], name: "index_employee_levels_on_employee_id"
     t.index ["level_id"], name: "index_employee_levels_on_level_id"
-  end
-
-  create_table "employee_roles", force: :cascade do |t|
-    t.bigint "role_id", null: false
-    t.bigint "employee_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["employee_id"], name: "index_employee_roles_on_employee_id"
-    t.index ["role_id"], name: "index_employee_roles_on_role_id"
   end
 
   create_table "employee_tokens", force: :cascade do |t|
@@ -154,14 +145,6 @@ ActiveRecord::Schema.define(version: 2018_10_03_022418) do
     t.index ["phase_id"], name: "index_requirements_on_phase_id"
   end
 
-  create_table "roles", force: :cascade do |t|
-    t.bigint "employee_id", null: false
-    t.integer "role", limit: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["employee_id"], name: "index_roles_on_employee_id"
-  end
-
   create_table "skills", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -197,8 +180,6 @@ ActiveRecord::Schema.define(version: 2018_10_03_022418) do
   add_foreign_key "efforts", "sprints"
   add_foreign_key "employee_levels", "employees"
   add_foreign_key "employee_levels", "levels"
-  add_foreign_key "employee_roles", "employees"
-  add_foreign_key "employee_roles", "roles"
   add_foreign_key "employee_tokens", "employees"
   add_foreign_key "employees", "organizations"
   add_foreign_key "levels", "skills"
@@ -210,7 +191,6 @@ ActiveRecord::Schema.define(version: 2018_10_03_022418) do
   add_foreign_key "requests", "projects"
   add_foreign_key "requirements", "levels"
   add_foreign_key "requirements", "phases"
-  add_foreign_key "roles", "employees"
   add_foreign_key "sprints", "phases"
   add_foreign_key "sprints", "projects"
   add_foreign_key "total_efforts", "employees"

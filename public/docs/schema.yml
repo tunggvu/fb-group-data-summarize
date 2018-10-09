@@ -310,21 +310,29 @@ Sprint:
       type: date
       description: End date of sprint
       example: "2018-02-01"
-Session:
+EmployeeToken:
   type: object
   properties:
-    email:
+    token:
       type: string
-      description: email with format `@framgia.com`
-      example: nguyen.van.sang@framgia.com
-    password:
+      description: employee token use for api
+      example: Bearer eyJhbGciOiJSUzI1NiJ9.eyJlbXBsb3llZV9pZCI6MTAsIn
+    expired_at:
+      type: datetime
+      description: expired time of token
+      example: 2018-10-10T10:14:54.337+07:00
+    role:
       type: string
-      description: password
-      example: something
-    remember:
-      type: boolean
-      description: Remember Me
-      example: true
+      description: employee's role
+      example: TEAM_LEADER
+    user_id:
+      type: integer
+      description: employee id
+      example: 10
+    organization_id:
+      type: integer
+      description: organization id of employee
+      example: 9
 Requirement:
   type: object
   properties:

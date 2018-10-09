@@ -59,7 +59,7 @@ RSpec.describe Organization, type: :model do
       end
     end
 
-    context "when organization is session" do
+    context "when organization is section" do
       it "should return all id of section employee" do
         expect(section.employee_ids.sort).to eq Employee.where("organization_id IN (?)",
           [section.id, group.id, team.id]).ids

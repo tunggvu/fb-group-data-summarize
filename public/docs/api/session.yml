@@ -29,7 +29,7 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Session'
+              $ref: '../schema.yml#/EmployeeToken'
       400:
         description: Invalid Param
         content:

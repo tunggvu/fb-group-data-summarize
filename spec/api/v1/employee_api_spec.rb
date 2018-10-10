@@ -702,7 +702,7 @@ describe "Employee API" do
     end
   end
 
-  path "/employees/{id}/projects_owned" do
+  path "/employees/{id}/owned_projects" do
     parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
     let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 

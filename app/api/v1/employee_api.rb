@@ -119,10 +119,10 @@ class V1::EmployeeAPI < Grape::API
         { message: I18n.t("delete_success") }
       end
 
-      resource :projects_owned do
-        desc "List projects that employee is product owner"
+      resource :owned_projects do
+        desc "List project that employee is product owner"
         get do
-          present @employee.projects.includes(:product_owner), with: Entities::Project
+          present @employee.owned_projects, with: Entities::Project
         end
       end
 

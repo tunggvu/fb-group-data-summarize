@@ -50,7 +50,6 @@ describe "Project API" do
 
       response "200", "Admin can see all projects" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
-
         run_test! do |response|
           expected = [Entities::Project.represent(project),
             Entities::Project.represent(other_project)]
@@ -68,22 +67,20 @@ describe "Project API" do
         end
       end
 
-      response "200", "Employee can see all projects" do
+      response "200", "Employee can see our projects" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 
         run_test! do |response|
-          expected = [Entities::Project.represent(project),
-            Entities::Project.represent(other_project)]
+          expected = [Entities::Project.represent(project)]
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
 
-      response "200", "return all projects without params" do
+      response "200", "return all employee's projects without params" do
 
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
-          expected = [Entities::Project.represent(project),
-            Entities::Project.represent(other_project)]
+          expected = [Entities::Project.represent(project)]
             expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
@@ -98,8 +95,8 @@ describe "Project API" do
         end
       end
 
-      response "200", "return projects have PO's org in organization_id + child" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+      response "200", "GL up can filter projects with organization_id" do
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
         let(:organization_id) { section.id }
         run_test! do |response|
           expected = [Entities::Project.represent(other_project)]
@@ -132,8 +129,8 @@ describe "Project API" do
         end
       end
 
-      response "200", "return projects match with params name and organization_id + child" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+      response "200", "GL up can filter projects name and organization_id + child" do
+        let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
         let(:name) { other_project.name }
         let(:organization_id) { group.id }
         run_test! do |response|

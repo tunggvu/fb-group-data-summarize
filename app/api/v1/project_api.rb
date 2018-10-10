@@ -12,7 +12,7 @@ class V1::ProjectAPI < Grape::API
       optional :organization_id, type: Integer
     end
     get do
-      projects = Project.includes(:product_owner).ransack(
+      projects = policy_scope(Project).includes(:product_owner).ransack(
         name_cont: params[:name],
         product_owner_organization_id_in: (Organization.subtree_of(params[:organization_id]).ids if params[:organization_id])
       ).result(distinct: true)

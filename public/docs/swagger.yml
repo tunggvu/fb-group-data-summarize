@@ -39,8 +39,8 @@ paths:
     $ref: api/employee.yml#/~1employees~1{id}~1efforts
   /employees/{id}/skills:
     $ref: api/employee.yml#/~1employees~1{id}~1skills
-  /employees/{id}/projects_owned:
-    $ref: api/employee.yml#/~1employees~1{id}~1projects_owned
+  /employees/{id}/owned_projects:
+    $ref: api/employee.yml#/~1employees~1{id}~1owned_projects
   /organizations:
     $ref: api/organization.yml#/~1organizations
   /organizations/{id}:

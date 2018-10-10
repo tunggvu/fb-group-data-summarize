@@ -13,4 +13,10 @@ class ProjectPolicy < ApplicationPolicy
   def view?
     executive? || @record.employees.include?(user)
   end
+
+  class Scope < Scope
+    def resolve
+      (user.is_admin? || user.organization.level_before_type_cast > 1) ? scope : user.projects
+    end
+  end
 end

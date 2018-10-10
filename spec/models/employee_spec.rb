@@ -7,7 +7,8 @@ RSpec.describe Employee, type: :model do
   describe "#associations" do
     it { should have_many(:employee_levels) }
     it { should have_many(:levels) }
-    it { should have_many(:projects) }
+    it { should have_many(:owned_projects) }
+    it { should have_many(:projects_effort) }
     it { should belong_to(:organization) }
   end
 
@@ -108,6 +109,29 @@ RSpec.describe Employee, type: :model do
 
     it "should return 'SECTION_MANAGER'" do
       expect(employee2.role).to eq("SECTION_MANAGER")
+    end
+  end
+
+  describe ".projects" do
+    let(:section) { FactoryBot.create :organization, :section }
+    let(:group) { FactoryBot.create :organization, :clan, parent: section }
+
+    let(:employee) { FactoryBot.create :employee }
+    let(:group_leader) { FactoryBot.create :employee, organization: group }
+
+    let(:sprint_1) { FactoryBot.create :sprint, project: project_1, phase: phase_1 }
+    let(:employee_level_1) { FactoryBot.create :employee_level, employee: employee }
+    let(:phase_1) { FactoryBot.create :phase, project: project_1 }
+
+
+    let!(:project_1) { FactoryBot.create :project }
+    let!(:project_2) { FactoryBot.create :project, product_owner: employee }
+    let!(:project_3) { FactoryBot.create :project, product_owner: group_leader }
+
+    let!(:effort_employee) { FactoryBot.create :effort, employee_level: employee_level_1, sprint: sprint_1 }
+
+    it "return our project and owned_projects" do
+      expect(employee.projects).to include(project_1, project_2)
     end
   end
 end

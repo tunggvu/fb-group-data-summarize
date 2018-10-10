@@ -3,14 +3,17 @@
 class Employee < ApplicationRecord
   belongs_to :organization, optional: true
 
+
   has_many :employee_levels, dependent: :destroy
-  has_many :projects, dependent: :nullify, foreign_key: :product_owner_id
+  has_many :owned_projects, dependent: :nullify, foreign_key: :product_owner_id, class_name: Project.name
   has_many :levels, through: :employee_levels
   has_many :efforts, through: :employee_levels
   has_many :total_efforts, dependent: :destroy
   has_many :skills, through: :levels
   has_many :devices, foreign_key: :pic_id
   has_many :requests, foreign_key: :requester_id
+  has_many :sprints, through: :efforts
+  has_many :projects_effort, -> { distinct }, through: :sprints, foreign_key: :project_id, source: :project
 
   has_one :employee_token, dependent: :destroy
 
@@ -57,6 +60,11 @@ class Employee < ApplicationRecord
     key = organization.level_before_type_cast
 
     roles[key]
+  end
+
+  def projects
+    sql = "(#{owned_projects.to_sql}) UNION (#{projects_effort.to_sql})"
+    Project.from("(#{sql}) projects")
   end
 
   def is_other_product_owner?(params_project)

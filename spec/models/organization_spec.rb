@@ -55,20 +55,20 @@ RSpec.describe Organization, type: :model do
 
     context "when organization is division" do
       it "should return all id of divistion employee" do
-        expect(division.employee_ids.sort).to eq Employee.all.ids
+        expect(division.employee_ids).to match_array Employee.all.ids
       end
     end
 
     context "when organization is section" do
       it "should return all id of section employee" do
-        expect(section.employee_ids.sort).to eq Employee.where("organization_id IN (?)",
+        expect(section.employee_ids).to match_array Employee.where("organization_id IN (?)",
           [section.id, group.id, team.id]).ids
       end
     end
 
     context "when organization is group" do
       it "should return all id of group employee" do
-        expect(group.employee_ids.sort).to eq Employee.where("organization_id IN (?)",
+        expect(group.employee_ids).to match_array Employee.where("organization_id IN (?)",
           [group.id, team.id]).ids
       end
     end

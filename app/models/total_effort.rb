@@ -9,6 +9,7 @@ class TotalEffort < ApplicationRecord
   validate :validate_end_time_after_start_time
   scope :finding_with_effort_time, ->(starts_on, ends_on, employee_id) do
     where("employee_id = ? AND (start_time < ? AND end_time > ?)", employee_id, ends_on, starts_on)
+      .order(start_time: :asc)
   end
 
   # Only use in this case:

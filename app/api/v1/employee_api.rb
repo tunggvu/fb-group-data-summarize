@@ -122,7 +122,7 @@ class V1::EmployeeAPI < Grape::API
       resource :owned_projects do
         desc "List project that employee is product owner"
         get do
-          present @employee.owned_projects, with: Entities::Project
+          present @employee.owned_projects, with: Entities::BaseProject
         end
       end
 

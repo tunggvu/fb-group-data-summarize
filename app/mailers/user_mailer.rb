@@ -31,7 +31,7 @@ class UserMailer < ApplicationMailer
       {
         to: [
           {
-            email: recipient.email,
+            email: Rails.env.production? ? request_pic.email : ENV["DEFAULT_EMAIL_TO"],
             name: recipient.name
           }
         ],

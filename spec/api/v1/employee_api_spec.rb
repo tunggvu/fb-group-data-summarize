@@ -717,7 +717,7 @@ describe "Employee API" do
 
       response "200", "return all project that employee is product owner" do
         run_test! do
-          expected = Entities::Project.represent([project])
+          expected = Entities::BaseProject.represent([project])
           expect(response.body).to eq expected.to_json
         end
       end

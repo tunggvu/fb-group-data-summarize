@@ -11,7 +11,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def view?
-    executive? || @record.employees.include?(user)
+    executive? || @record.employees.include?(user) || product_owner?
   end
 
   class Scope < Scope

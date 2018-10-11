@@ -541,22 +541,13 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Project'
+              $ref: '../schema.yml#/BaseProject'
             example:
               - id: 1
                 name: Antonetta Vandervort
                 description:
                 starts_on: "2018-09-18"
                 logo: http://localhost:3000/uploads/avatar.png
-                product_owner:
-                  id: 12
-                  organization_id: 11
-                  name: Dejah Kunde
-                  employee_code: B1210011
-                  email: dejah.kunde@framgia.com
-                  birthday:
-                  phone: 0987654321
-                  avatar: http://localhost:3000/uploads/avatar.png
 
       403:
         description: Unauthorized

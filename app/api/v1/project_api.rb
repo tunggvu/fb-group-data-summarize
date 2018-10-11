@@ -38,7 +38,7 @@ class V1::ProjectAPI < Grape::API
       get do
         project = Project.find params[:id]
         authorize project, :view?
-        project = Project.includes(phases: [sprints: [efforts: [employee_level: [:employee, :level]]], requirements: [level: :skill]]).find params[:id]
+        project = Project.includes(:product_owner, phases: [sprints: [efforts: [employee_level: [:employee, level: :skill]]], requirements: [level: :skill]]).find params[:id]
         present project, with: Entities::ProjectDetail
       end
 

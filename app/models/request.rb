@@ -13,7 +13,7 @@ class Request < ApplicationRecord
   belongs_to :requester, class_name: Employee.name
 
   validate :valid_pic?, :change_owner?
-  validate :can_update_pic?, if: :approved?
+  validate :can_update_pic?, if: proc { !persisted? && approved? }
   validate :can_borrow_device?, if: :pending?
 
   before_create :generate_confirmation_digest
@@ -36,11 +36,11 @@ class Request < ApplicationRecord
 
     before_all_events Proc.new { |token| authenticate(token) }
 
-    event :approve do
+    event :approve, success: :send_email_when_approve do
       transitions from: :pending, to: :approved
     end
 
-    event :confirm, success: :update_device_pic do
+    event :confirm, success: :update_device_pic_and_other_device_requests do
       transitions from: :approved, to: :confirmed
     end
 
@@ -91,8 +91,12 @@ class Request < ApplicationRecord
     errors.add :base, I18n.t("models.request.device_unchangeable")
   end
 
-  def update_device_pic
+  def update_device_pic_and_other_device_requests
     device.update! pic: request_pic
+    device_requests = device.requests.includes(:device, :request_pic, :requester, project: :product_owner).select { |r| r.pending? || r.approved? }
+    device_requests.each do |req|
+      req.rejected!
+    end
   end
 
   def authenticate(token)
@@ -103,5 +107,10 @@ class Request < ApplicationRecord
     else
       raise APIError::InvalidEmailToken
     end
+  end
+
+  def send_email_when_approve
+    generate_confirmation_digest
+    send_request_email
   end
 end

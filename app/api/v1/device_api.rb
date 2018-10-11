@@ -56,7 +56,6 @@ class V1::DeviceAPI < Grape::API
           request = Request.create!(status: :pending, modified_date: Date.current,
             project_id: params[:request_project], request_pic_id: params[:request_pic],
             requester: current_user, device: device)
-          UserMailer.send_device_request(request)
           present request, with: Entities::Request
         end
       end

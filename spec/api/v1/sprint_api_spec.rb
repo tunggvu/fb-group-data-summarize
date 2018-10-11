@@ -291,7 +291,7 @@ describe "SprintAPI" do
         let(:params) {
           {
             name: "Sprint 1",
-            starts_on: Time.now,
+            starts_on: 2.days.ago,
             ends_on: 7.days.ago
           }
         }
@@ -318,6 +318,23 @@ describe "SprintAPI" do
             error: {
               code: Settings.error_formatter.http_code.data_operation,
               message: I18n.t("api_error.invalid_starts_on")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "invalid duplicate starts time" do
+        before {
+          params[:starts_on] = 9.days.from_now
+          params[:ends_on] = 12.days.from_now
+        }
+
+        run_test! do |response|
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.taken_params", params: "Starts on")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -527,20 +544,20 @@ describe "SprintAPI" do
         end
       end
 
-      response "422", "time sprint not in time phase" do
-        let(:id) { sprint3.id }
-        before { params.merge!({ starts_on: 9.days.from_now, ends_on: 23.days.from_now }) }
-
-        run_test! do
-          expected = {
-            error: {
-              code: Settings.error_formatter.http_code.data_operation,
-              message: I18n.t("api_error.invalid_time_sprint")
-            }
-          }
-          expect(response.body).to eq expected.to_json
-        end
-      end
+      # response "422", "time sprint not in time phase" do
+      #   let(:id) { sprint3.id }
+      #   before { params.merge!({ starts_on: 9.days.from_now, ends_on: 23.days.from_now }) }
+      #
+      #   run_test! do
+      #     expected = {
+      #       error: {
+      #         code: Settings.error_formatter.http_code.data_operation,
+      #         message: I18n.t("api_error.invalid_time_sprint")
+      #       }
+      #     }
+      #     expect(response.body).to eq expected.to_json
+      #   end
+      # end
 
       response "422", "invalid ends on after starts on of next sprint" do
         let(:params) { { name: "sprint 4", starts_on: 4.days.from_now, ends_on: 10.days.from_now } }

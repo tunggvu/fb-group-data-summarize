@@ -9,9 +9,9 @@ class Sprint < ApplicationRecord
   has_many :employees, through: :employee_levels
 
   validates :name, :starts_on, :ends_on, presence: true
-
+  validates :starts_on, uniqueness: { scope: :phase }
   validate :validate_ends_on_after_starts_on
-  validate :validate_time_in_phases
+  # validate :validate_time_in_phases
   validate :validate_starts_on_after_ends_on_previous_sprint
   validate :validate_ends_on_after_starts_on_next_sprint
 

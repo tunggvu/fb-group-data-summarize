@@ -3,19 +3,21 @@
 require "rails_helper"
 
 RSpec.describe Phase, type: :model do
+  let(:project) { FactoryBot.create :project }
+  let!(:phase) { FactoryBot.create :phase, project: project }
   describe "#associations" do
     it { should have_many(:sprints) }
     it { should have_many(:requirements) }
-    it { should validate_presence_of(:starts_on) }
-    it { should validate_presence_of(:ends_on) }
   end
 
   describe "#validates" do
     it { should validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:starts_on) }
+    it { is_expected.to validate_presence_of(:ends_on) }
   end
 
   describe "#sprints" do
-    let(:phase) { FactoryBot.create(:phase) }
+
     let(:sprint1) { FactoryBot.create :sprint, phase: phase, starts_on: 10.days.ago, ends_on: 9.days.ago }
     let(:sprint2) { FactoryBot.create :sprint, phase: phase }
     let(:sprint3) { FactoryBot.create :sprint, phase: phase, starts_on: 11.days.from_now, ends_on: 12.days.from_now }
@@ -52,4 +54,18 @@ RSpec.describe Phase, type: :model do
       end
     end
   end
+
+  # context "start time duplicate" do
+  #   let(:invalid_phase) { FactoryBot.build :phase, project: project }
+  #
+  #   it "should be invalid" do
+  #     expect(invalid_phase).to be_invalid
+  #   end
+  #
+  #   it "shoud return error" do
+  #     invalid_phase.save
+  #     expect(invalid_phase.errors.full_messages).to include "Starts on has already been taken"
+  #     expect(Phase.count).to eq 1
+  #   end
+  # end
 end

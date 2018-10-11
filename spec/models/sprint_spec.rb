@@ -110,46 +110,60 @@ RSpec.describe Sprint, type: :model do
     end
   end
 
-  describe "#validate_time_in_phases" do
-    let(:phase) { FactoryBot.create :phase }
+  # describe "#validate_time_in_phases" do
+  #   let(:phase) { FactoryBot.create :phase }
+  #
+  #   context "starts on before starts on of phase" do
+  #     let(:sprint) { FactoryBot.build :sprint, starts_on: 11.days.ago }
+  #
+  #     it "return invalid" do
+  #       expect(sprint).to be_invalid
+  #     end
+  #
+  #     it "return erros invalid sprint time" do
+  #       sprint.save
+  #       expect(sprint.errors.full_messages).to include I18n.t("models.sprint.invalid_sprint_time")
+  #     end
+  #   end
+  #
+  #   context "end on after ends on of phase" do
+  #     let(:sprint) { FactoryBot.build :sprint, ends_on: 21.days.from_now }
+  #
+  #     it "return invalid" do
+  #       expect(sprint).to be_invalid
+  #     end
+  #
+  #     it "return erros invalid sprint time" do
+  #       sprint.save
+  #       expect(sprint.errors.full_messages).to include I18n.t("models.sprint.invalid_sprint_time")
+  #     end
+  #   end
+  #
+  #   context "starts on after starts on of phase" do
+  #     let(:sprint) { FactoryBot.build :sprint, starts_on: 2.days.ago, ends_on: 9.days.from_now }
+  #
+  #     it "return valid" do
+  #       expect(sprint).to be_valid
+  #     end
+  #
+  #     it "save to DB" do
+  #       sprint.save
+  #       expect(Sprint.count).to eq 3
+  #     end
+  #   end
+  # end
 
-    context "starts on before starts on of phase" do
-      let(:sprint) { FactoryBot.build :sprint, starts_on: 11.days.ago }
+  context "start time duplicate" do
+    let(:invalid_sprint) { FactoryBot.build :sprint, project: project, phase: phase, starts_on: 7.days.from_now, ends_on: 9.days.from_now }
 
-      it "return invalid" do
-        expect(sprint).to be_invalid
-      end
-
-      it "return erros invalid sprint time" do
-        sprint.save
-        expect(sprint.errors.full_messages).to include I18n.t("models.sprint.invalid_sprint_time")
-      end
+    it "should be invalid" do
+      expect(invalid_sprint).to be_invalid
     end
 
-    context "end on after ends on of phase" do
-      let(:sprint) { FactoryBot.build :sprint, ends_on: 21.days.from_now }
-
-      it "return invalid" do
-        expect(sprint).to be_invalid
-      end
-
-      it "return erros invalid sprint time" do
-        sprint.save
-        expect(sprint.errors.full_messages).to include I18n.t("models.sprint.invalid_sprint_time")
-      end
-    end
-
-    context "starts on after starts on of phase" do
-      let(:sprint) { FactoryBot.build :sprint, starts_on: 2.days.ago, ends_on: 9.days.from_now }
-
-      it "return valid" do
-        expect(sprint).to be_valid
-      end
-
-      it "save to DB" do
-        sprint.save
-        expect(Sprint.count).to eq 3
-      end
+    it "shoud return error" do
+      invalid_sprint.save
+      expect(invalid_sprint.errors.full_messages).to include "Starts on has already been taken"
+      expect(Sprint.count).to eq 3
     end
   end
 end

@@ -15,8 +15,8 @@ describe "Phase API" do
   let(:group_leader) { FactoryBot.create :employee, organization: group }
   let(:group_leader_token) { FactoryBot.create :employee_token, employee: group_leader }
   let(:project) { FactoryBot.create :project, product_owner: group_leader }
-  let!(:phase1) { FactoryBot.create :phase, project: project }
-  let!(:phase2) { FactoryBot.create :phase, project: project }
+  let!(:phase1) { FactoryBot.create :phase, project: project, starts_on: Date.current, ends_on: 15.days.from_now }
+  let!(:phase2) { FactoryBot.create :phase, project: project, starts_on: 16.days.from_now, ends_on: 30.days.from_now }
 
   before { group.update_attributes! manager_id: group_leader.id }
 
@@ -82,7 +82,7 @@ describe "Phase API" do
         required: [:name]
       }
 
-      let(:params) { { name: "phase 1", starts_on: 10.days.ago, ends_on: 10.days.from_now } }
+      let(:params) { { name: "phase 1", starts_on: 31.days.from_now, ends_on: 40.days.from_now } }
 
       include_examples "unauthenticated"
 
@@ -189,6 +189,60 @@ describe "Phase API" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      # response "422", "invalid duplicate starts time" do
+      #   before {
+      #     params[:starts_on] = 16.days.from_now
+      #     params[:ends_on] = 30.days.from_now
+      #   }
+      #
+      #   run_test! do |response|
+      #     expected = {
+      #       error: {
+      #         code: Settings.error_formatter.http_code.data_operation,
+      #         message: I18n.t("api_error.taken_params", params: "Starts on")
+      #       }
+      #     }
+      #     expect(response.body).to eq expected.to_json
+      #   end
+      # end
+
+      # response "422", "invalid starts time after ends on previous phase" do
+      #   before {
+      #     params[:starts_on] = 10.days.from_now
+      #     params[:ends_on] = 12.days.from_now
+      #   }
+      #
+      #   run_test! do |response|
+      #     expected = {
+      #       error: {
+      #         code: Settings.error_formatter.http_code.data_operation,
+      #         message: I18n.t("api_error.invalid_starts_on_phase")
+      #       }
+      #     }
+      #     expect(response.body).to eq expected.to_json
+      #   end
+      # end
+      #
+      # response "422", "invalid ends time" do
+      #   let(:params) {
+      #     {
+      #       name: "Sprint 1",
+      #       starts_on: 2.days.ago,
+      #       ends_on: 7.days.ago
+      #     }
+      #   }
+      #
+      #   run_test! do |response|
+      #     expected = {
+      #       error: {
+      #         code: Settings.error_formatter.http_code.data_operation,
+      #         message: I18n.t("api_error.invalid_starts_on_ends_on")
+      #       }
+      #     }
+      #     expect(response.body).to eq expected.to_json
+      #   end
+      # end
     end
   end
 

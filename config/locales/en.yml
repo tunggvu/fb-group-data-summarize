@@ -52,12 +52,17 @@ en:
     device_unchangeable: "Validation failed: You don't have the right to do this"
     email_can_not_be_sent: "Email can't be sent because of some invalid email informations"
     invalid_email_token: "Verify token is invalid or has been expired"
+    invalid_starts_on_phase: "Validation failed: Starts on must be after ends on of previous phase"
   models:
     sprint:
       invalid_starts_on_ends_on: "must be after the starts on"
       invalid_starts_on: "must be after ends on previous sprint"
       invalid_ends_on: "must be after starts on next sprint"
       invalid_sprint_time: "Sprint time must be in phase time"
+    phase:
+      invalid_starts_on_ends_on: "must be after the starts on"
+      invalid_starts_on: "must be after ends on of previous phase"
+      invalid_ends_on: "must be before starts on of next phase"
     effort:
       employee_must_be_unique_in_sprint: "Employee has already been found in sprint."
     request:

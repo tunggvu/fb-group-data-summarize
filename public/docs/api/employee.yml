@@ -315,6 +315,33 @@
       type: integer
     description: Employee ID
     required: true
+  - name: start_time
+    in: query
+    schema:
+      type: date
+    description: start time to query effort
+    required: true
+  - name: end_time
+    in: query
+    schema:
+      type: date
+    description: end time to query effort
+    required: true
+  - name: skill_id
+    in: query
+    schema:
+      type: integer
+    description: id of skill to filter effort
+  - name: project_id
+    in: query
+    schema:
+      type: integer
+    description: id of project to filter effort
+  - name: organization_id
+    in: query
+    schema:
+      type: integer
+    description: id of organization to filter effort
   get:
     summary: Detail efforts by employee
     tags:

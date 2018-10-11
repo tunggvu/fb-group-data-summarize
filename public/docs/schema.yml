@@ -393,6 +393,9 @@ BaseProject:
     logo:
       type: string
       description: Path to logo
+    product_owner_id:
+      type: integer
+      description: Product owner id
 Request:
   type: object
   properties:

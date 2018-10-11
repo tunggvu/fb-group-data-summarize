@@ -278,6 +278,7 @@
                 description: null
                 starts_on: "2018-09-15"
                 logo: "http://localhost:3000/uploads/avatar.png"
+                product_owner _id: 1
               request_pic:
                 id: 6
                 organization_id: 5

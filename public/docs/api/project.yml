@@ -488,11 +488,15 @@
               starts_on:
                 type: date
                 description: Project start time
+              logo:
+                type: string
+                description: Project logo encode base64
           example:
             name: Phase 1
             description: Something
             product_owner_id: 1
             starts_on: "2018-07-12"
+            logo: "data:image/png;base64,something"
     responses:
       200:
         description: admin can update a project

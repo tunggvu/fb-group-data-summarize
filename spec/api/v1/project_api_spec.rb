@@ -295,7 +295,8 @@ describe "Project API" do
           name: { type: :string, description: "Project name" },
           description: { type: :string, description: "Project description" },
           product_owner_id: { type: :integer, description: "Product owner" },
-          starts_on: { type: :date, description: "Project start time" }
+          starts_on: { type: :date, description: "Project start time" },
+          logo: { type: :string, description: "Project logo" }
         }
       }
 

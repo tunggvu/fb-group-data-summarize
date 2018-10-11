@@ -48,6 +48,7 @@ class V1::ProjectAPI < Grape::API
         optional :description, type: String
         optional :product_owner_id, type: Integer
         optional :starts_on, type: Date
+        optional :logo, type: String
       end
       patch do
         project = Project.find params[:id]

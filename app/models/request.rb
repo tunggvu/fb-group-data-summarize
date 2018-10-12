@@ -87,7 +87,7 @@ class Request < ApplicationRecord
   end
 
   def can_borrow_device?
-    return if requester.is_admin? || requester.projects.include?(project)
+    return if requester.is_admin? || requester.owned_projects.include?(project)
     errors.add :base, I18n.t("models.request.device_unchangeable")
   end
 

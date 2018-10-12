@@ -68,7 +68,7 @@ class Employee < ApplicationRecord
   end
 
   def is_other_product_owner?(params_project)
-    projects.present? && !projects.include?(params_project)
+    owned_projects.present? && !owned_projects.include?(params_project)
   end
 
   class << self

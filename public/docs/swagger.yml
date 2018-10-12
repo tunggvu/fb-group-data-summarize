@@ -85,3 +85,5 @@ paths:
     $ref: api/sprint.yml#/~1sprints~1{id}~1employees
   /projects/{project_id}/devices/{id}/requests:
     $ref: api/request.yml#/~1projects~1{project_id}~1devices~1{id}~1requests
+  /devices/{id}/requests:
+    $ref: api/request.yml#/~1devices~1{id}~1requests

@@ -259,7 +259,8 @@
     required: true
     description: Device ID
   post:
-    summary: Create request when borrow device. Borrower is admin or other product owner. When borrow a device of other project, a request will be created and be sent for device's PO
+    description: Borrower is admin or other product owner. When borrow a device of other project, a request will be created and be sent for device's PO
+    summary: Create request when borrow device.
     tags:
     - Requests
     consumes:

@@ -100,9 +100,7 @@ class Request < ApplicationRecord
   end
 
   def authenticate(token)
-    return false unless confirmation_digest
-
-    if BCrypt::Password.new(confirmation_digest).is_password?(token)
+    if confirmation_digest && BCrypt::Password.new(confirmation_digest).is_password?(token)
       self.confirmation_digest = nil
     else
       raise APIError::InvalidEmailToken

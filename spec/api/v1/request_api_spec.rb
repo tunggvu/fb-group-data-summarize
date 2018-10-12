@@ -55,12 +55,12 @@ describe "Request API" do
         end
       end
 
-      response "401", "Missing query params" do
+      response "400", "empty params confirmation_token" do
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.invalid_email_token,
-              message: I18n.t("api_error.invalid_email_token")
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: "confirmation_token")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -104,12 +104,12 @@ describe "Request API" do
         end
       end
 
-      response "401", "Missing query params" do
+      response "400", "empty params confirmation_token" do
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.invalid_email_token,
-              message: I18n.t("api_error.invalid_email_token")
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: "confirmation_token")
             }
           }
           expect(response.body).to eq expected.to_json
@@ -152,12 +152,12 @@ describe "Request API" do
         end
       end
 
-      response "401", "Missing query params" do
+      response "400", "empty params confirmation_token" do
         run_test! do
           expected = {
             error: {
-              code: Settings.error_formatter.http_code.invalid_email_token,
-              message: I18n.t("api_error.invalid_email_token")
+              code: Settings.error_formatter.http_code.validation_errors,
+              message: I18n.t("api_error.empty_params", params: "confirmation_token")
             }
           }
           expect(response.body).to eq expected.to_json

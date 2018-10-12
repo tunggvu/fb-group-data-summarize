@@ -7,7 +7,7 @@ class V1::RequestAPI < Grape::API
 
       desc "Requested PIC accept device assignment request"
       params do
-        optional :confirmation_token, type: String
+        requires :confirmation_token, type: String, allow_blank: false
       end
       get :confirm do
         confirmation_token = params[:confirmation_token]
@@ -18,7 +18,7 @@ class V1::RequestAPI < Grape::API
 
       desc "Requested PIC reject device assignment request"
       params do
-        optional :confirmation_token, type: String
+        requires :confirmation_token, type: String, allow_blank: false
       end
 
       get :reject do
@@ -29,7 +29,7 @@ class V1::RequestAPI < Grape::API
 
       desc "PO approves device borrow request"
       params do
-        optional :confirmation_token, type: String
+        requires :confirmation_token, type: String, allow_blank: false
       end
 
       get :approve do

@@ -15,7 +15,7 @@ services:
       - postgres
     restart: unless-stopped
     volumes:
-      - /data/emres-storage:/emres-server/uploads
+      - /data/emres-storage:/emres-server/public/uploads
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -29,7 +29,7 @@ services:
       - postgres
     restart: unless-stopped
     volumes:
-      - /data/emres-storage:/emres-server/uploads
+      - /data/emres-storage:/emres-server/public/uploads
     environment:
       RAILS_ENV: staging
       RACK_ENV: staging
@@ -43,7 +43,7 @@ services:
       - postgres
     restart: unless-stopped
     volumes:
-      - /data/emres-storage-production:/emres-server/uploads
+      - /data/emres-storage-production:/emres-server/public/uploads
     environment:
       RAILS_ENV: production
       RACK_ENV: production
@@ -57,7 +57,7 @@ services:
       - postgres
     restart: unless-stopped
     volumes:
-      - /data/emres-storage-production:/emres-server/uploads
+      - /data/emres-storage-production:/emres-server/public/uploads
     environment:
       RAILS_ENV: production
       RACK_ENV: production

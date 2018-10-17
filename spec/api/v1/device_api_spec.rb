@@ -32,7 +32,7 @@ describe "Device API" do
   let!(:effort1) { create :effort, sprint: sprint1, employee_level: employee_level1, effort: 80 }
   let!(:effort2) { create :effort, sprint: sprint2, employee_level: employee_level2, effort: 30 }
   let!(:effort3) { create :effort, sprint: sprint1, employee_level: employee_level3, effort: 50 }
-  ENV["HOST_DOMAIN"] = "emres@framgia.com"
+  ENV["FRONTEND_HOST"] = "emres@framgia.com"
 
   before do
     device1.update_attribute :pic, pic1

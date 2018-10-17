@@ -25,7 +25,7 @@ describe "Request API" do
   let(:cf_token1) { "cf_token1" }
   let!(:request) { device.requests.create request_pic: pic, project: project, requester: product_owner, status: :approved }
   let!(:request1) { device.requests.create request_pic: pic1, project: project1, requester: product_owner1, status: :pending }
-  ENV["HOST_DOMAIN"] = "emres.framgia.vn"
+  ENV["FRONTEND_HOST"] = "emres.framgia.vn"
 
 
   before do

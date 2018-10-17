@@ -20,6 +20,8 @@ application.
 
 * SENDGRID_API_KEY: you can generate API key by create account in sendgrid: https://signup.sendgrid.com/,
   after that generate API key in https://app.sendgrid.com/settings/api_keys
+* Using mailcatcher in development, so you need to install mailcatcher and run it: `gem install mailcatcher` then run `mailcatcher` then go to `http://localhost:1080/`
+
 ## Documentation
 * Read more at `public/docs`
 * Accept from local server `localhost:3000/docs`

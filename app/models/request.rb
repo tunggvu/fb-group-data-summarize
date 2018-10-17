@@ -51,14 +51,18 @@ class Request < ApplicationRecord
   end
 
   def update_request_link(status)
-    ENV["HOST_DOMAIN"] + "/requests/#{id}/#{status}?confirmation_token=#{confirmation_token}"
+    ENV["FRONTEND_HOST"] + "/requests/#{id}/#{status}?confirmation_token=#{confirmation_token}"
   end
 
   private
 
   def send_request_email
     return if ENV["SEND_EMAIL"].try(:upcase) == "FALSE"
-    UserMailer.send_device_request(self)
+    if Rails.env.development?
+      UserMailer.send_device_request_development(self).deliver
+    else
+      UserMailer.send_device_request(self)
+    end
   end
 
   def generate_confirmation_digest

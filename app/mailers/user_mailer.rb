@@ -48,4 +48,13 @@ class UserMailer < ApplicationMailer
       }
     end
   end
+
+  def send_device_request_development(request)
+    accept_status = (request.pending? ? "approve" : "confirm")
+    @links = {
+      "accept_link": request.update_request_link("#{accept_status}"),
+      "reject_link": request.update_request_link("reject")
+    }
+    mail(to: "mailcatcher", subject: "Device request")
+  end
 end

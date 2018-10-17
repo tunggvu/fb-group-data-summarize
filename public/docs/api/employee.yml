@@ -255,6 +255,78 @@
           application/json:
             schema:
               $ref: "../schema.yml#/Employee"
+            example:
+              id: 5
+              name: Justine Christiansen
+              employee_code: B1210004
+              email: justine.christiansen@framgia.com
+              birthday:
+              phone: 0987654321
+              role: TEAM_LEADER
+              avatar: http://localhost:3000/uploads/avatar.png
+              skills:
+              - id: 2
+                name: Java
+                logo: http://localhost:3000/uploads/avatar.png
+                level:
+                  id: 5
+                  name: Middle
+                  rank: 2
+                  logo: http://localhost:3000/uploads/avatar.png
+              - id: 1
+                name: Ruby
+                logo: http://localhost:3000/uploads/avatar.png
+                level:
+                  id: 2
+                  name: Middle
+                  rank: 2
+                  logo: http://localhost:3000/uploads/avatar.png
+              organization:
+                id: 4
+                parent_id: 3
+                manager_id: 5
+                level: team
+                name: Team 1
+                ancestry: 1/2/3
+              projects:
+              - id: 6
+                name: Monserrat Cruickshank DDS
+                description:
+                starts_on: '2018-10-09'
+                logo: http://localhost:3000/uploads/avatar.png
+                product_owner_id: 5
+              - id: 2
+                name: Cicero Zieme
+                description:
+                starts_on: '2018-10-09'
+                logo: http://localhost:3000/uploads/avatar.png
+                product_owner_id: 12
+              devices:
+              - id: 5
+                name: laptop 4
+                serial_code: '450544451474573'
+                device_type: laptop
+                os_version: Selmer Fisher
+                project:
+                  id: 6
+                  name: Monserrat Cruickshank DDS
+                  description:
+                  starts_on: '2018-10-09'
+                  logo: http://localhost:3000/uploads/avatar.png
+                  product_owner_id: 5
+              - id: 75
+                name: mac_book 14
+                serial_code: '444992525936912'
+                device_type: mac_book
+                os_version: Ethelyn Rempel
+                project:
+                  id: 6
+                  name: Monserrat Cruickshank DDS
+                  description:
+                  starts_on: '2018-10-09'
+                  logo: http://localhost:3000/uploads/avatar.png
+                  product_owner_id: 5
+
       403:
         description: Unauthorized
         content:

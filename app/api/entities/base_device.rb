@@ -3,6 +3,6 @@
 module Entities
   class BaseDevice < Grape::Entity
     expose :id, :name, :serial_code, :device_type, :os_version
-    expose :pic, with: Entities::Employee
+    expose :project, with: Entities::BaseProject
   end
 end

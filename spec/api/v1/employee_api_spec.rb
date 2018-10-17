@@ -451,8 +451,7 @@ describe "Employee API" do
 
       response "200", "return one employee" do
         run_test! do
-          expected = Entities::Employee.represent employee,
-            only: [:id, :organization_id, :name, :employee_code, :email, :birthday, :phone, :avatar]
+          expected = Entities::EmployeeDetail.represent employee
           expect(response.body).to eq expected.to_json
         end
       end

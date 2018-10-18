@@ -43,7 +43,7 @@ vi:
     pic_in_project: "Xác thực không thành công: Person in charge không thuộc dự án"
     device_nothing_change: "Xác thực không thành công: Dự án và người chịu trách nhiệm không thay đổi"
     device_unchangeable: "Xác thực không thành công: Bạn không có quyền làm điều này"
-    email_can_not_be_sent: "Email không thể được gửi đi do một số thông tin về email không hợp lệ"
+    send_email_error: "Email không thể được gửi đi do một số thông tin về email không hợp lệ"
     invalid_email_token: "Token xác thực không chính xác hoặc đã hết hạn"
   models:
     effort:

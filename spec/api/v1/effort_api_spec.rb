@@ -509,36 +509,9 @@ describe "Effort API" do
 
       include_examples "unauthenticated"
 
-      response "200", "return detail effort with no additional params" do
+      response "200", "return detail effort with correct params" do
 
         run_test! do |response|
-          expected = [Entities::EffortDetail.represent(another_effort)]
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "200", "return detail effort with param skill_id" do
-        let(:skill_id) { skill.id }
-
-        run_test! do
-          expected = [Entities::EffortDetail.represent(another_effort)]
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "200", "return detail effort with param project_id" do
-        let(:project_id) { project.id }
-
-        run_test! do
-          expected = [Entities::EffortDetail.represent(another_effort)]
-          expect(response.body).to eq expected.to_json
-        end
-      end
-
-      response "200", "return detail effort with param organization_id" do
-        let(:organization_id) { group.id }
-
-        run_test! do
           expected = [Entities::EffortDetail.represent(another_effort)]
           expect(response.body).to eq expected.to_json
         end

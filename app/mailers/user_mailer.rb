@@ -15,10 +15,9 @@ class UserMailer < ApplicationMailer
     end
 
     def send_mail(data)
-      # TODO: đẩy master.key lên server
       sg = SendGrid::API.new(api_key: ENV["SENDGRID_API_KEY"] || "")
       response = sg.client.mail._("send").post(request_body: data)
-      # TODO: bắt lỗi đầy đủ của Sengrid, custom dưới dạng 6xx
+      # TODO: bắt lỗi đầy đủ của Sengrid
       raise APIError::SendEmailError if response.status_code == "400"
     end
 

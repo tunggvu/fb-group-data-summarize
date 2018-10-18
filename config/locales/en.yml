@@ -50,7 +50,7 @@ en:
     pic_in_project: "Validation failed: Person in charge doesn't belongs to Request Project"
     device_nothing_change: "Validation failed: Project and PIC aren't change"
     device_unchangeable: "Validation failed: You don't have the right to do this"
-    email_can_not_be_sent: "Email can't be sent because of some invalid email informations"
+    send_email_error: "Email can't be sent because of some invalid email informations"
     invalid_email_token: "Verify token is invalid or has been expired"
     invalid_starts_on_phase: "Validation failed: Starts on must be after ends on of previous phase"
   models:

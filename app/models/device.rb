@@ -9,7 +9,7 @@ class Device < ApplicationRecord
   belongs_to :project
   belongs_to :pic, class_name: Employee.name, optional: true
 
-  has_many :requests, -> { order(modified_date: :desc) }
+  has_many :requests, -> { order(modified_at: :desc) }
 
   validates :name, presence: true
   validates :serial_code, presence: true
@@ -29,7 +29,7 @@ class Device < ApplicationRecord
       project_id: project_id,
       request_pic: po,
       requester: po,
-      modified_date: Time.current
+      modified_at: Time.current
     )
   end
 end

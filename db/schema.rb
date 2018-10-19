@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_09_031204) do
+ActiveRecord::Schema.define(version: 2018_10_17_011652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(version: 2018_10_09_031204) do
     t.bigint "request_pic_id"
     t.bigint "requester_id"
     t.string "confirmation_digest"
-    t.date "modified_date"
+    t.datetime "modified_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["device_id"], name: "index_requests_on_device_id"

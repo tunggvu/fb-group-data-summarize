@@ -43,7 +43,7 @@
               id: 417
               status: "approved"
               request_type: "assign"
-              modified_date: "2018-09-27"
+              modified_at: "1996-11-02T00:00:00.000Z"
               project:
                 id: 3
                 name: "Stanford Carroll"
@@ -290,7 +290,7 @@
               id: 417
               status: "pending"
               request_type: "assign"
-              modified_date: "2018-09-27"
+              modified_at: "1996-11-02T00:00:00.000Z"
               project:
                 id: 3
                 name: "Stanford Carroll"

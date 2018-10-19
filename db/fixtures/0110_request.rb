@@ -11,7 +11,7 @@ Device.all.each do |device|
       project: project,
       request_pic: project.employees.sample,
       requester: project.product_owner,
-      modified_date: n.days.from_now
+      modified_at: n.days.from_now
     )
     confirmation_token = Request.new_token
     confirmation_digest = Request.digest confirmation_token

@@ -53,7 +53,7 @@ class V1::DeviceAPI < Grape::API
           device = Device.find(params[:id])
           authorize device, :user_can_borrow?
 
-          request = Request.create!(status: :pending, modified_date: Date.current,
+          request = Request.create!(status: :pending, modified_at: Time.current,
             project_id: params[:request_project], request_pic_id: params[:request_pic],
             requester: current_user, device: device)
           present request, with: Entities::Request
@@ -90,7 +90,7 @@ class V1::DeviceAPI < Grape::API
             post do
               device = Device.find(params[:id])
               authorize device, :device_owner?
-              request = Request.create!(status: :approved, modified_date: Date.current,
+              request = Request.create!(status: :approved, modified_at: Time.current,
                 project_id: params[:request_project], request_pic_id: params[:request_pic],
                 requester: current_user, device: device)
               present request, with: Entities::Request

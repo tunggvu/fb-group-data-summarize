@@ -6,6 +6,6 @@ FactoryBot.define do
     association :project
     association :request_pic, factory: :employee
     association :requester, factory: :employee
-    modified_date { Faker::Date.backward 30 }
+    modified_at { Faker::Time.backward 30 }
   end
 end

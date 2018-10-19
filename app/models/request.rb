@@ -36,7 +36,7 @@ class Request < ApplicationRecord
     state :approved, :confirmed, :rejected
 
     authenticator = Proc.new { |token| authenticate(token) }
-    before_all_events Proc.new { self.modified_date = Date.current }
+    before_all_events Proc.new { self.modified_at = Time.current }
 
     event :approve, before: authenticator, success: :send_request_email do
       transitions from: :pending, to: :approved

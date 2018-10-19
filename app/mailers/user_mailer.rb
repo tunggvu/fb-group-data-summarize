@@ -18,7 +18,7 @@ class UserMailer < ApplicationMailer
       sg = SendGrid::API.new(api_key: ENV["SENDGRID_API_KEY"] || "")
       response = sg.client.mail._("send").post(request_body: data)
       # TODO: bắt lỗi đầy đủ của Sengrid
-      raise APIError::SendEmailError if response.status_code == "400"
+      raise APIError::SendEmailError if response.status_code.to_i >= 400
     end
 
     def personalizations_object(request)
@@ -48,7 +48,7 @@ class UserMailer < ApplicationMailer
     end
   end
 
-  def send_device_request_development(request)
+  def send_device_request_to_mailcatcher(request)
     accept_status = (request.pending? ? "approve" : "confirm")
     @links = {
       "accept_link": request.update_request_link("#{accept_status}"),

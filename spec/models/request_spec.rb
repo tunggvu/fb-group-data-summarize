@@ -159,6 +159,7 @@ RSpec.describe Request, type: :model do
   describe "aasm" do
     let(:request) { device1.requests.last }
     let(:token) { "token" }
+    let!(:old_digest) { request.confirmation_digest }
 
     before do
       request.update confirmation_digest: Request.digest(token)
@@ -170,10 +171,16 @@ RSpec.describe Request, type: :model do
         request.approve!(:approved, token)
       end
 
-      include_examples "null digest"
+
+      it "should have a new confirmation digest" do
+        expect(request.confirmation_digest).not_to be_nil
+        expect(request.confirmation_digest).not_to eq(old_digest)
+      end
     end
 
     context ".confirm" do
+      let!(:request2) { device1.requests.create! project: project3, request_pic: product_owner2, requester: product_owner2, status: :pending }
+
       before do
         request.update status: :approved
         request.confirm!(:confirmed, token)
@@ -181,8 +188,13 @@ RSpec.describe Request, type: :model do
 
       include_examples "null digest"
 
-      it "should update device pic" do
+      it "should update related info" do
         expect(request.device.pic).to eq(request.request_pic)
+        expect(request.device.project).to eq(request.project)
+      end
+
+      it "should reject all previous unconfirmed request" do
+        expect(request2.reload.status).to eq "rejected"
       end
     end
 

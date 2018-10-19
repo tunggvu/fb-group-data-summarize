@@ -12,7 +12,6 @@ class V1::RequestAPI < Grape::API
       get :confirm do
         confirmation_token = params[:confirmation_token]
         @device_request.confirm!(:confirmed, confirmation_token)
-        @device_request = Request.includes(:project).find params[:id]
         present @device_request, with: Entities::Request
       end
 

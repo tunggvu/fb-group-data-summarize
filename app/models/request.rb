@@ -12,12 +12,13 @@ class Request < ApplicationRecord
   belongs_to :request_pic, class_name: Employee.name
   belongs_to :requester, class_name: Employee.name
 
-  validate :valid_pic?, :change_owner?
+  validate :valid_pic?, unless: :rejected?
+  validate :change_owner?, unless: :rejected?
   validate :can_update_pic?, if: proc { !persisted? && approved? }
   validate :can_borrow_device?, if: :pending?
 
   before_create :generate_confirmation_digest
-  after_create :send_request_email, if: proc { request_pic != project.product_owner }
+  after_create :send_request_email, unless: :confirmed?
 
   class << self
     def new_token
@@ -34,17 +35,23 @@ class Request < ApplicationRecord
     state :pending, initial: true
     state :approved, :confirmed, :rejected
 
-    before_all_events Proc.new { |token| authenticate(token) }
+    authenticator = Proc.new { |token| authenticate(token) }
+    before_all_events Proc.new { self.modified_date = Date.current }
 
-    event :approve, success: :send_email_when_approve do
+    event :approve, before: authenticator, success: :send_request_email do
       transitions from: :pending, to: :approved
     end
 
-    event :confirm, success: :update_device_pic_and_other_device_requests do
+    event :confirm, before: authenticator, success: :update_related_info do
       transitions from: :approved, to: :confirmed
     end
 
-    event :reject do
+    event :reject, before: authenticator do
+      transitions from: :approved, to: :rejected
+      transitions from: :pending, to: :rejected
+    end
+
+    event :reject_without_token do
       transitions from: :approved, to: :rejected
       transitions from: :pending, to: :rejected
     end
@@ -58,8 +65,9 @@ class Request < ApplicationRecord
 
   def send_request_email
     return if ENV["SEND_EMAIL"].try(:upcase) == "FALSE"
-    if Rails.env.development?
-      UserMailer.send_device_request_development(self).deliver
+
+    if Rails.env.development? || Rails.env.test?
+      UserMailer.send_device_request_to_mailcatcher(self).deliver
     else
       UserMailer.send_device_request(self)
     end
@@ -95,24 +103,26 @@ class Request < ApplicationRecord
     errors.add :base, I18n.t("models.request.device_unchangeable")
   end
 
-  def update_device_pic_and_other_device_requests
-    device.update! pic: request_pic
-    device_requests = device.requests.includes(:device, :request_pic, :requester, project: :product_owner).select { |r| r.pending? || r.approved? }
-    device_requests.each do |req|
-      req.rejected!
+  def update_related_info
+    update_device_info
+    reject_other_requests
+  end
+
+  def update_device_info
+    device.update! pic: request_pic, project: project
+  end
+
+  def reject_other_requests
+    device.requests.includes(:device, :request_pic, :requester, project: :product_owner).where(status: [:pending, :approved]).each do |request|
+      request.reject_without_token!
     end
   end
 
   def authenticate(token)
     if confirmation_digest && BCrypt::Password.new(confirmation_digest).is_password?(token)
-      self.confirmation_digest = nil
+      self.confirmation_digest = pending? ? generate_confirmation_digest : nil
     else
       raise APIError::InvalidEmailToken
     end
-  end
-
-  def send_email_when_approve
-    generate_confirmation_digest
-    send_request_email
   end
 end

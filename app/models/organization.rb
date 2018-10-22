@@ -10,7 +10,7 @@ class Organization < ApplicationRecord
 
   has_ancestry orphan_strategy: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :ancestry }
   validates :level, presence: true
 
   mount_base64_uploader :logo, ImageUploader

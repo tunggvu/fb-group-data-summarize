@@ -89,6 +89,26 @@ describe "Organization API" do
         end
       end
 
+      response "422", "invalid dupplicate name organization" do
+        let(:organization) {
+          {
+            name: section.name,
+            manager_id: manager.id,
+            level: 3,
+            parent_id: division2.id
+          }
+        }
+        run_test! do |response|
+        expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: I18n.t("api_error.taken_params", params: "Name")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
       response "403", "unauthorized" do
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
 

@@ -3,6 +3,11 @@
 require "rails_helper"
 
 RSpec.describe Organization, type: :model do
+  let!(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
+  let!(:section) { FactoryBot.create(:organization, :section, parent: division, name: "Section 1") }
+  let!(:group) { FactoryBot.create(:organization, :clan, parent: section, name: "Group 1") }
+  let!(:team) { FactoryBot.create(:organization, :team, parent: group, name: "Team 1") }
+
   describe "#associations" do
     it { should have_many(:employees) }
   end
@@ -13,10 +18,7 @@ RSpec.describe Organization, type: :model do
   end
 
   describe "#full_name" do
-    let(:division) { FactoryBot.create(:organization, :division, name: "Division 1") }
-    let(:section) { FactoryBot.create(:organization, :section, parent: division, name: "Section 1") }
-    let(:group) { FactoryBot.create(:organization, :clan, parent: section, name: "Group 1") }
-    let(:team) { FactoryBot.create(:organization, :team, parent: group, name: "Team 1") }
+
 
     it "should return divistion's full name" do
       expect(division.full_name).to eq "Division 1"
@@ -36,11 +38,6 @@ RSpec.describe Organization, type: :model do
   end
 
   describe "#employee_ids" do
-    let(:division) { FactoryBot.create(:organization, :division) }
-    let(:section) { FactoryBot.create(:organization, :section, parent: division) }
-    let(:group) { FactoryBot.create(:organization, :clan, parent: section) }
-    let(:team) { FactoryBot.create(:organization, :team, parent: group) }
-
     let!(:team_member_1) { FactoryBot.create :employee, organization: team }
     let!(:team_member_2) { FactoryBot.create :employee, organization: team }
     let!(:group_leader) { FactoryBot.create :employee, organization: group }
@@ -78,6 +75,20 @@ RSpec.describe Organization, type: :model do
         expect(team.employee_ids).to match_array Employee.where("organization_id = ?",
           team.id).ids
       end
+    end
+  end
+
+  context "Name in organization has already been taken" do
+    let(:invalid_organization) { FactoryBot.build :organization, :section, parent: division, name: "Section 1" }
+
+    it "should be invalid" do
+      expect(invalid_organization).to be_invalid
+    end
+
+    it "shoud return error" do
+      invalid_organization.save
+      expect(invalid_organization.errors.full_messages).to include "Name has already been taken"
+      expect(Organization.count).to eq 4
     end
   end
 end

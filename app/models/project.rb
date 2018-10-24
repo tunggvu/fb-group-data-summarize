@@ -17,4 +17,8 @@ class Project < ApplicationRecord
   def current_sprint
     sprints.where("starts_on <= :time AND ends_on >= :time", {time: Time.zone.now}).first
   end
+
+  def current_phase
+    current_sprint&.phase
+  end
 end

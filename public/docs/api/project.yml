@@ -254,188 +254,200 @@
               $ref: '../schema.yml#/Project'
             examples:
               admin can see any project:
-                name: Project 1
-                logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
-                description: Description
-                starts_on: "2018-07-12"
-                product_owner:
-                  id: 1
-                  organization_id: 1
-                  name: Employee
-                  employee_code: B120000
-                  email: employee@framgia.com
-                  birthday: "2018-07-12"
-                  phone: '0123456789'
-                  avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
-                current_sprint:
-                  id: 1
-                  name: sprint 1
-                phases:
-                - id: 1
-                  name: phase 1
-                  requirements:
-                  - id: 1
-                    quantity: 7
-                    phase_id: 1
-                    skill_level: Middle
-                    skill_name: Ruby
-                  - id: 2
-                    quantity: 2
-                    phase_id: 1
-                    skill_level: Senior
-                    skill_name: Java
-                  sprints:
-                  - id: 1
+                value:
+                  name: Project 1
+                  logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
+                  description: Description
+                  starts_on: "2018-07-12"
+                  product_owner:
+                    id: 1
+                    organization_id: 1
+                    name: Employee
+                    employee_code: B120000
+                    email: employee@framgia.com
+                    birthday: "2018-07-12"
+                    phone: '0123456789'
+                    avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
+                  current_sprint:
+                    id: 1
                     name: sprint 1
-                    starts_on: "2018-07-12"
-                    ends_on: "2018-08-20"
-                    members:
-                    - id: 339
-                      effort: 80
-                      name: Eloy Grady
-                      skill:
-                        id: 1
-                        name: Ruby
-                        logo: ''
-                        level:
+                  current_phase:
+                    id: 1
+                    name: phase 1
+                  phases:
+                  - id: 1
+                    name: phase 1
+                    requirements:
+                    - id: 1
+                      quantity: 7
+                      phase_id: 1
+                      skill_level: Middle
+                      skill_name: Ruby
+                    - id: 2
+                      quantity: 2
+                      phase_id: 1
+                      skill_level: Senior
+                      skill_name: Java
+                    sprints:
+                    - id: 1
+                      name: sprint 1
+                      starts_on: "2018-07-12"
+                      ends_on: "2018-08-20"
+                      members:
+                      - id: 339
+                        effort: 80
+                        name: Eloy Grady
+                        skill:
                           id: 1
-                          name: Junior
-                          rank: 1
-                          logo: "#"
-                    - id: 466
-                      effort: 25
-                      name: Graham Streich III
-                      skill:
-                        id: 1
-                        name: Ruby
-                        logo: ''
-                        level:
+                          name: Ruby
+                          logo: ''
+                          level:
+                            id: 1
+                            name: Junior
+                            rank: 1
+                            logo: "#"
+                      - id: 466
+                        effort: 25
+                        name: Graham Streich III
+                        skill:
                           id: 1
-                          name: Junior
-                          rank: 1
-                          logo: "#"
+                          name: Ruby
+                          logo: ''
+                          level:
+                            id: 1
+                            name: Junior
+                            rank: 1
+                            logo: "#"
               manager can see any project:
-                name: Project 1
-                logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
-                description: Description
-                starts_on: "2018-07-12"
-                product_owner:
-                  id: 1
-                  organization_id: 1
-                  name: Employee
-                  employee_code: B120000
-                  email: employee@framgia.com
-                  birthday: "2018-07-12"
-                  phone: '0123456789'
-                  avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
-                current_sprint:
-                  id: 1
-                  name: sprint 1
-                phases:
-                - id: 1
-                  name: phase 1
-                  requirements:
-                  - id: 1
-                    quantity: 7
-                    phase_id: 1
-                    skill_level: Middle
-                    skill_name: Ruby
-                  - id: 2
-                    quantity: 2
-                    phase_id: 1
-                    skill_level: Senior
-                    skill_name: Java
-                  sprints:
-                  - id: 1
+                value:
+                  name: Project 1
+                  logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
+                  description: Description
+                  starts_on: "2018-07-12"
+                  product_owner:
+                    id: 1
+                    organization_id: 1
+                    name: Employee
+                    employee_code: B120000
+                    email: employee@framgia.com
+                    birthday: "2018-07-12"
+                    phone: '0123456789'
+                    avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
+                  current_sprint:
+                    id: 1
                     name: sprint 1
-                    starts_on: "2018-07-12"
-                    ends_on: "2018-08-12"
-                    members:
-                    - id: 339
-                      effort: 80
-                      name: Eloy Grady
-                      skill:
-                        id: 1
-                        name: Ruby
-                        logo: ''
-                        level:
+                  current_phase:
+                    id: 1
+                    name: phase 1
+                  phases:
+                  - id: 1
+                    name: phase 1
+                    requirements:
+                    - id: 1
+                      quantity: 7
+                      phase_id: 1
+                      skill_level: Middle
+                      skill_name: Ruby
+                    - id: 2
+                      quantity: 2
+                      phase_id: 1
+                      skill_level: Senior
+                      skill_name: Java
+                    sprints:
+                    - id: 1
+                      name: sprint 1
+                      starts_on: "2018-07-12"
+                      ends_on: "2018-08-12"
+                      members:
+                      - id: 339
+                        effort: 80
+                        name: Eloy Grady
+                        skill:
                           id: 1
-                          name: Junior
-                          rank: 1
-                          logo: "#"
-                    - id: 466
-                      effort: 25
-                      name: Graham Streich III
-                      skill:
-                        id: 1
-                        name: Ruby
-                        logo: ''
-                        level:
+                          name: Ruby
+                          logo: ''
+                          level:
+                            id: 1
+                            name: Junior
+                            rank: 1
+                            logo: "#"
+                      - id: 466
+                        effort: 25
+                        name: Graham Streich III
+                        skill:
                           id: 1
-                          name: Junior
-                          rank: 1
-                          logo: "#"
+                          name: Ruby
+                          logo: ''
+                          level:
+                            id: 1
+                            name: Junior
+                            rank: 1
+                            logo: "#"
               employee can see project that employee belongs to:
-                name: Project 1
-                logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
-                description: Description
-                starts_on: "2018-07-12"
-                product_owner:
-                  id: 1
-                  organization_id: 1
-                  name: Employee
-                  employee_code: B120000
-                  email: employee@framgia.com
-                  birthday: "2018-07-12"
-                  phone: '0123456789'
-                  avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
-                current_sprint:
-                  id: 1
-                  name: sprint 1
-                phases:
-                - id: 1
-                  name: phase 1
-                  requirements:
-                  - id: 1
-                    quantity: 7
-                    phase_id: 1
-                    skill_level: Middle
-                    skill_name: Ruby
-                  - id: 2
-                    quantity: 2
-                    phase_id: 1
-                    skill_level: Senior
-                    skill_name: Java
-                  sprints:
-                  - id: 1
+                value:
+                  name: Project 1
+                  logo: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
+                  description: Description
+                  starts_on: "2018-07-12"
+                  product_owner:
+                    id: 1
+                    organization_id: 1
+                    name: Employee
+                    employee_code: B120000
+                    email: employee@framgia.com
+                    birthday: "2018-07-12"
+                    phone: '0123456789'
+                    avatar: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMaYHrIPq6IFEZc1DyjvRznKuxCvCelfreMChjDJeRusEm0TtgHl
+                  current_sprint:
+                    id: 1
                     name: sprint 1
-                    starts_on: "2018-07-12"
-                    ends_on: "2018-08-12"
-                    members:
-                    - id: 339
-                      effort: 80
-                      name: Eloy Grady
-                      skill:
-                        id: 1
-                        name: Ruby
-                        logo: ''
-                        level:
+                  current_phase:
+                    id: 1
+                    name: phase 1
+                  phases:
+                  - id: 1
+                    name: phase 1
+                    requirements:
+                    - id: 1
+                      quantity: 7
+                      phase_id: 1
+                      skill_level: Middle
+                      skill_name: Ruby
+                    - id: 2
+                      quantity: 2
+                      phase_id: 1
+                      skill_level: Senior
+                      skill_name: Java
+                    sprints:
+                    - id: 1
+                      name: sprint 1
+                      starts_on: "2018-07-12"
+                      ends_on: "2018-08-12"
+                      members:
+                      - id: 339
+                        effort: 80
+                        name: Eloy Grady
+                        skill:
                           id: 1
-                          name: Junior
-                          rank: 1
-                          logo: "#"
-                    - id: 466
-                      effort: 25
-                      name: Graham Streich III
-                      skill:
-                        id: 1
-                        name: Ruby
-                        logo: ''
-                        level:
+                          name: Ruby
+                          logo: ''
+                          level:
+                            id: 1
+                            name: Junior
+                            rank: 1
+                            logo: "#"
+                      - id: 466
+                        effort: 25
+                        name: Graham Streich III
+                        skill:
                           id: 1
-                          name: Junior
-                          rank: 1
-                          logo: "#"
+                          name: Ruby
+                          logo: ''
+                          level:
+                            id: 1
+                            name: Junior
+                            rank: 1
+                            logo: "#"
       403:
         description: Unaithorized
         content:

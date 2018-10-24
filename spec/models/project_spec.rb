@@ -39,4 +39,29 @@ RSpec.describe Project, type: :model do
       end
     end
   end
+
+  describe "current_phase" do
+    let(:project) { FactoryBot.create :project }
+
+    context "when project does not have phase" do
+      it "should return nil" do
+        expect(project.current_phase).to eq nil
+      end
+    end
+
+    context "when project does not have current phase" do
+      let!(:phase) { FactoryBot.create :phase, project_id: project.id, starts_on: 1.day.from_now, ends_on: 2.days.from_now }
+      it "should return nil" do
+        expect(project.current_phase).to eq nil
+      end
+    end
+
+    context "when project has current phase" do
+      let!(:phase) { FactoryBot.create :phase, project_id: project.id, starts_on: 3.days.ago, ends_on: 3.days.from_now }
+      let!(:sprint) { FactoryBot.create :sprint, project: project, phase: phase, starts_on: 2.days.ago, ends_on: 2.day.from_now }
+      it "should return current phase" do
+        expect(project.current_phase).to eq phase
+      end
+    end
+  end
 end

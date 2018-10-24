@@ -125,7 +125,10 @@ describe "Requirement API" do
       response "201", "manager of PO can create requirement" do
         let("Emres-Authorization") { "Bearer #{section_manager_token.token}" }
 
-        before { section.update_attributes! manager_id: section_manager.id }
+        before do
+          section.update_attributes! manager_id: section_manager.id
+          params[:level_id] = level2.id
+        end
 
         run_test! do
           requirement = Requirement.last
@@ -135,6 +138,9 @@ describe "Requirement API" do
       end
 
       response "201", "PO can create requirement" do
+        let(:level) { FactoryBot.create :level }
+        before { params[:level_id] = level.id }
+
         run_test! do
           requirement = Requirement.last
           expected = Entities::Requirement.represent(requirement)
@@ -307,8 +313,8 @@ describe "Requirement API" do
         end
       end
 
-      response "422", "empty params" do
-        let(:params) { { level_id: "", quantity: "" } }
+      response "422", "empty level_id params" do
+        let(:params) { { level_id: "", quantity: 3 } }
 
         run_test! do
           expected = {

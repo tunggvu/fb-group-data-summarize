@@ -281,11 +281,13 @@
                     - id: 1
                       quantity: 7
                       phase_id: 1
+                      level_id: 5
                       skill_level: Middle
                       skill_name: Ruby
                     - id: 2
                       quantity: 2
                       phase_id: 1
+                      level_id: 5
                       skill_level: Senior
                       skill_name: Java
                     sprints:
@@ -346,11 +348,13 @@
                     - id: 1
                       quantity: 7
                       phase_id: 1
+                      level_id: 4
                       skill_level: Middle
                       skill_name: Ruby
                     - id: 2
                       quantity: 2
                       phase_id: 1
+                      level_id: 4
                       skill_level: Senior
                       skill_name: Java
                     sprints:
@@ -411,11 +415,13 @@
                     - id: 1
                       quantity: 7
                       phase_id: 1
+                      level_id: 3
                       skill_level: Middle
                       skill_name: Ruby
                     - id: 2
                       quantity: 2
                       phase_id: 1
+                      level_id: 3
                       skill_level: Senior
                       skill_name: Java
                     sprints:

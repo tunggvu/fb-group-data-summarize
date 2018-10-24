@@ -6,7 +6,7 @@ class V1::ProfileAPI < Grape::API
 
     desc "Get profile information"
     get do
-      present current_user, with: Entities::Employee
+      present current_user, with: Entities::Profile
     end
 
     desc "Update current user profile"
@@ -16,7 +16,7 @@ class V1::ProfileAPI < Grape::API
     end
     patch do
       current_user.update_attributes! declared(params, include_missing: false)
-      present current_user, with: Entities::Employee
+      present current_user, with: Entities::Profile
     end
   end
 end

@@ -3,9 +3,7 @@
 class Employee < ApplicationRecord
   belongs_to :organization, optional: true
 
-
   has_many :employee_levels, dependent: :destroy
-  has_many :owned_projects, dependent: :nullify, foreign_key: :product_owner_id, class_name: Project.name
   has_many :levels, through: :employee_levels
   has_many :efforts, through: :employee_levels
   has_many :total_efforts, dependent: :destroy
@@ -69,6 +67,14 @@ class Employee < ApplicationRecord
 
   def is_other_product_owner?(params_project)
     owned_projects.present? && !owned_projects.include?(params_project)
+  end
+
+  def owned_organizations
+    is_admin? ? Organization.all : Organization.where(manager: self)
+  end
+
+  def owned_projects
+    is_admin? ? Project.all : Project.where(product_owner: self)
   end
 
   class << self

@@ -205,6 +205,7 @@ SkillLevel:
       description: Logo url
       example: http://localhost:3000/uploads/avatar.png
     level:
+      type: object
       description: Level of skill
       allOf:
         - $ref: '#/Level'
@@ -381,21 +382,27 @@ BaseProject:
     id:
       type: integer
       description: Project ID
+      example: 1
     name:
       type: string
       description: Project's name
+      example: Project 1
     description:
       type: string
       description: Project's description
+      example: Some description about project
     starts_on:
       type: date
       description: Start time of project
+      example: "2018-01-01"
     logo:
       type: string
       description: Path to logo
+      example: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
     product_owner_id:
       type: integer
       description: Product owner id
+      example: 1000
 Request:
   type: object
   properties:
@@ -455,3 +462,57 @@ DeviceDetail:
           items:
             allOf:
               - $ref: '#/Request'
+Profile:
+  allOf:
+    - $ref: '#/Employee'
+    - type: object
+      properties:
+        skills:
+          type: array
+          description: Skills of current user
+          items:
+            allOf:
+              - $ref: '#/SkillLevel'
+        organization:
+          $ref: '#/Organization'
+        devices:
+          type: array
+          description: Devices that current user in charge
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: Laptop 1
+              serial_code:
+                type: string
+                example: XXX123
+              device_type:
+                type: string
+                enum:
+                  - laptop
+                  - pc
+                  - mac_mini
+                  - mac_book
+                example: laptop
+              os_version:
+                type: string
+                example: Ubuntu
+              project:
+                allOf:
+                  - $ref: '#/BaseProject'
+        owned_projects:
+          type: array
+          description: Projects that current user is product owner
+          items:
+            allOf:
+              - $ref: '#/BaseProject'
+        owned_organizations:
+          type: array
+          description: Organization that current user is manager
+          items:
+            allOf:
+              - $ref: '#/Organization'

@@ -7,7 +7,6 @@ RSpec.describe Employee, type: :model do
   describe "#associations" do
     it { should have_many(:employee_levels) }
     it { should have_many(:levels) }
-    it { should have_many(:owned_projects) }
     it { should have_many(:projects_effort) }
     it { should belong_to(:organization) }
   end
@@ -130,8 +129,38 @@ RSpec.describe Employee, type: :model do
 
     let!(:effort_employee) { FactoryBot.create :effort, employee_level: employee_level_1, sprint: sprint_1 }
 
-    it "return our project and owned_projects" do
+    it "return our project and owned projects" do
       expect(employee.projects).to include(project_1, project_2)
+    end
+  end
+
+  describe ".owned_projects" do
+    let(:employee) { FactoryBot.create :employee }
+    let(:admin) { FactoryBot.create :employee, :admin }
+    let(:owned_project) { FactoryBot.create :project, product_owner: employee }
+    let(:other_project) { FactoryBot.create :project }
+
+    it "return only project that employee is product owner" do
+      expect(employee.owned_projects).to eq [owned_project]
+    end
+
+    it "return all project if employee is admin" do
+      expect(admin.owned_projects).to eq [owned_project, other_project]
+    end
+  end
+
+  describe ".owned_organizations" do
+    let(:employee) { FactoryBot.create :employee, organization: nil }
+    let(:admin) { FactoryBot.create :employee, :admin, organization: nil }
+    let(:owned_organization) { FactoryBot.create :organization, manager: employee }
+    let(:other_organization) { FactoryBot.create :organization }
+
+    it "return only organization that employee is manager" do
+      expect(employee.owned_organizations).to eq [owned_organization]
+    end
+
+    it "return all organization if employee is admin" do
+      expect(admin.owned_organizations).to eq [owned_organization, other_organization]
     end
   end
 end

@@ -119,22 +119,6 @@ class V1::EmployeeAPI < Grape::API
         @employee.destroy!
         { message: I18n.t("delete_success") }
       end
-
-      resource :owned_projects do
-        desc "List project that employee is product owner"
-        get do
-          present @employee.owned_projects, with: Entities::BaseProject
-        end
-      end
-
-      resource :organizations_owned do
-        desc "List organizations that employee is manager"
-        get do
-          org = Organization.find_by(manager_id: @employee.id)
-          organizations_owner = org.nil? ? [] : org.subtree
-          present organizations_owner, with: Entities::Organizations
-        end
-      end
     end
   end
 end

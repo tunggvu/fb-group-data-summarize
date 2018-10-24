@@ -51,8 +51,7 @@ describe "Project API" do
       response "200", "Admin can see all projects" do
         let("Emres-Authorization") { "Bearer #{admin_token.token}" }
         run_test! do |response|
-          expected = [Entities::Project.represent(project),
-            Entities::Project.represent(other_project)]
+          expected = Entities::Project.represent([project, other_project])
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
@@ -61,17 +60,7 @@ describe "Project API" do
         let("Emres-Authorization") { "Bearer #{group_leader_token.token}" }
 
         run_test! do |response|
-          expected = [Entities::Project.represent(project),
-            Entities::Project.represent(other_project)]
-          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
-        end
-      end
-
-      response "200", "Employee can see our projects" do
-        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
-
-        run_test! do |response|
-          expected = [Entities::Project.represent(project)]
+          expected = Entities::Project.represent([project, other_project])
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
@@ -80,7 +69,7 @@ describe "Project API" do
 
         let("Emres-Authorization") { "Bearer #{employee_token.token}" }
         run_test! do |response|
-          expected = [Entities::Project.represent(project)]
+          expected = Entities::Project.represent([project, other_project])
             expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end

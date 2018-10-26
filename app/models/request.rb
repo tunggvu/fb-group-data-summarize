@@ -20,6 +20,8 @@ class Request < ApplicationRecord
   before_create :generate_confirmation_digest
   after_create :send_request_email, unless: :confirmed?
 
+  scope :need_handle, -> { where(status: [:pending, :approved]) }
+
   class << self
     def new_token
       SecureRandom.urlsafe_base64

@@ -50,19 +50,19 @@ describe "Device API" do
       parameter name: :project_id, in: :query, type: :integer, description: "Filter device with project id"
       parameter name: :organization_id, in: :query, type: :integer, description: "Filter device with organization id of pic"
 
-      let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+      let("Emres-Authorization") { "Bearer #{po1_token.token}" }
       let(:query) {}
       let("device_types[]") { [] }
       let(:project_id) {}
       let(:organization_id) {}
-
+      let(:device_own_ids) { product_owner1.device_ids }
+      let(:current_device_requests) { product_owner1.requests.need_handle.ids }
       include_examples "unauthenticated"
 
       response "200", "return all devices without params" do
-
         run_test! do |response|
-          expected = Entities::Device.represent [device1, device2]
-          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+          expected = Entities::DeviceCurrentUser.represent [device1, device2], devices_keeping: device_own_ids, devices_requesting: current_device_requests
+          expect(response.body).to eq (expected.to_json)
         end
       end
 
@@ -70,7 +70,8 @@ describe "Device API" do
         let(:query) { device1.name }
 
         run_test! do |response|
-          expected = Entities::Device.represent [device1]
+
+          expected = Entities::DeviceCurrentUser.represent [device1], devices_keeping: device_own_ids, devices_requesting: current_device_requests
           expect(response.body).to eq expected.to_json
         end
       end
@@ -78,7 +79,7 @@ describe "Device API" do
       response "200", "return devices with params device types" do
         let("device_types[]") { [device1.device_type_before_type_cast, device2.device_type_before_type_cast] }
         run_test! do |response|
-          expected = Entities::Device.represent [device1, device2]
+          expected = Entities::DeviceCurrentUser.represent [device1, device2], devices_keeping: device_own_ids, devices_requesting: current_device_requests
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
@@ -87,7 +88,7 @@ describe "Device API" do
         let(:project_id) { device1.project_id }
 
         run_test! do |response|
-          expected = Entities::Device.represent [device1]
+          expected = Entities::DeviceCurrentUser.represent [device1], devices_keeping: device_own_ids, devices_requesting: current_device_requests
           expect(response.body).to eq expected.to_json
         end
       end
@@ -96,7 +97,7 @@ describe "Device API" do
         let(:organization_id) { division.id }
 
         run_test! do |response|
-          expected = Entities::Device.represent [device1, device2]
+          expected = Entities::DeviceCurrentUser.represent [device1, device2], devices_keeping: device_own_ids, devices_requesting: current_device_requests
           expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
         end
       end
@@ -119,8 +120,8 @@ describe "Device API" do
 
 
         run_test! do |response|
-          expected = Entities::Device.represent [device1]
-          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+          expected = Entities::DeviceCurrentUser.represent [device1], devices_keeping: device_own_ids, devices_requesting: current_device_requests
+          expect(response.body).to eq expected.to_json
         end
       end
     end

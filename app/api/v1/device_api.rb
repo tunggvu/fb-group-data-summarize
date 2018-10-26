@@ -19,8 +19,10 @@ class V1::DeviceAPI < Grape::API
         project_id_in: params[:project_id],
         pic_organization_id_in: params[:organization_id],
       }
-      devices = Device.includes(:pic, :project).ransack(search_params).result(distinct: true)
-      present paginate(devices), with: Entities::Device
+      current_device_requests = current_user.requests.need_handle.ids
+      device_own_ids = current_user.device_ids
+      devices = Device.includes(:pic, :project).ransack(search_params).result(distinct: true).order :name
+      present paginate(devices), with: Entities::DeviceCurrentUser, devices_keeping: device_own_ids, devices_requesting: current_device_requests
     end
 
     route_param :id do

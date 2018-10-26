@@ -49,6 +49,30 @@
               type: array
               items:
                 $ref: '../schema.yml#/Device'
+            example:
+            - id: 65
+              name: "mac_book 4"
+              serial_code: 995696419301306
+              device_type: mac_book
+              os_version: "Ulises Champlin"
+              project:
+                id: 4
+                name: "Magnolia Brown"
+                description: null
+                starts_on: "2018-10-15"
+                logo: "http://localhost:3000/uploads/avatar.png"
+                product_owner_id: 2
+              pic:
+                id: 2
+                organization_id: 1
+                name: "Lizeth Ebert"
+                employee_code: B1210001
+                email: "lizeth.ebert@framgia.com"
+                birthday: null
+                phone: 0987654321
+                avatar: "http://localhost:3000/uploads/avatar.png"
+              is_keeping: false
+              is_requesting: true
 
       403:
         description: Unauthorized

@@ -72,8 +72,8 @@
       content:
         application/json:
           schema:
+            type: object
             properties:
-              type: object
               name:
                 type: string
                 description: Device name

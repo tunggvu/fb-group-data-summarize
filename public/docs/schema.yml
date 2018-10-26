@@ -472,7 +472,13 @@ Profile:
           description: Skills of current user
           items:
             allOf:
-              - $ref: '#/SkillLevel'
+            - $ref: '#/SkillLevel'
+        projects:
+          type: array
+          description: Project that current user is relate to
+          items:
+            allOf:
+            - $ref: '#/BaseProject'
         organization:
           $ref: '#/Organization'
         devices:
@@ -503,16 +509,16 @@ Profile:
                 example: Ubuntu
               project:
                 allOf:
-                  - $ref: '#/BaseProject'
+                - $ref: '#/BaseProject'
         owned_projects:
           type: array
           description: Projects that current user is product owner
           items:
             allOf:
-              - $ref: '#/BaseProject'
+            - $ref: '#/BaseProject'
         owned_organizations:
           type: array
           description: Organization that current user is manager
           items:
             allOf:
-              - $ref: '#/Organization'
+            - $ref: '#/Organization'

@@ -59,28 +59,23 @@
     - Requirements
     consumes:
     - application/json
-    parameters:
-    - name: params
-      in: body
-      schema:
-        type: object
-        properties:
-          level_id:
-            type: integer
-            description: Level ID
-            example: 1
-          phase_id:
-            type: integer
-            description: Phase ID
-            example: 1
-          quantity:
-            type: integer
-            description: Quanity
-            quantity: 10
-        required:
-        - level_id
-        - phase_id
-        - quantity
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              level_id:
+                type: integer
+                description: Level ID
+                example: 1
+              quantity:
+                type: integer
+                description: Quanity
+                example: 10
+            required:
+            - level_id
+            - quantity
     responses:
       403:
         description: manager in other division cannot create requirement

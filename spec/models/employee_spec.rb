@@ -152,10 +152,10 @@ RSpec.describe Employee, type: :model do
   describe ".owned_organizations" do
     let(:employee) { FactoryBot.create :employee, organization: nil }
     let(:admin) { FactoryBot.create :employee, :admin, organization: nil }
-    let(:owned_organization) { FactoryBot.create :organization, manager: employee }
-    let(:other_organization) { FactoryBot.create :organization }
+    let!(:owned_organization) { FactoryBot.create :organization, manager: employee }
+    let!(:other_organization) { FactoryBot.create :organization }
 
-    it "return only organization that employee is manager" do
+    it "return organization and sub organization that employee is manager" do
       expect(employee.owned_organizations).to eq [owned_organization]
     end
 

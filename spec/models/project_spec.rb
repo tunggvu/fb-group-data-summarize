@@ -58,7 +58,7 @@ RSpec.describe Project, type: :model do
 
     context "when project has current phase" do
       let!(:phase) { FactoryBot.create :phase, project_id: project.id, starts_on: 3.days.ago, ends_on: 3.days.from_now }
-      let!(:sprint) { FactoryBot.create :sprint, project: project, phase: phase, starts_on: 2.days.ago, ends_on: 2.day.from_now }
+      let!(:sprint) { FactoryBot.create :sprint, project: project, phase: phase, starts_on: 2.days.ago, ends_on: 2.days.from_now }
       it "should return current phase" do
         expect(project.current_phase).to eq phase
       end

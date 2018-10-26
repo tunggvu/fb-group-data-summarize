@@ -70,7 +70,9 @@ class Employee < ApplicationRecord
   end
 
   def owned_organizations
-    is_admin? ? Organization.all : Organization.where(manager: self)
+    return Organization.all if is_admin?
+    root_org = Organization.find_by(manager: self)
+    root_org ? Organization.subtree_of(root_org) : []
   end
 
   def owned_projects

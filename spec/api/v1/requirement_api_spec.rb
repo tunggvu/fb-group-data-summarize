@@ -78,17 +78,18 @@ describe "Requirement API" do
       tags "Requirements"
       consumes "application/json"
 
+      parameter name: :phase_id, in: :path, type: :integer, description: "Phase ID"
       parameter name: :params, in: :body, schema: {
         type: :object,
         properties: {
           level_id: { type: :integer, description: "Level ID" },
-          phase_id: { type: :integer, description: "Phase ID" },
           quantity: { type: :integer, description: "Quanity" }
         },
         required: [:level_id, :phase_id, :quantity]
       }
 
-      let(:params) { { phase_id: phase1.id, level_id: level1.id, quantity: 5 } }
+      let(:params) { { level_id: level1.id, quantity: 5 } }
+      let(:phase_id) { phase1.id }
 
       include_examples "unauthenticated"
 

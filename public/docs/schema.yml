@@ -522,3 +522,10 @@ Profile:
           items:
             allOf:
             - $ref: '#/Organization'
+ChatworkStatus:
+  type: object
+  properties:
+    chatwork_status:
+      type: string
+      description: Chatwork's status of employee
+      example: "off"

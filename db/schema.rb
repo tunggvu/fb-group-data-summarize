@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_17_011652) do
+ActiveRecord::Schema.define(version: 2018_10_24_074700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,8 @@ ActiveRecord::Schema.define(version: 2018_10_17_011652) do
     t.datetime "updated_at", null: false
     t.string "password_digest"
     t.string "avatar"
+    t.integer "chatwork_room_id"
+    t.integer "chatwork_status", default: 0
     t.index ["email"], name: "index_employees_on_email", unique: true
     t.index ["organization_id"], name: "index_employees_on_organization_id"
   end

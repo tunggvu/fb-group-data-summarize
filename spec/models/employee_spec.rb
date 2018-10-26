@@ -163,4 +163,51 @@ RSpec.describe Employee, type: :model do
       expect(admin.owned_organizations).to eq [owned_organization, other_organization]
     end
   end
+
+  describe ".change_mode_from_off" do
+    let(:employee) { FactoryBot.create :employee, organization: nil }
+
+    it "return pending if chatwork_room_id is nil" do
+      employee.change_mode_from_off!
+      expect(employee.chatwork_status).to eq "pending"
+    end
+
+    it "return on if chatwork_room_id isn't nil" do
+      employee.update(chatwork_room_id: 1)
+      employee.change_mode_from_off!
+      expect(employee.chatwork_status).to eq "on"
+    end
+  end
+
+  describe ".change_mode_from_on" do
+    let(:employee) { FactoryBot.create :employee, organization: nil }
+
+    before do
+      employee.update(chatwork_room_id: 1)
+    end
+
+    it "return off" do
+      employee.change_mode_from_on!
+      expect(employee.chatwork_status).to eq "off"
+    end
+  end
+
+  describe ".change_mode_from_pending" do
+    let(:employee) { FactoryBot.create :employee, organization: nil }
+
+    before do
+      employee.update(chatwork_status: :pending)
+    end
+
+    it "return off if chatwork_room_id is nil" do
+      employee.change_mode_from_pending!
+      expect(employee.chatwork_status).to eq "off"
+    end
+
+    it "return on if chatwork_room_id isn't nil" do
+      employee.update(chatwork_room_id: 1)
+      employee.change_mode_from_pending!
+      expect(employee.chatwork_status).to eq "on"
+    end
+  end
 end

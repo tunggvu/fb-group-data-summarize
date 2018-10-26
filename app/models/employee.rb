@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class Employee < ApplicationRecord
+  include AASM
+
+  enum chatwork_status: { off: 0, on: 1, pending: 2 }
+
   belongs_to :organization, optional: true
 
   has_many :employee_levels, dependent: :destroy
@@ -36,6 +40,29 @@ class Employee < ApplicationRecord
   has_secure_password validations: false
 
   mount_base64_uploader :avatar, ImageUploader
+
+  aasm column: :chatwork_status, enum: true, whiny_transitions: false do
+    state :off, initial: true
+    state :on, :pending
+
+    event :change_mode_from_off do
+      transitions from: :off, to: :on, if: :existed_room?
+      transitions from: :off, to: :pending, unless: :existed_room?
+    end
+
+    event :change_mode_from_on do
+      transitions from: :on, to: :off
+    end
+
+    event :change_mode_from_pending do
+      transitions from: :pending, to: :off, unless: :existed_room?
+      transitions from: :pending, to: :on, if: :existed_room?
+    end
+  end
+
+  def existed_room?
+    chatwork_room_id.present?
+  end
 
   def is_manager?(organization)
     organization.level_before_type_cast > 1 && organization.path.pluck(:manager_id).include?(self.id)

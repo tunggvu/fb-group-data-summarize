@@ -85,3 +85,5 @@ paths:
     $ref: api/request.yml#/~1projects~1{project_id}~1devices~1{id}~1requests
   /devices/{id}/requests:
     $ref: api/request.yml#/~1devices~1{id}~1requests
+  /profile/change_mode:
+    $ref: api/profile.yml#/~1profile~1change_mode

@@ -51,7 +51,7 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Employee'
+              $ref: '../schema.yml#/Profile'
       403:
         description: Unauthorized
         content:
@@ -74,3 +74,18 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
+
+/profile/change_mode:
+  patch:
+    summary: Change chatwork mode
+    tags:
+    - Profiles
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: "Change chatwork mode"
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/ChatworkStatus'

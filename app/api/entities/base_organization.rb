@@ -2,7 +2,7 @@
 
 module Entities
   class BaseOrganization < Grape::Entity
-    expose :id, :parent_id, :manager_id, :level, :name
+    expose :id, :manager_id, :level, :name
     expose :children, with: Entities::BaseOrganization
   end
 end

@@ -21,6 +21,8 @@ application.
 * SENDGRID_API_KEY: you can generate API key by create account in sendgrid: https://signup.sendgrid.com/,
   after that generate API key in https://app.sendgrid.com/settings/api_keys
 * Using mailcatcher in development, so you need to install mailcatcher and run it: `gem install mailcatcher` then run `mailcatcher` then go to `http://localhost:1080/`
+* CHATWORK_API_KEY: CHATWORK_API_KEY using for bot. Bot can send massage to employee in box. 
+If you want use and test, you can get it from [Chatwork profile -> API setting -> API Token]. 
 
 ## Documentation
 * Read more at `public/docs`

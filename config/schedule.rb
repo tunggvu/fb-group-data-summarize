@@ -6,3 +6,7 @@ end
 every :day, at: ["08:50 am", "04:45 pm"] do
   rake "project_feature:reminder"
 end
+
+every 10.minutes do
+  rake "chatwork_bot:accept_request"
+end

@@ -6,7 +6,10 @@ class V1::OrganizationAPI < Grape::API
 
     desc "Returns all organizations"
     get do
-      present Organization.roots, with: Entities::BaseOrganization
+      root_orgs = Organization.roots
+        .reduce([]) { |res, org| res.concat(org.subtree.arrange_serializable) }
+        .map(&:deep_symbolize_keys!)
+      present root_orgs, with: Entities::BaseOrganization
     end
 
     desc "Creates an organization"

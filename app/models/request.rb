@@ -20,7 +20,13 @@ class Request < ApplicationRecord
   before_create :generate_confirmation_digest
   after_create :send_request_email, unless: :confirmed?
 
-  scope :need_handle, -> { where(status: [:pending, :approved]) }
+  scope :is_waiting, -> { where(status: [:pending, :approved]) }
+
+  scope :need_handle_from, -> (employee) do
+    eager_load!(device: {project: :product_owner})
+      .where(devices: {projects: {product_owner: employee}}, status: :pending)
+      .or(where(status: :approved, request_pic: employee))
+  end
 
   class << self
     def new_token

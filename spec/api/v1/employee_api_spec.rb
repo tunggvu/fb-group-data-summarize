@@ -700,4 +700,173 @@ describe "Employee API" do
       end
     end
   end
+
+  path "/employees/{id}/requests/created" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Employees ID"
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+    let(:id) { admin.id }
+
+    get "device requests that created by employee" do
+      tags "Employees"
+      produces "application/json"
+
+      let(:admin2) { FactoryBot.create :employee, :admin }
+      let(:device) { create :device, :laptop, pic: admin2, project: project }
+      let!(:request1) { create :request, :skip_validate, :pending,  device: device, project: project, request_pic: employee, requester: admin }
+      let!(:request2) { create :request, :skip_validate, :approved, device: device, project: project, request_pic: employee, requester: admin }
+      let!(:request3) { create :request, :skip_validate, :confirmed, device: device, project: project, request_pic: admin, requester: admin }
+      let!(:request4) { create :request, :skip_validate, :approved, device: device, project: project, request_pic: employee, requester: admin2 }
+
+      response "200", "return all device requests that created by employee" do
+        run_test! do
+          expected = Entities::Request.represent [request1, request2, request3]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      include_examples "unauthenticated"
+
+      response  "403", "unauthorized user" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "invalid employee's id" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
+
+  path "/employees/{id}/requests/received" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Employees ID"
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+    let(:id) { admin.id }
+
+    get "device requests that requested for employee" do
+      tags "Employees"
+      produces "application/json"
+
+      let(:admin2) { FactoryBot.create :employee, :admin }
+      let(:device) { create :device, :laptop, pic: admin2, project: project }
+      let!(:request1) { create :request, :skip_validate, :pending,  device: device, project: project, request_pic: employee, requester: admin }
+      let!(:request2) { create :request, :skip_validate, :approved, device: device, project: project, request_pic: employee, requester: admin }
+      let!(:request3) { create :request, :skip_validate, :confirmed, device: device, project: project, request_pic: admin, requester: admin }
+      let!(:request4) { create :request, :skip_validate, :approved, device: device, project: project, request_pic: employee, requester: admin2 }
+
+      response "200", "return all device requests that requested for employee" do
+        run_test! do
+          expected = Entities::Request.represent [request3]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      include_examples "unauthenticated"
+
+      response  "403", "unauthorized user" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "invalid employee's id" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
+
+  path "/employees/{id}/requests/handle" do
+    parameter name: "Emres-Authorization", in: :header, type: :string, description: "Token authorization user"
+    parameter name: :id, in: :path, type: :integer, description: "Employees ID"
+    let("Emres-Authorization") { "Bearer #{admin_token.token}" }
+    let(:id) { admin.id }
+
+    get "device requests that need handle by employee" do
+      tags "Employees"
+      produces "application/json"
+
+      let(:admin2) { FactoryBot.create :employee, :admin }
+      let(:project) { FactoryBot.create :project, product_owner: admin }
+      let(:device) { create :device, :laptop, pic: admin2, project: project }
+      let!(:request1) { create :request, :skip_validate, :pending,  device: device, project: project, request_pic: employee, requester: admin2 }
+      let!(:request2) { create :request, :skip_validate, :approved, device: device, project: project, request_pic: employee, requester: admin }
+      let!(:request3) { create :request, :skip_validate, :confirmed, device: device, project: project, request_pic: admin, requester: admin }
+      let!(:request4) { create :request, :skip_validate, :approved, device: device, project: project, request_pic: employee, requester: admin2 }
+
+      response "200", "return all device requests that need handle by employee" do
+        run_test! do
+          expected = Entities::Request.represent [request1]
+          expect(JSON.parse(response.body)).to match_array JSON.parse(expected.to_json)
+        end
+      end
+
+      include_examples "unauthenticated"
+
+      response  "403", "unauthorized user" do
+        let("Emres-Authorization") { "Bearer #{employee_token.token}" }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.unauthorized,
+              message: I18n.t("api_error.unauthorized")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "404", "invalid employee's id" do
+        let(:id) { 0 }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.record_not_found,
+              message: I18n.t("api_error.invalid_id", model: Employee.name, id: id)
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+    end
+  end
 end

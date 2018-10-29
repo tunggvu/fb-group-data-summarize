@@ -55,6 +55,7 @@ paginate:
     skill: 6
     sprint: 5
     device: 15
+    request: 10
 
 template:
   device_assignment:

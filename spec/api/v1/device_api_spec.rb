@@ -56,7 +56,8 @@ describe "Device API" do
       let(:project_id) {}
       let(:organization_id) {}
       let(:device_own_ids) { product_owner1.device_ids }
-      let(:current_device_requests) { product_owner1.requests.need_handle.ids }
+      let(:current_device_requests) { product_owner1.created_requests.is_waiting.ids }
+
       include_examples "unauthenticated"
 
       response "200", "return all devices without params" do

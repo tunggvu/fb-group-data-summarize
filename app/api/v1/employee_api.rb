@@ -79,7 +79,37 @@ class V1::EmployeeAPI < Grape::API
         @employee = Employee.find params[:id]
       end
 
+      resource :requests do
+        before do
+          authorize @employee, :self_or_subordinate?
+        end
+
+        desc "Get device requests that created by employee"
+        paginate per_page: Settings.paginate.per_page.request
+        get :created do
+          requests = @employee.created_requests.includes(:project, :request_pic, :requester)
+            .order(id: :desc)
+          present paginate(requests), with: Entities::Request
+        end
+
+        desc "Get device requests that requested for employee"
+        paginate per_page: Settings.paginate.per_page.request
+        get :received do
+          requests = @employee.received_requests.includes(:project, :request_pic, :requester)
+            .order(id: :desc)
+          present paginate(requests), with: Entities::Request
+        end
+
+        desc "Get device requests that need handle by employee"
+        paginate per_page: Settings.paginate.per_page.request
+        get :handle do
+          requests = @employee.requests_need_handle
+          present paginate(requests), with: Entities::Request
+        end
+      end
+
       resource :efforts do
+        desc "Get all effort details of employee in a time range"
         params do
           requires :start_time, type: Date, allow_blank: false
           requires :end_time, type: Date, allow_blank: false
@@ -102,6 +132,7 @@ class V1::EmployeeAPI < Grape::API
       end
 
       resource :skills do
+        desc "Get employees's skills"
         get do
           present @employee, with: Entities::EmployeeSkill, employee_id: @employee.id
         end

@@ -13,11 +13,13 @@ class Employee < ApplicationRecord
   has_many :total_efforts, dependent: :destroy
   has_many :skills, through: :levels
   has_many :devices, foreign_key: :pic_id
-  has_many :requests, foreign_key: :requester_id
+  has_many :created_requests, foreign_key: :requester_id, class_name: Request.name
+  has_many :received_requests, foreign_key: :request_pic_id, class_name: Request.name
   has_many :sprints, through: :efforts
   has_many :projects_effort, -> { distinct }, through: :sprints, foreign_key: :project_id, source: :project
 
   has_one :employee_token, dependent: :destroy
+  has_one :managing_organization, class_name: Organization.name, foreign_key: :manager_id
 
   validates :name, presence: true
   validates :employee_code, presence: true
@@ -104,6 +106,15 @@ class Employee < ApplicationRecord
 
   def owned_projects
     is_admin? ? Project.all : Project.where(product_owner: self)
+  end
+
+  def requests_need_handle
+    Request.need_handle_from(self)
+  end
+
+  def subordinates
+    return [] unless managing_organization
+    Employee.where organization_id: managing_organization.descendant_ids
   end
 
   class << self

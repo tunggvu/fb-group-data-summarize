@@ -93,15 +93,15 @@
                     email: etha.ebert@framgia.com
                     birthday:
                     phone: 0987654321
-                    avatar: "/uploads/avatar.png"
+                    avatar: '/uploads/avatar.png'
               all_params:
                 summary: all params
                 value:
                   - employee_name: Queenie Harris IV
                     employee_id: 2
                     total_efforts:
-                      - start_time: "2018-08-28"
-                        end_time: "2018-08-30"
+                      - start_time: 2018-08-28
+                        end_time: 2018-08-30
                         value: 25
               invalid_time:
                 summary: invalid start/end time, total_effort_lt
@@ -221,12 +221,12 @@
                 value:
                   error:
                     code: 422
-                    message: "Validation failed: Email is invalid"
+                    message: 'Validation failed: Email is invalid'
               email_taken:
                 value:
                   error:
                     code: 422
-                    message: "Validation failed: Email has already been taken"
+                    message: 'Validation failed: Email has already been taken'
       401:
         description: Unauthenticated
         content:
@@ -254,7 +254,7 @@
         content:
           application/json:
             schema:
-              $ref: "../schema.yml#/Employee"
+              $ref: '../schema.yml#/Employee'
             example:
               id: 5
               name: Justine Christiansen
@@ -263,24 +263,24 @@
               birthday:
               phone: 0987654321
               role: TEAM_LEADER
-              avatar: http://localhost:3000/uploads/avatar.png
+              avatar: 'http://localhost:3000/uploads/avatar.png'
               skills:
               - id: 2
                 name: Java
-                logo: http://localhost:3000/uploads/avatar.png
+                logo: 'http://localhost:3000/uploads/avatar.png'
                 level:
                   id: 5
                   name: Middle
                   rank: 2
-                  logo: http://localhost:3000/uploads/avatar.png
+                  logo: 'http://localhost:3000/uploads/avatar.png'
               - id: 1
                 name: Ruby
-                logo: http://localhost:3000/uploads/avatar.png
+                logo: 'http://localhost:3000/uploads/avatar.png'
                 level:
                   id: 2
                   name: Middle
                   rank: 2
-                  logo: http://localhost:3000/uploads/avatar.png
+                  logo: 'http://localhost:3000/uploads/avatar.png'
               organization:
                 id: 4
                 parent_id: 3
@@ -293,13 +293,13 @@
                 name: Monserrat Cruickshank DDS
                 description:
                 starts_on: '2018-10-09'
-                logo: http://localhost:3000/uploads/avatar.png
+                logo: 'http://localhost:3000/uploads/avatar.png'
                 product_owner_id: 5
               - id: 2
                 name: Cicero Zieme
                 description:
                 starts_on: '2018-10-09'
-                logo: http://localhost:3000/uploads/avatar.png
+                logo: 'http://localhost:3000/uploads/avatar.png'
                 product_owner_id: 12
               devices:
               - id: 5
@@ -312,7 +312,7 @@
                   name: Monserrat Cruickshank DDS
                   description:
                   starts_on: '2018-10-09'
-                  logo: http://localhost:3000/uploads/avatar.png
+                  logo: 'http://localhost:3000/uploads/avatar.png'
                   product_owner_id: 5
               - id: 75
                 name: mac_book 14
@@ -324,7 +324,7 @@
                   name: Monserrat Cruickshank DDS
                   description:
                   starts_on: '2018-10-09'
-                  logo: http://localhost:3000/uploads/avatar.png
+                  logo: 'http://localhost:3000/uploads/avatar.png'
                   product_owner_id: 5
 
       403:
@@ -547,7 +547,7 @@
                   name: Senior
                   rank: 3
                   skill_id: 2
-                  logo: "/uploads/avatar.png"
+                  logo: '/uploads/avatar.png'
               - id: 1
                 name: Ruby
                 levels:
@@ -555,7 +555,7 @@
                   name: Middle
                   rank: 2
                   skill_id: 1
-                  logo: "/uploads/avatar.png"
+                  logo: '/uploads/avatar.png'
 
       403:
         description: Unauthorized
@@ -593,3 +593,114 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
+
+/employees/{id}/requests/created:
+  parameters:
+    - name: ID
+      in: path
+      schema:
+        type: integer
+      required: true
+      description: Employee ID
+  get:
+    summary: Get device requests that created by employee
+    tags: Employees
+    responses:
+      200:
+        description: return empty array when any record match with params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Request'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
+      403:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Employee not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+
+/employees/{id}/requests/received:
+  parameters:
+  - name: ID
+    in: path
+    schema:
+      type: integer
+    required: true
+    description: Employee ID
+  get:
+    summary: Get device requests that requested for employee
+    tags: Employees
+    responses:
+      200:
+        description: return empty array when any record match with params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Request'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
+      403:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Employee not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+
+/employees/{id}/requests/handle:
+  parameters:
+  - name: ID
+    in: path
+    schema:
+      type: integer
+    required: true
+    description: Employee ID
+  get:
+    summary: Get device requests that need handle by employee
+    tags: Employees
+    responses:
+      200:
+        description: return empty array when any record match with params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Request'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'
+      403:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthorizedError'
+      404:
+        description: Employee not found
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'

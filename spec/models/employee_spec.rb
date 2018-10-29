@@ -141,11 +141,11 @@ RSpec.describe Employee, type: :model do
     let(:other_project) { FactoryBot.create :project }
 
     it "return only project that employee is product owner" do
-      expect(employee.owned_projects).to eq [owned_project]
+      expect(employee.owned_projects).to match_array [owned_project]
     end
 
     it "return all project if employee is admin" do
-      expect(admin.owned_projects).to eq [owned_project, other_project]
+      expect(admin.owned_projects).to match_array [owned_project, other_project]
     end
   end
 
@@ -156,11 +156,11 @@ RSpec.describe Employee, type: :model do
     let!(:other_organization) { FactoryBot.create :organization }
 
     it "return organization and sub organization that employee is manager" do
-      expect(employee.owned_organizations).to eq [owned_organization]
+      expect(employee.owned_organizations).to match_array [owned_organization]
     end
 
     it "return all organization if employee is admin" do
-      expect(admin.owned_organizations).to eq [owned_organization, other_organization]
+      expect(admin.owned_organizations).to match_array [owned_organization, other_organization]
     end
   end
 

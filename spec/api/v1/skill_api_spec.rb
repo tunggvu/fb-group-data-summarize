@@ -118,6 +118,34 @@ describe "Skill API" do
           expect(response.body).to eq expected.to_json
         end
       end
+
+      response "422", "Skill name has already been taken" do
+        before { params[:name] = skill.name }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Name has already been taken"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Level name has already been taken" do
+        before { params[:levels][1][:name] = params[:levels][0][:name] }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Name has already been taken"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
     end
   end
 
@@ -236,6 +264,34 @@ describe "Skill API" do
             error: {
               code: Settings.error_formatter.http_code.data_operation,
               message: I18n.t("api_error.blank_params", params: "Name")
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Skill name has already been taken" do
+        before { params[:name] = other_skill.name }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Name has already been taken"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "Level name has already been taken" do
+        before { params[:levels][0][:name] = level2.name }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Levels name has already been taken"
             }
           }
           expect(response.body).to eq expected.to_json

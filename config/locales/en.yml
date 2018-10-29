@@ -53,6 +53,7 @@ en:
     send_email_error: "Email can't be sent because of some invalid email informations"
     invalid_email_token: "Verify token is invalid or has been expired"
     invalid_starts_on_phase: "Validation failed: Starts on must be after ends on of previous phase"
+    name_taken: "Name has already been taken"
   models:
     sprint:
       invalid_starts_on_ends_on: "must be after the starts on"
@@ -69,6 +70,8 @@ en:
       pic_in_project: "doesn't belongs to Request Project"
       device_unchangeable: "You don't have the right to do this"
       device_nothing_change: "Project and PIC aren't change"
+    level:
+      taken: "has already been taken"
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
   success: "Success"

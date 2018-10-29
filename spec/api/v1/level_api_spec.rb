@@ -101,6 +101,25 @@ describe "Level API" do
         end
       end
 
+      response "422", "level name has already been taken" do
+        let(:params) {
+          {
+            name: level.name,
+            rank: 4
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Name has already been taken"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
       response "201", "level created" do
         run_test! do
           expected = Entities::Level.represent skill.levels.last
@@ -181,6 +200,26 @@ describe "Level API" do
             error: {
               code: Settings.error_formatter.http_code.unauthorized,
               message: "unauthorized"
+            }
+          }
+          expect(response.body).to eq expected.to_json
+        end
+      end
+
+      response "422", "level name has already been taken" do
+        let(:level_id) { level.id }
+        let(:params) {
+          {
+            name: level.name,
+            rank: 4
+          }
+        }
+
+        run_test! do
+          expected = {
+            error: {
+              code: Settings.error_formatter.http_code.data_operation,
+              message: "Validation failed: Name has already been taken"
             }
           }
           expect(response.body).to eq expected.to_json

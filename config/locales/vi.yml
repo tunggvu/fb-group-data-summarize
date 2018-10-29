@@ -3,9 +3,15 @@ vi:
   activerecord:
     errors:
       messages:
+        record_invalid: "%{errors}"
         restrict_dependent_destroy:
           has_one: "Không thể xóa bản ghi vì có trong một %{record}"
           has_many: "Không thể xóa bản ghi vì có trong %{record}"
+    models:
+        skill:
+          attributes:
+            name:
+              taken: "đã được sử dụng"
     attributes:
       level:
         requirements: Yêu cầu dự án
@@ -45,6 +51,7 @@ vi:
     device_unchangeable: "Xác thực không thành công: Bạn không có quyền làm điều này"
     send_email_error: "Email không thể được gửi đi do một số thông tin về email không hợp lệ"
     invalid_email_token: "Token xác thực không chính xác hoặc đã hết hạn"
+    name_taken: "Tên đã được sử dụng"
   models:
     effort:
       employee_must_be_unique_in_sprint: "Nhân viên đã tồn tại trong sprint."
@@ -52,6 +59,8 @@ vi:
       pic_in_project: "không thuộc dự án"
       device_unchangeable: "Bạn không có quyền làm điều này"
       device_nothing_change: "Dự án và người chịu trách nhiệm không thay đổi"
+    level:
+      taken: "đã được sử dụng"
   delete_success: "Xóa thành công"
   log_out: "Bạn đã đăng xuất!"
   success: "Thành công"

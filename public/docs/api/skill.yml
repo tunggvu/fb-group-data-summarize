@@ -137,6 +137,16 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
+      422:
+        description: Name has already been taken
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 422
+                message: "Validation failed: Name has already been taken"
 /skills/{id}:
   parameters:
     - name: id
@@ -225,10 +235,17 @@
           application/json:
             schema:
               $ref: '../schema.yml#/Error'
-            example:
-              error:
-                code: 422
-                message: "Validation failed: Name can't be blank"
+            examples:
+              name_blank:
+                value:
+                  error:
+                    code: 422
+                    message: "Validation failed: Name can't be blank"
+              name_has_been_taken:
+                value:
+                  error:
+                    code: 422
+                    message: "Validation failed: Name has already been taken"
       200:
         description: update successfully (level can be deleted too)
         content:

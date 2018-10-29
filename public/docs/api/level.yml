@@ -94,6 +94,16 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
+      422:
+        description: Name has already been taken
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 422
+                message: "Validation failed: Name has already been taken"
 /skills/{skill_id}/levels/{id}:
   parameters:
   - name: skill_id
@@ -181,6 +191,16 @@
           application/json:
             schema:
               $ref: '../schema.yml#/UnauthenticatedError'
+      422:
+        description: Name has already been taken
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 422
+                message: "Validation failed: Name has already been taken"
   delete:
     summary: Delete level
     tags:

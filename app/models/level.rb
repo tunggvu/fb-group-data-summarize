@@ -6,7 +6,7 @@ class Level < ApplicationRecord
   has_many :employees, through: :employee_levels
   belongs_to :skill
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :skill_id, message: I18n.t("models.level.taken") }
   validates :rank, presence: true
   validates :skill, presence: true
 

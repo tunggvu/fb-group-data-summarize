@@ -11,7 +11,11 @@ RSpec.describe Level, type: :model do
   end
 
   describe "#validates" do
+    let(:skill) { FactoryBot.create :skill }
+    let!(:level) { FactoryBot.create :level, skill: skill }
+
     it { should validate_presence_of(:name) }
+    it { should validate_uniqueness_of(:name).scoped_to(:skill_id) }
     it { should validate_presence_of(:rank) }
     it { should validate_presence_of(:skill) }
   end

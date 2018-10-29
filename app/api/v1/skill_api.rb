@@ -25,6 +25,11 @@ class V1::SkillAPI < Grape::API
       authorize :skill, :admin?
       save_params = declared params
       save_params[:levels_attributes] = save_params[:levels]
+      level_names = save_params[:levels].map { |level| level[:name] }
+      unless level_names.length == level_names.uniq.length
+        raise_errors I18n.t("name_taken", scope: "api_error"),
+          Settings.error_formatter.http_code.data_operation
+      end
       save_params.delete :levels
       present Skill.create!(save_params), with: Entities::Skill
     end

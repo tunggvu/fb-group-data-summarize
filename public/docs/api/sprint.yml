@@ -142,12 +142,14 @@
                           name: Senior
                           rank: 3
                           logo: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
+                  phase_id: 1
               without efforts:
                 value:
                   id: 1
                   name: Sprint 1
                   starts_on: "2018-01-01"
                   ends_on: "2018-02-01"
+                  phase_id: 1
       400:
         description: empty/missing params
         content:

@@ -292,6 +292,10 @@ SprintMember:
       description: Efforts of sprint
       allOf:
         - $ref: '#/ProjectEffort'
+    phase_id:
+      type: integer
+      description: Phase ID
+      example: 1
 Sprint:
   type: object
   properties:

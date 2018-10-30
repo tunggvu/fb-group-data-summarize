@@ -228,7 +228,7 @@ Level:
       type: string
       description: Logo url
       example: https://cdn3.iconfinder.com/data/icons/avatars-15/64/_Ninja-2-512.png
-Organization:
+BaseOrganization:
   type: object
   properties:
     id:
@@ -250,10 +250,10 @@ Organization:
     level:
       type: string
       description: Level of organization
-      level: division
+      example: division
     children:
       allOf:
-        - $ref: '#/Organization'
+        - $ref: '#/BaseOrganization'
 ProjectEffort:
   type: object
   properties:
@@ -464,52 +464,9 @@ DeviceDetail:
               - $ref: '#/Request'
 Profile:
   allOf:
-    - $ref: '#/Employee'
+    - $ref: '#/EmployeeDetail'
     - type: object
       properties:
-        skills:
-          type: array
-          description: Skills of current user
-          items:
-            allOf:
-            - $ref: '#/SkillLevel'
-        projects:
-          type: array
-          description: Project that current user is relate to
-          items:
-            allOf:
-            - $ref: '#/BaseProject'
-        organization:
-          $ref: '#/Organization'
-        devices:
-          type: array
-          description: Devices that current user in charge
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-                example: 1
-              name:
-                type: string
-                example: Laptop 1
-              serial_code:
-                type: string
-                example: XXX123
-              device_type:
-                type: string
-                enum:
-                  - laptop
-                  - pc
-                  - mac_mini
-                  - mac_book
-                example: laptop
-              os_version:
-                type: string
-                example: Ubuntu
-              project:
-                allOf:
-                - $ref: '#/BaseProject'
         owned_projects:
           type: array
           description: Projects that current user is product owner
@@ -521,7 +478,7 @@ Profile:
           description: Organization that current user is manager
           items:
             allOf:
-            - $ref: '#/Organization'
+            - $ref: '#/Organizations'
 ChatworkStatus:
   type: object
   properties:
@@ -529,3 +486,77 @@ ChatworkStatus:
       type: string
       description: Chatwork's status of employee
       example: "off"
+Organizations:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Organization ID
+      example: 1
+    name:
+      type: string
+      description: Organization name
+      example: Division 1
+    parent_id:
+      type: integer
+      description: Organization parent
+      example: 1
+    manager_id:
+      type: integer
+      description: Manager id
+      example: 3
+    level:
+      type: string
+      description: Level of organization
+      example: division
+    ancestry:
+      type: integer
+      description: Acestry of organization
+      example: 2
+Organization:
+  type: object
+  properties:
+    manager_name:
+      type: string
+      description: Name of manager's organization
+      example: Nguyen Van A
+    employee_ids:
+      type: array
+      description: Array of employee's ID of organization
+      example: [1,2,3]
+    full_name:
+      type: string
+      description: Full name of Organization
+      example: "Group 1/Section 3/Division1"
+    logo:
+      type: string
+      description: Logo's URL of organization
+      example: "images/logo.png"
+EmployeeDetail:
+  allOf:
+    - $ref: '#/Employee'
+    - type: object
+      properties:
+        skills:
+          type: array
+          description: Skills of current user
+          items:
+            allOf:
+            - $ref: '#/SkillLevel'
+        devices:
+          type: array
+          description: Devices that current user in charge
+          items:
+            allOf:
+            - $ref: '#/BaseDevice'
+        projects:
+          type: array
+          description: Projects of current user
+          items:
+            allOf:
+            - $ref: '#/BaseProject'
+        organization:
+          type: object
+          description: Organization of current user
+          allOf:
+            - $ref: '#/Organizations'

@@ -63,7 +63,7 @@ describe "Profile API" do
 
       response "200", "Updated profile" do
         run_test! do
-          expected = Entities::Profile.represent current_user.reload
+          expected = Entities::Employee.represent current_user.reload
           expect(response.body).to eq expected.to_json
         end
       end

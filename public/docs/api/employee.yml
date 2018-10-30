@@ -254,7 +254,7 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Employee'
+              $ref: '../schema.yml#/EmployeeDetail'
             example:
               id: 5
               name: Justine Christiansen
@@ -604,7 +604,8 @@
       description: Employee ID
   get:
     summary: Get device requests that created by employee
-    tags: Employees
+    tags:
+    - Employees
     responses:
       200:
         description: return empty array when any record match with params
@@ -641,7 +642,8 @@
     description: Employee ID
   get:
     summary: Get device requests that requested for employee
-    tags: Employees
+    tags:
+    - Employees
     responses:
       200:
         description: return empty array when any record match with params
@@ -678,7 +680,8 @@
     description: Employee ID
   get:
     summary: Get device requests that need handle by employee
-    tags: Employees
+    tags:
+    - Employees
     responses:
       200:
         description: return empty array when any record match with params

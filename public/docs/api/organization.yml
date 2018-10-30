@@ -11,7 +11,7 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Organization'
+              $ref: '../schema.yml#/BaseOrganization'
       403:
         description: Unauthorized
         content:
@@ -63,7 +63,7 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Organization'
+              $ref: '../schema.yml#/BaseOrganization'
       400:
         description: Invalid Param
         content:
@@ -225,7 +225,7 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Organization'
+              $ref: '../schema.yml#/BaseOrganization'
             example:
               id: 3
               name: Group 1

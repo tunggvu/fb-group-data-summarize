@@ -51,7 +51,7 @@
         content:
           application/json:
             schema:
-              $ref: '../schema.yml#/Profile'
+              $ref: '../schema.yml#/Employee'
       403:
         description: Unauthorized
         content:

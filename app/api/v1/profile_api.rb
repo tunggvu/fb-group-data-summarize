@@ -16,7 +16,7 @@ class V1::ProfileAPI < Grape::API
     end
     patch do
       current_user.update_attributes! declared(params, include_missing: false)
-      present current_user, with: Entities::Profile
+      present current_user, with: Entities::Employee
     end
 
     desc "Chang chatwork mode"

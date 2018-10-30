@@ -140,8 +140,7 @@ class V1::EmployeeAPI < Grape::API
 
       desc "Get employee's information"
       get do
-        employee = Employee.find params[:id]
-        present employee, with: Entities::EmployeeDetail
+        present @employee, with: Entities::EmployeeDetail
       end
 
       desc "Delete employee"

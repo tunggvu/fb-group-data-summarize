@@ -1,0 +1,9 @@
+inherit_gem:
+  rubocop-github:
+    - config/default.yml
+    - config/rails.yml
+AllCops:
+  Exclude:
+    - bin/*
+    - vendor/**/*
+    - db/schema.rb

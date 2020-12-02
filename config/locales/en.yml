@@ -1,5 +1,4 @@
 en:
-  hello: "Hello world"
   activerecord:
     errors:
       messages:
@@ -38,51 +37,11 @@ en:
     must_exist: "Validation failed: %{model} must exist"
     # Update ends on to start time
     validate_time: "Validation failed: Ends on must be after the starts on, Starts on must be after ends on previous sprint"
-    invalid_starts_on_ends_on: "Validation failed: Ends on must be after the starts on"
-    invalid_starts_on: "Validation failed: Starts on must be after ends on previous sprint"
-    invalid_ends_on: "Validation failed: Ends on must be after starts on next sprint"
-    effort_greater: "Validation failed: Effort must be less than or equal to 100"
-    effort_less_than_zero: "Validation failed: Effort must be greater than or equal to 0"
     invalid: "%{params} is invalid"
     wrong_current_password: "wrong current password"
-    invalid_time_sprint: "Validation failed: Sprint time must be in phase time"
-    effort_employee_must_be_unique_in_sprint: "Validation failed: Employee has already been found in sprint."
-    pic_in_project: "Validation failed: Person in charge doesn't belongs to Request Project"
-    device_nothing_change: "Validation failed: Project and PIC aren't change"
-    device_unchangeable: "Validation failed: You don't have the right to do this"
-    send_email_error: "Email can't be sent because of some invalid email informations"
     invalid_email_token: "Verify token is invalid or has been expired"
-    invalid_starts_on_phase: "Validation failed: Starts on must be after ends on of previous phase"
     name_taken: "Name has already been taken"
   models:
-    sprint:
-      invalid_starts_on_ends_on: "must be after the starts on"
-      invalid_starts_on: "must be after ends on previous sprint"
-      invalid_ends_on: "must be after starts on next sprint"
-      invalid_sprint_time: "Sprint time must be in phase time"
-    phase:
-      invalid_starts_on_ends_on: "must be after the starts on"
-      invalid_starts_on: "must be after ends on of previous phase"
-      invalid_ends_on: "must be before starts on of next phase"
-    effort:
-      employee_must_be_unique_in_sprint: "Employee has already been found in sprint."
-    request:
-      pic_in_project: "doesn't belongs to Request Project"
-      device_unchangeable: "You don't have the right to do this"
-      device_nothing_change: "Project and PIC aren't change"
-    level:
-      taken: "has already been taken"
   delete_success: "Delete successfully"
   log_out: "You have been logged out"
   success: "Success"
-  email:
-    device_assignment:
-      title: "Device Assignment Request"
-      announcement: "<b>%{requester}</b> has requested to assign device <b>%{device}</b> for you in <b>%{project}</b> project. Please confirm this request when you take the device, or reject it if you don't want to."
-      confirm: "Confirm"
-      reject: "Reject"
-    device_borrow:
-      title: "Device Borrow Request"
-      announcement: "<b>%{requester}</b> has requested to borrow device <b>%{device}</b> for <b>%{project}</b> project. Please approve this request when you accept, or reject it if you don't want to."
-      confirm: "Approve"
-      reject: "Reject"

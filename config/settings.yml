@@ -1,4 +1,4 @@
-access_token_header: "Emres-Authorization"
+access_token_header: "Authorization"
 access_token_value_prefix: "Bearer"
 
 http_code:
@@ -23,7 +23,6 @@ error_formatter:
     unauthenticated: 401
     decode_error: 401
     verification_error: 401
-    send_email_error: 400
     invalid_email_token: 401
 
 validations:
@@ -33,7 +32,7 @@ validations:
   password_regex: !ruby/regexp '/^(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,}$/'
   phone_regex: !ruby/regexp '/\A(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/'
 
-employee_tokens:
+user_tokens:
   token:
     secure_length: 64
   refresh_token:

@@ -21,7 +21,4 @@ module APIError
   class WrongCurrentPassword < APIError::Base; end
 
   class WrongEmailPassword < APIError::Base; end
-
-  class SendEmailError < APIError::Base; end
-
 end

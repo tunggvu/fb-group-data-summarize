@@ -9,18 +9,18 @@ default: &default
 
 development:
   <<: *default
-  database: emres_development
+  database: group_analysis_dev
 
 test:
   <<: *default
-  database: emres_test
+  database: group_analysis_test
 
 staging:
   <<: *default
-  database: emres_staging
+  database: group_analysis_staging
 
 production:
   <<: *default
-  database: emres_production
-  username: emres
-  password: <%= ENV['EMRES_DATABASE_PASSWORD'] %>
+  database: d4no19clql8ogj
+  username: vdylrgowmdfjni
+  password: 9d18b336ecb3268e0200c33327e8965b12459fda2581135c0847797b64f5b837

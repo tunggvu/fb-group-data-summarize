@@ -90,8 +90,5 @@ Rails.application.configure do
     Bullet.bullet_logger = true
     Bullet.rails_logger = true
     Bullet.console = true
-    Bullet.add_whitelist type: :n_plus_one_query, class_name: Level.name, association: :requirements
-    Bullet.add_whitelist type: :n_plus_one_query, class_name: Level.name, association: :employee_levels
-    Bullet.add_whitelist type: :n_plus_one_query, class_name: Project.name, association: :employees
   end
 end

@@ -1,0 +1,68 @@
+/users:
+  post:
+    summary: Create user
+    tags:
+    - Users
+    consumes:
+    - application/json
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: User name
+              email:
+                type: string
+                description: User mail
+              password:
+                type: string
+                description: User password
+              birthday:
+                type: date
+                description: User password
+              avatar:
+                type: string
+                description: User password
+            required:
+              - name
+              - email
+              - password
+          example:
+            name: New User
+            email: user@gmail.com
+            birthday: 2020/12/30
+            password: 123456
+            avatar: "/uploads/avatar.png"
+
+    responses:
+      201:
+        description: Created Successful
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/User'
+      400:
+        description: Invalid params
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            example:
+              error:
+                code: 400
+                message: Email is missing
+      422:
+        description: Invalid attribute
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/Error'
+            examples:
+              email_taken:
+                value:
+                  error:
+                    code: 422
+                    message: 'Validation failed: Email has already been taken'

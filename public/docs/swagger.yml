@@ -18,3 +18,5 @@ security:
 paths:
   /session:
     $ref: api/session.yml#/~1session
+  /users:
+    $ref: api/users.yml#/~1users

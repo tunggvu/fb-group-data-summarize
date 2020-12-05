@@ -86,7 +86,7 @@ SuccessMessage:
     message:
       type: string
       example: Delete successfully
-Employee:
+User:
   type: object
   properties:
     id:
@@ -105,15 +105,11 @@ Employee:
       type: date
       description: User's birthday
       example: 1996-11-02
-    phone:
-      type: string
-      description: User's number phone
-      example: 0987654321
     avatar:
       type: string
       description: Path to avatar
       example: "/uploads/avatar.png"
-EmployeeToken:
+UserToken:
   type: object
   properties:
     token:
@@ -126,5 +122,5 @@ EmployeeToken:
       example: 2018-10-10T10:14:54.337+07:00
     user_id:
       type: integer
-      description: employee id
+      description: user id
       example: 10

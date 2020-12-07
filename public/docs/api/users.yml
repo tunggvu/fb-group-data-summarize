@@ -66,3 +66,23 @@
                   error:
                     code: 422
                     message: 'Validation failed: Email has already been taken'
+/users/me:
+  get:
+    summary: Get user's profile
+    tags:
+    - Users
+    consumes:
+    - application/json
+    responses:
+      200:
+        description: Successful
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/User'
+      401:
+        description: Unauthenticated
+        content:
+          application/json:
+            schema:
+              $ref: '../schema.yml#/UnauthenticatedError'

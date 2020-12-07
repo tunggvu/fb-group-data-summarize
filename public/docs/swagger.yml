@@ -20,3 +20,5 @@ paths:
     $ref: api/session.yml#/~1session
   /users:
     $ref: api/users.yml#/~1users
+  /users/me:
+    $ref: api/users.yml#/~1users~1me

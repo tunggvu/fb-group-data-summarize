@@ -43,11 +43,11 @@ module BaseAPI
     helpers Pundit
     helpers do
       def authenticate!
-        raise APIError::Unauthenticated unless current_user && EmployeeToken.verify(access_token_header)
+        raise APIError::Unauthenticated unless current_user && UserToken.verify(access_token_header)
       end
 
       def current_user
-        @current_user ||= EmployeeToken.find_by_token(access_token_header)&.employee
+        @current_user ||= UserToken.find_by_token(access_token_header)&.user
       end
 
       def access_token_header

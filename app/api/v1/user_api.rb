@@ -14,16 +14,9 @@ class V1::UserAPI < Grape::API
       present User.create!(declared(params).to_h), with: Entities::User
     end
 
-    route_param :id do
-      before do
-        @user = User.find params[:id]
-      end
-
-      desc "Get user's information"
-      get do
-        authenticate!
-        present @user, with: Entities::User
-      end
+    desc "Return user's profile"
+    get :me do
+      present current_user, with: Entities::User
     end
   end
 end

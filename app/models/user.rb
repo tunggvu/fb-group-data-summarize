@@ -8,6 +8,7 @@ class User < ApplicationRecord
 
   has_many :user_groups
   has_many :groups, through: :user_groups
+  has_many :posts
 
   has_secure_password validations: false
 

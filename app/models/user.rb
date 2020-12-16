@@ -6,6 +6,9 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true
 
+  has_many :user_groups
+  has_many :groups, through: :user_groups
+
   has_secure_password validations: false
 
   mount_base64_uploader :avatar, ImageUploader
